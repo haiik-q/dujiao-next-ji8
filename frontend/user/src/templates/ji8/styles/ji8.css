@@ -1,0 +1,498 @@
+/* =========================================================================
+   ji8 模板令牌与组件样式（仿 ai.bahk.cn · dujiao-next v1.4.8）
+
+   作用域：全部选择器限定在 .ji8-scope（Ji8Layout 根节点）与 body.ji8-tokens
+           （Ji8Layout 挂载/卸载时在 <body> 上打/摘的 class，供 Teleport 到 body
+           的 Toast / ConfirmDialog / 公告弹窗 / SelectContent 等浮层读取令牌）。
+   规则：
+     1. 令牌选择器 (.ji8-scope, body.ji8-tokens) 只放 custom property，绝不放布局。
+     2. 元素 reset 全部包在 @layer base 内，否则未分层规则会压过所有 Tailwind utility。
+     3. .j8-* 组件类刻意保持未分层（压过被 style.css 劫持的 utility）。
+     4. 不用 @apply / @theme（非入口 CSS 内 @apply 需 @reference；@theme 会污染 classic）。
+     5. 暗色跟随全局 html.dark（utils/theme.ts 按系统偏好切换）。
+   数值来源：scratchpad/bahk/rules.txt（ai.bahk.cn 原 CSS）；中文 7/8px 统一为 9px（D11）。
+   ========================================================================= */
+
+/* ---------- Tokens：亮色（默认） ---------- */
+.ji8-scope,
+body.ji8-tokens {
+  --font-body: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #f0f4f8;
+  --surface-3: #e8eef4;
+  --text: #172033;
+  --muted: #697487;
+  --line: rgba(20, 39, 66, .11);
+  --line-strong: rgba(20, 39, 66, .2);
+
+  --accent: #12a89a;
+  --accent-strong: #087f75;
+  --accent-soft: rgba(18, 168, 154, .1);
+  --accent-line: rgba(18, 168, 154, .35);
+  --on-accent: #062c29;
+  --amber: #c68416;
+  --amber-soft: rgba(214, 151, 38, .12);
+  --red: #d84a5a;
+  --red-soft: rgba(216, 74, 90, .1);
+  --blue: #2769a8;
+  --blue-soft: #eaf4ff;
+  --orange: #a26012;
+  --orange-soft: #fff2dc;
+  --gold: #b87513;
+  --dot: #f04455;
+  --link: #1677ff;
+
+  --promo-grad: linear-gradient(135deg, #fff0ca, #ffe0ed);
+  --promo-grad-hover: linear-gradient(135deg, #ffe3a0, #ffcbdc);
+  --promo-text: #b64a28;
+  --promo-text-hover: #9e351d;
+  --promo-line: rgba(222, 125, 61, .25);
+  --promo-shadow: 0 6px 18px rgba(216, 112, 62, .1);
+
+  --shadow: 0 20px 55px rgba(31, 51, 79, .11);
+  --shadow-soft: 0 8px 28px rgba(31, 51, 79, .07);
+  --shadow-mark: 0 9px 22px rgba(18, 168, 154, .2);
+  --shadow-primary: 0 10px 25px rgba(18, 168, 154, .18);
+  --shadow-pop: 0 24px 70px rgba(15, 28, 50, .2);
+  --header: rgba(255, 255, 255, .9);
+  --site-header-height: 72px;
+
+  --r-icon: 11px;
+  --r-mark: 12px;
+  --r-nav: 9px;
+  --r-search: 13px;
+  --r-panel: 17px;
+  --r-item: 11px;
+  --r-logo: 10px;
+  --r-card: 18px;
+  --r-card-m: 13px;
+  --r-pill: 999px;
+  --r-toast: 14px;
+
+  /* ----------------------------------------------------------------------
+     --ui-* 重映射（33 键 + 阴影 1/2/3 + 价格）：让 shadcn 组件、标准 utility
+     以及被 style.css @layer utilities 劫持的 bg-white / text-gray-* / rounded-*
+     / shadow-* 在 .ji8-scope 内自动换上 ji8 配色。值全部引用 ji8 令牌，
+     custom property 惰性求值，故暗色块只需翻转 ji8 令牌本身。
+     ---------------------------------------------------------------------- */
+  --ui-bg-page: var(--bg);
+  --ui-bg-elevated: var(--surface);
+  --ui-bg-soft: var(--surface-2);
+  --ui-bg-muted: var(--surface-3);
+  --ui-bg-overlay: color-mix(in srgb, var(--surface) 80%, transparent);
+  --ui-bg-overlay-strong: color-mix(in srgb, var(--surface) 92%, transparent);
+  --ui-text-primary: var(--text);
+  --ui-text-secondary: #3d4859;
+  --ui-text-muted: var(--muted);
+  --ui-text-on-accent: var(--on-accent);
+  --ui-border: var(--line);
+  --ui-border-strong: var(--line-strong);
+  --ui-accent: var(--accent);
+  --ui-accent-hover: var(--accent-strong);
+  --ui-accent-soft: var(--accent-soft);
+  --ui-accent-warm: var(--amber);
+  --ui-accent-warm-hover: #a26012;
+  --ui-accent-warm-soft: var(--amber-soft);
+  --ui-success: var(--accent-strong);
+  --ui-success-soft: var(--accent-soft);
+  --ui-warning: var(--amber);
+  --ui-warning-soft: var(--amber-soft);
+  --ui-danger: var(--red);
+  --ui-danger-soft: var(--red-soft);
+  --ui-info: var(--blue);
+  --ui-info-soft: var(--blue-soft);
+  --ui-focus-ring: var(--accent-soft);
+  --ui-radius-sm: var(--r-icon);
+  --ui-radius-md: var(--r-search);
+  --ui-radius-lg: var(--r-panel);
+  --ui-radius-xl: 22px;
+  --ui-shadow-1: var(--shadow-soft);
+  --ui-shadow-2: var(--shadow-soft);
+  --ui-shadow-3: var(--shadow);
+  --ui-shadow-soft: var(--shadow-soft);
+  --ui-shadow-card: var(--shadow);
+  --ui-price-primary: var(--text);
+  --ui-price-promotion: var(--red);
+  --ui-price-original: var(--muted);
+}
+
+/* ---------- Tokens：暗色（跟随 html.dark） ---------- */
+.dark .ji8-scope,
+.dark body.ji8-tokens {
+  --bg: #0f1620;
+  --surface: #16202b;
+  --surface-2: #1d2935;
+  --surface-3: #243240;
+  --text: #e6edf5;
+  --muted: #94a3b6;
+  --line: rgba(255, 255, 255, .1);
+  --line-strong: rgba(255, 255, 255, .2);
+  --accent: #2fc4b5;
+  --accent-strong: #6fe0d3;
+  --accent-soft: rgba(47, 196, 181, .14);
+  --accent-line: rgba(47, 196, 181, .45);
+  --amber: #e0a63a;
+  --amber-soft: rgba(224, 166, 58, .16);
+  --red: #f0697a;
+  --red-soft: rgba(240, 105, 122, .16);
+  --blue: #7fb4ea;
+  --blue-soft: rgba(39, 105, 168, .22);
+  --orange: #e2a45c;
+  --orange-soft: rgba(162, 96, 18, .22);
+  --gold: #e3b45c;
+  --link: #6ea8ff;
+  --promo-grad: linear-gradient(135deg, #3a2f1a, #3a2230);
+  --promo-grad-hover: linear-gradient(135deg, #4a3b1e, #4a2a3c);
+  --promo-text: #ffd0a8;
+  --promo-text-hover: #ffe0c4;
+  --shadow: 0 20px 55px rgba(0, 0, 0, .45);
+  --shadow-soft: 0 8px 28px rgba(0, 0, 0, .3);
+  --shadow-pop: 0 24px 70px rgba(0, 0, 0, .55);
+  --header: rgba(22, 32, 43, .9);
+  --ui-text-secondary: #c3cdda;
+}
+
+/* ---------- 外壳（只作用于 .ji8-scope，不能挂到 body） ---------- */
+.ji8-scope {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background .2s, color .2s;
+}
+.dark .ji8-scope { color-scheme: dark; }
+.ji8-scope > .j8-main { flex: 1; min-width: 0; padding-top: var(--site-header-height); }
+
+/* classic 回退页（G9 / D8）：抵消 pt-20/pt-24（顶栏已由 .j8-main 留白），
+   min-h-screen 扣除顶栏高避免恒久滚动条，Legal 内层 mt-12 归零。
+   依赖页面根为 main 的直接子元素（ErrorBoundary / RouterView / Transition 均无包裹元素）。 */
+.ji8-scope > .j8-main > .min-h-screen:is(.pt-20, .pt-24) { padding-top: 24px !important; }
+.ji8-scope > .j8-main > .min-h-screen { min-height: calc(100vh - var(--site-header-height)); }
+.ji8-scope > .j8-main > .min-h-screen.flex-col > .mt-12 { margin-top: 0; }
+
+/* ---------- 元素 reset（必须分层，否则压过 utility） ---------- */
+@layer base {
+  .ji8-scope *, .ji8-scope *::before, .ji8-scope *::after { box-sizing: border-box; }
+  .ji8-scope a { color: inherit; text-decoration: none; }
+  .ji8-scope button, .ji8-scope input, .ji8-scope textarea, .ji8-scope select { font: inherit; }
+  .ji8-scope button { cursor: pointer; }
+  .ji8-scope img, .ji8-scope svg { display: block; max-width: 100%; }
+  .ji8-scope :focus-visible { outline: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+  .ji8-scope ::selection { background: var(--accent-soft); color: var(--text); }
+  /* 参考站全局 svg{stroke-width:1.8}；只改仍为 lucide 默认 2 的图标，显式 1.5/2.5/3 不动 */
+  .ji8-scope svg.lucide[stroke-width="2"] { stroke-width: 1.8; }
+}
+
+/* ---------- 容器 / eyebrow ---------- */
+.ji8-scope .j8-container { width: min(1380px, 92vw); min-height: calc(100vh - 178px); margin: 0 auto; padding: 34px 0 60px; }
+.ji8-scope .j8-eyebrow { display: block; color: var(--accent-strong); font-size: 9px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+
+/* ---------- Header（72px fixed；≤760 62px） ---------- */
+.ji8-scope .j8-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  height: var(--site-header-height);
+  display: grid; grid-template-columns: 220px 1fr auto; align-items: center;
+  padding: 0 max(24px, 4vw);
+  border-bottom: 1px solid var(--line);
+  background: var(--header);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+.ji8-scope .j8-brand { display: flex; align-items: center; gap: 10px; width: max-content; min-width: 0; }
+.ji8-scope .j8-brand-mark { display: grid; place-items: center; flex: 0 0 auto; width: 38px; height: 38px; overflow: hidden; border-radius: var(--r-mark); background: #fff; box-shadow: var(--shadow-mark); color: var(--on-accent); font-weight: 900; }
+.ji8-scope .j8-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.ji8-scope .j8-brand-mark b { width: 100%; height: 100%; display: grid; place-items: center; font-size: 15px; background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-brand-mark.small { width: 32px; height: 32px; border-radius: 10px; }
+.ji8-scope .j8-brand-mark.small b { font-size: 12px; }
+.ji8-scope .j8-brand-text { display: flex; flex-direction: column; min-width: 0; }
+.ji8-scope .j8-brand-text strong { font-size: 16px; letter-spacing: .04em; white-space: nowrap; }
+.ji8-scope .j8-brand-text small { color: var(--muted); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; }
+
+.ji8-scope .j8-nav { display: flex; justify-content: center; gap: 3px; min-width: 0; }
+.ji8-scope .j8-nav a, .ji8-scope .j8-nav button {
+  display: flex; align-items: center; gap: 6px;
+  border: 0; padding: 9px 10px; border-radius: var(--r-nav);
+  background: transparent; color: var(--muted); font-size: 12px; white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.ji8-scope .j8-nav svg, .ji8-scope .j8-nav img { width: 16px; height: 16px; }
+.ji8-scope .j8-nav a:hover, .ji8-scope .j8-nav button:hover,
+.ji8-scope .j8-nav a.is-active, .ji8-scope .j8-nav a.active,
+.ji8-scope .j8-nav button.is-active, .ji8-scope .j8-nav button.active { background: var(--accent-soft); color: var(--accent-strong); }
+/* tone:'promo'（充值优惠）—— 无边框渐变 pill */
+.ji8-scope .j8-nav .j8-nav-promo { background: var(--promo-grad); color: var(--promo-text); font-weight: 850; }
+.ji8-scope .j8-nav .j8-nav-promo:hover { background: var(--promo-grad-hover); color: var(--promo-text-hover); }
+/* tone:'gold'（成为分销）—— 金字无底色 */
+.ji8-scope .j8-nav .j8-nav-gold { color: var(--gold); font-weight: 800; }
+/* G4：tone:'growth' 在 nav 内需以 (0,3,0)/(0,4,0) 压过 .j8-nav a 的 padding/border/hover */
+.ji8-scope .j8-nav .j8-growth { height: 40px; padding: 0 11px; border: 1px solid var(--promo-line); border-radius: var(--r-icon); background: var(--promo-grad); color: var(--promo-text); font-weight: 850; box-shadow: var(--promo-shadow); }
+.ji8-scope .j8-nav .j8-growth:hover { background: var(--promo-grad-hover); color: var(--promo-text-hover); transform: translateY(-1px); }
+
+.ji8-scope .j8-actions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; }
+.ji8-scope .j8-actions > .relative, .ji8-scope .j8-lang { position: relative; }
+.ji8-scope .j8-icon-btn, .ji8-scope .j8-account-btn { position: relative; height: 40px; border: 1px solid var(--line); border-radius: var(--r-icon); background: var(--surface); color: var(--muted); transition: border-color .15s, color .15s; }
+.ji8-scope .j8-icon-btn { width: 40px; display: grid; place-items: center; padding: 0; }
+.ji8-scope .j8-account-btn { display: flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.ji8-scope .j8-icon-btn svg,
+.ji8-scope .j8-account-btn svg { width: 18px; height: 18px; }
+.ji8-scope .j8-icon-btn:hover, .ji8-scope .j8-account-btn:hover { border-color: var(--accent-line); color: var(--accent-strong); }
+.ji8-scope .j8-icon-btn.is-danger { color: var(--red); }
+.ji8-scope .j8-icon-btn.is-danger:hover { border-color: rgba(216, 74, 90, .4); color: var(--red); }
+.ji8-scope .j8-badge-dot { position: absolute; right: 7px; top: 6px; width: 8px; height: 8px; border: 2px solid var(--surface); border-radius: 50%; background: var(--dot); }
+.ji8-scope .j8-cart-count { position: absolute; right: -4px; top: -4px; min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 10px; font-weight: 800; line-height: 1; }
+/* growth pill（新人优惠 / 推广领佣金；顶栏移动端 1 枚） */
+.ji8-scope .j8-growth {
+  height: 40px; display: flex; align-items: center; gap: 6px; padding: 0 11px;
+  border: 1px solid var(--promo-line); border-radius: var(--r-icon);
+  background: var(--promo-grad); color: var(--promo-text);
+  font-size: 12px; font-weight: 850; white-space: nowrap;
+  box-shadow: var(--promo-shadow); transition: transform .15s, background .15s;
+}
+.ji8-scope .j8-growth svg, .ji8-scope .j8-growth img { width: 21px; height: 21px; }
+.ji8-scope .j8-growth:hover { background: var(--promo-grad-hover); color: var(--promo-text-hover); transform: translateY(-1px); }
+/* 移动端唯一 pill 为「充值优惠」(tone:'promo') 时用参考站 .mobile-header-promo 的更黄配色 */
+.ji8-scope .j8-growth.is-promo { background: linear-gradient(135deg, #ffe395, #ffcbdc); color: #a83b23; font-weight: 900; box-shadow: 0 5px 14px rgba(216, 112, 62, .13); }
+/* 语言弹层 */
+.ji8-scope .j8-popover { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; min-width: 168px; display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--surface); box-shadow: var(--shadow-pop); }
+.ji8-scope .j8-popover button { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 650; text-align: left; white-space: nowrap; }
+.ji8-scope .j8-popover button:hover, .ji8-scope .j8-popover button.is-active, .ji8-scope .j8-popover button.active { background: var(--accent-soft); color: var(--accent-strong); }
+/* 响应式显隐（必须排在 .j8-icon-btn / .j8-growth 之后：同为 (0,2,0)，靠顺序压过 display:grid/flex） */
+.ji8-scope .j8-only-mobile { display: none; }
+
+/* ---------- Hero ---------- */
+.ji8-scope .j8-hero { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 20px; }
+.ji8-scope .j8-hero-copy { min-width: 0; }
+.ji8-scope .j8-hero h1 { margin: 4px 0 5px; color: var(--text); font-size: clamp(26px, 3vw, 40px); font-weight: 700; line-height: 1.2; letter-spacing: -.035em; }
+.ji8-scope .j8-hero-copy p { max-width: 650px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }   /* G17：压过 @layer base p 的 1.62 */
+.ji8-scope .j8-shortlink { display: none; margin: 0; color: var(--text); font-size: 20px; font-weight: 800; line-height: 1.25; letter-spacing: -.025em; white-space: nowrap; }
+.ji8-scope .j8-shortlink em { color: var(--accent-strong); font-style: italic; font-weight: 900; }
+.ji8-scope .j8-hero-actions { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
+.ji8-scope .j8-hero-actions .j8-search { flex: 1; }   /* G17 */
+.ji8-scope .j8-search { width: min(380px, 35vw); height: 46px; display: flex; align-items: center; gap: 9px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--r-search); background: var(--surface); box-shadow: var(--shadow-soft); transition: border-color .15s; }
+.ji8-scope .j8-search:focus-within { border-color: rgba(18, 168, 154, .55); }
+.ji8-scope .j8-search svg { width: 17px; height: 17px; flex: 0 0 auto; color: var(--muted); }
+.ji8-scope .j8-search input { flex: 1; min-width: 0; height: 100%; border: 0; padding: 0; background: transparent; color: var(--text); outline: 0; box-shadow: none; -webkit-appearance: none; appearance: none; }
+.ji8-scope .j8-search input:focus-visible { box-shadow: none; }
+.ji8-scope .j8-search input::placeholder { color: var(--muted); }
+/* G13：去掉 WebKit type=search 自带的取消按钮，避免与自定义清除按钮重复 */
+.ji8-scope .j8-search input::-webkit-search-cancel-button,
+.ji8-scope .j8-search input::-webkit-search-decoration,
+.ji8-scope .j8-search input::-webkit-search-results-button,
+.ji8-scope .j8-search input::-webkit-search-results-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.ji8-scope .j8-search .j8-search-clear { flex: 0 0 auto; border: 0; background: transparent; padding: 0; color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+.ji8-scope .j8-search .j8-search-clear:hover { color: var(--text); }
+.ji8-scope .j8-share { height: 48px; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--accent-strong); font-size: 11px; font-weight: 800; white-space: nowrap; box-shadow: var(--shadow-soft); transition: border-color .15s, background .15s; }   /* G17：justify-content:center */
+.ji8-scope .j8-share svg { width: 17px; height: 17px; }
+.ji8-scope .j8-share:hover { border-color: rgba(18, 168, 154, .4); background: var(--accent-soft); }
+
+/* ---------- Catalog（左分类面板 + 右商品区） ---------- */
+.ji8-scope .j8-catalog { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 16px; align-items: start; }
+.ji8-scope .j8-catalog > div { min-width: 0; }
+/* 分类面板：规范名 .j8-panel；.j8-cat-panel 为别名 */
+.ji8-scope .j8-panel, .ji8-scope .j8-cat-panel { position: sticky; top: calc(var(--site-header-height) + 18px); border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--surface); box-shadow: var(--shadow-soft); overflow: hidden; }
+.ji8-scope .j8-panel > header, .ji8-scope .j8-cat-panel > header { padding: 20px; border-bottom: 1px solid var(--line); }
+.ji8-scope .j8-panel h2, .ji8-scope .j8-cat-panel h2 { margin: 3px 0 0; color: var(--text); font-size: 20px; font-weight: 700; line-height: 1.25; }
+.ji8-scope .j8-cat-list { display: grid; gap: 4px; padding: 10px; }
+.ji8-scope .j8-cat-item { width: 100%; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: var(--r-item); padding: 9px; background: transparent; color: var(--muted); text-align: left; transition: background .15s, border-color .15s, color .15s; }
+.ji8-scope .j8-cat-item:hover, .ji8-scope .j8-cat-item.is-active, .ji8-scope .j8-cat-item.active { border-color: rgba(18, 168, 154, .22); background: var(--accent-soft); color: var(--text); }
+.ji8-scope .j8-cat-item.is-child { padding-left: 24px; }
+.ji8-scope .j8-cat-logo { width: 34px; height: 34px; display: grid; place-items: center; border-radius: var(--r-logo); overflow: hidden; background: var(--surface-2); color: var(--accent-strong); font-size: 11px; font-weight: 850; text-transform: uppercase; }
+.ji8-scope .j8-cat-logo img { width: 100%; height: 100%; object-fit: contain; }
+.ji8-scope .j8-cat-logo svg { width: 18px; height: 18px; }
+.ji8-scope .j8-cat-logo.hot { background: var(--amber-soft); color: var(--amber); }
+/* 品牌图标（Ji8BrandIcon）：img → simple-icons svg（fill）→ lucide 通用图标（stroke，勿加 fill）→ 首字 */
+.ji8-scope .j8-brand-icon { display: inline-grid; place-items: center; width: 100%; height: 100%; overflow: hidden; color: var(--accent-strong); font-weight: 800; }
+.ji8-scope .j8-brand-icon > img { width: 100%; height: 100%; object-fit: contain; }
+.ji8-scope .j8-brand-svg { fill: currentColor; }
+.ji8-scope .j8-cat-logo > .j8-brand-icon > svg { width: 18px; height: 18px; }
+.ji8-scope .j8-brand-icon > b { font-size: 14px; }
+.ji8-scope .j8-cat-item > span { font-size: 11px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-cat-item > b { min-width: 25px; padding: 3px 6px; border-radius: var(--r-pill); background: var(--surface-2); color: var(--muted); font-size: 8px; font-weight: 600; line-height: 1.2; text-align: center; font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-cat-item.is-active > b, .ji8-scope .j8-cat-item.active > b { background: var(--surface); color: var(--accent-strong); }
+/* 区块标题：规范名 .j8-section-heading；.j8-section-head 为别名 */
+.ji8-scope .j8-section-heading, .ji8-scope .j8-section-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
+.ji8-scope .j8-section-heading > div, .ji8-scope .j8-section-head > div { min-width: 0; }
+.ji8-scope .j8-section-heading h2, .ji8-scope .j8-section-head h2 { margin: 2px 0 0; color: var(--text); font-size: 20px; font-weight: 700; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-section-heading > span, .ji8-scope .j8-section-head > span { flex: 0 0 auto; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.ji8-scope .j8-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+/* ---------- Product card（整卡为 RouterLink） ---------- */
+.ji8-scope .j8-card { position: relative; min-width: 0; min-height: 270px; display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); color: var(--text); box-shadow: var(--shadow-soft); overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.ji8-scope .j8-card::before { content: ""; position: absolute; right: -50px; top: -70px; width: 135px; height: 135px; border-radius: 50%; background: var(--accent-soft); pointer-events: none; }
+.ji8-scope .j8-card:hover { transform: translateY(-3px); border-color: var(--accent-line); box-shadow: var(--shadow); }
+.ji8-scope .j8-card.is-sold-out, .ji8-scope .j8-card.sold-out { opacity: .72; box-shadow: none; }
+.ji8-scope .j8-card.is-sold-out:hover, .ji8-scope .j8-card.sold-out:hover { opacity: .9; }
+.ji8-scope .j8-card.is-sold-out .j8-card-stock, .ji8-scope .j8-card.sold-out .j8-card-stock { color: var(--red); }   /* G5 */
+.ji8-scope .j8-card-top { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.ji8-scope .j8-card-icon { flex: 0 0 auto; width: 62px; height: 62px; display: grid; place-items: center; border-radius: 16px; overflow: hidden; background: linear-gradient(145deg, var(--surface-3), var(--surface-2)); color: var(--accent-strong); font-size: 16px; font-weight: 900; text-transform: uppercase; }
+.ji8-scope .j8-card-icon img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.ji8-scope .j8-card-icon > .j8-brand-icon > svg { width: 55%; height: 55%; }
+.ji8-scope .j8-card-icon > .j8-brand-icon > b { font-size: 20px; }
+.ji8-scope .j8-card-badge { position: relative; flex: 0 0 auto; padding: 4px 7px; border-radius: var(--r-pill); background: var(--amber-soft); color: var(--amber); font-size: 9px; font-weight: 700; line-height: 1.3; white-space: nowrap; }
+.ji8-scope .j8-card-badge.sold, .ji8-scope .j8-card-badge.is-sold { background: var(--red-soft); color: var(--red); }
+/* 标题：规范为 .j8-card h3；.j8-card-title 为别名 */
+.ji8-scope .j8-card h3, .ji8-scope .j8-card-title { min-height: 48px; margin: 18px 0 3px; color: var(--text); font-size: 16px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.ji8-scope .j8-card-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 27px; margin: 5px 0 0; }
+/* chips：规范为 .j8-card-chips > span；.j8-chip 为别名 */
+.ji8-scope .j8-card-chips > span, .ji8-scope .j8-chip { display: inline-flex; align-items: center; min-height: 24px; max-width: 100%; padding: 4px 8px; border-radius: var(--r-pill); background: var(--surface-2); color: var(--muted); font-size: 11px; font-weight: 750; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ji8-scope .j8-card-chips > .tone-1, .ji8-scope .j8-chip.tone-1 { background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-card-chips > .tone-2, .ji8-scope .j8-chip.tone-2 { background: var(--blue-soft); color: var(--blue); }
+.ji8-scope .j8-card-chips > .tone-3, .ji8-scope .j8-chip.tone-3 { background: var(--orange-soft); color: var(--orange); }
+/* 底部：规范名 .j8-card-bottom；.j8-card-foot 为别名 */
+.ji8-scope .j8-card-bottom, .ji8-scope .j8-card-foot { display: flex; align-items: end; justify-content: space-between; gap: 9px; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--line); }
+.ji8-scope .j8-card-price { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
+.ji8-scope .j8-card-price small { color: var(--muted); font-size: 9px; white-space: nowrap; }
+.ji8-scope .j8-card-price strong { color: var(--text); font-size: 20px; font-weight: 700; line-height: 1.15; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-card-price del { color: var(--muted); font-size: 9px; white-space: nowrap; }
+.ji8-scope .j8-card-stock { flex: 0 0 auto; color: var(--accent-strong); font-size: 9px; white-space: nowrap; }
+
+/* ---------- Skeleton / Empty / Primary button ---------- */
+@keyframes j8-loading { to { background-position: -150% 0; } }
+.ji8-scope .j8-skeleton-card, .ji8-scope .j8-skeleton-row { border-radius: 14px; background: linear-gradient(100deg, var(--surface-2) 35%, var(--surface-3) 50%, var(--surface-2) 65%); background-size: 300% 100%; animation: j8-loading 1.2s infinite; }
+.ji8-scope .j8-skeleton-card { height: 270px; }
+.ji8-scope .j8-skeleton-row { height: 105px; margin: 10px; }
+.ji8-scope .j8-empty { display: grid; place-items: center; min-height: 250px; padding: 35px; color: var(--muted); text-align: center; }
+.ji8-scope .j8-empty svg { width: 38px; height: 38px; margin-bottom: 12px; color: var(--accent); }
+.ji8-scope .j8-empty b { color: var(--text); font-size: 17px; }
+.ji8-scope .j8-empty span { font-size: 12px; }
+.ji8-scope .j8-btn-primary { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: var(--r-icon); padding: 10px 15px; background: linear-gradient(135deg, var(--accent), #67dfd4); box-shadow: var(--shadow-primary); color: var(--on-accent); font-size: 12px; font-weight: 750; white-space: nowrap; transition: transform .15s, box-shadow .15s, opacity .15s; }
+.ji8-scope .j8-btn-primary svg { width: 16px; height: 16px; }
+.ji8-scope .j8-btn-primary:hover { transform: translateY(-1px); }
+.ji8-scope .j8-btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.ji8-scope .j8-empty .j8-btn-primary { margin-top: 18px; }
+
+/* ---------- Footer（≤760 隐藏） ---------- */
+.ji8-scope .j8-footer { min-height: 106px; display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 24px max(24px, 4vw); border-top: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.ji8-scope .j8-footer > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ji8-scope .j8-footer p { display: flex; flex-direction: column; margin: 0; min-width: 0; line-height: 1.4; }
+.ji8-scope .j8-footer p b { color: var(--text); }
+.ji8-scope .j8-footer p small { font-size: 9px; }
+.ji8-scope .j8-footer nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 18px; font-size: 11px; }
+.ji8-scope .j8-footer nav a { white-space: nowrap; transition: color .15s; }
+.ji8-scope .j8-footer nav a:hover { color: var(--accent-strong); }
+
+/* ---------- 移动端分类按钮 / 抽屉 / 浮动底栏 / 客服浮标 / 回顶 ---------- */
+.ji8-scope .j8-cat-btn { display: none; width: 100%; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; margin-bottom: 15px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-soft); color: var(--text); text-align: left; font-weight: 650; }
+.ji8-scope .j8-cat-btn > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-cat-btn svg { width: 16px; height: 16px; color: var(--muted); }
+.ji8-scope .j8-cat-btn svg:last-child { width: 15px; height: 15px; }
+.ji8-scope .j8-drawer { position: fixed; inset: 0; z-index: 75; display: flex; }
+.ji8-scope .j8-drawer-backdrop { position: absolute; inset: 0; background: rgba(5, 10, 18, .58); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+.ji8-scope .j8-drawer-panel { position: relative; width: min(84vw, 360px); height: 100%; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); }
+.ji8-scope .j8-drawer-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 18px; border-bottom: 1px solid var(--line); }
+.ji8-scope .j8-drawer-panel h2 { margin: 3px 0 0; color: var(--text); font-size: 20px; font-weight: 700; line-height: 1.25; }
+.ji8-scope .j8-drawer-close { flex: 0 0 auto; width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 10px; background: var(--surface-2); color: var(--muted); }
+.ji8-scope .j8-drawer-close svg { width: 18px; height: 18px; }
+.ji8-scope .j8-drawer-panel .j8-cat-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 10px max(22px, env(safe-area-inset-bottom)); }
+.ji8-scope .j8-drawer-panel .j8-cat-item { padding: 10px; }
+.ji8-scope .j8-drawer-panel .j8-cat-item > span { font-size: 12px; }
+.ji8-scope .j8-bottom-nav { display: none; }
+.ji8-scope .j8-support { position: fixed; right: 18px; bottom: 30px; z-index: 46; width: 52px; min-height: 116px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 10px 0; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); color: var(--text); font-size: 14px; line-height: 1.2; transition: border-color .18s ease, color .18s ease; }
+.ji8-scope .j8-support:hover { border-color: var(--accent-line); color: var(--accent-strong); }
+.ji8-scope .j8-support svg { width: 22px; height: 22px; color: var(--accent-strong); }
+.ji8-scope .j8-support span { width: 1em; word-break: break-all; text-align: center; }
+/* G1 / D13：共享 BackToTop（scoped 样式 (0,2,0) + utility）放到参考站 QQ 按钮位，(0,3,0) 未分层压过两者 */
+.ji8-scope .back-to-top.back-to-top { right: 18px; bottom: 158px; z-index: 46; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--accent-strong); box-shadow: var(--shadow); }
+.ji8-scope .back-to-top.back-to-top:hover { border-color: var(--accent-line); background: var(--surface); color: var(--accent-strong); }
+
+/* ---------- 断点 ---------- */
+@media (max-width: 1120px) {
+  .ji8-scope .j8-header { grid-template-columns: 190px 1fr auto; padding-inline: 3vw; }
+  .ji8-scope .j8-nav a, .ji8-scope .j8-nav button { padding-inline: 7px; font-size: 10px; }
+  .ji8-scope .j8-catalog { grid-template-columns: 220px minmax(0, 1fr); }
+}
+
+/* classic ProductMobileBar 是 lg:hidden（<1024 均显示，fixed bottom-0 z-40）：
+   761–1023 也要把客服浮标（52×116）/ 回顶抬到购买条之上，回退页底部留出购买条高度 */
+@media (max-width: 1023.98px) {
+  .ji8-scope.is-product .j8-support { bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .ji8-scope.is-product .back-to-top.back-to-top { bottom: calc(212px + env(safe-area-inset-bottom)); }
+  .ji8-scope.is-product > .j8-main > .min-h-screen { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 760px) {
+  .ji8-scope, body.ji8-tokens { --site-header-height: 62px; }
+  .ji8-scope .j8-header { grid-template-columns: minmax(0, 1fr) auto; padding: 0 13px; }
+  .ji8-scope .j8-nav, .ji8-scope .j8-only-desktop, .ji8-scope .j8-footer, .ji8-scope .j8-panel, .ji8-scope .j8-cat-panel { display: none; }
+  .ji8-scope .j8-only-mobile { display: grid; }
+  .ji8-scope .j8-growth.j8-only-mobile { display: flex; }   /* G3：growth pill 保持横排 flex */
+  .ji8-scope .j8-actions { gap: 5px; }
+  .ji8-scope .j8-brand-mark { width: 34px; height: 34px; border-radius: 10px; }
+  .ji8-scope .j8-brand-text strong { font-size: 14px; }
+  .ji8-scope .j8-brand-text small { font-size: 7px; }
+  .ji8-scope .j8-icon-btn, .ji8-scope .j8-account-btn { height: 37px; }
+  .ji8-scope .j8-icon-btn { width: 37px; }
+  .ji8-scope .j8-growth { height: 37px; gap: 4px; padding: 0 7px; font-size: 9px; }
+  .ji8-scope .j8-growth svg, .ji8-scope .j8-growth img { width: 19px; height: 19px; }
+  .ji8-scope .j8-container { width: 100%; min-height: calc(100vh - 62px); padding: 23px 12px calc(42px + 64px + env(safe-area-inset-bottom)); }
+  /* classic 回退页：末尾留出浮动底栏高度（classic App.vue 的 pb-14 在 ji8 外壳里不存在） */
+  .ji8-scope > .j8-main > .min-h-screen { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .ji8-scope .j8-hero { display: grid; gap: 15px; margin-bottom: 14px; }
+  .ji8-scope .j8-hero h1 { font-size: 25px; }
+  .ji8-scope .j8-hero-copy p { font-size: 10px; }
+  .ji8-scope .j8-hero.is-home .j8-hero-copy { display: none; }
+  .ji8-scope .j8-hero.is-home .j8-shortlink { display: block; }
+  .ji8-scope .j8-hero-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; }
+  .ji8-scope .j8-search { width: 100%; height: 43px; }
+  .ji8-scope .j8-share { min-width: 96px; height: 43px; padding: 0 10px; font-size: 9px; }
+  .ji8-scope .j8-catalog { display: block; }
+  .ji8-scope .j8-cat-btn { display: grid; }
+  .ji8-scope .j8-section-heading, .ji8-scope .j8-section-head { margin-bottom: 10px; }
+  .ji8-scope .j8-section-heading h2, .ji8-scope .j8-section-head h2 { font-size: 17px; }
+  .ji8-scope .j8-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .ji8-scope .j8-card { min-height: 190px; padding: 11px; border-radius: var(--r-card-m); }
+  .ji8-scope .j8-card-icon { width: 42px; height: 42px; border-radius: 11px; font-size: 14px; }
+  .ji8-scope .j8-card-badge { padding: 3px 6px; font-size: 8px; }
+  .ji8-scope .j8-card h3, .ji8-scope .j8-card-title { min-height: 36px; margin-top: 11px; font-size: 12px; }
+  .ji8-scope .j8-card-chips { gap: 4px; min-height: 23px; }
+  .ji8-scope .j8-card-chips > span, .ji8-scope .j8-chip { min-height: 21px; padding: 3px 6px; font-size: 9px; }
+  .ji8-scope .j8-card-bottom, .ji8-scope .j8-card-foot { gap: 4px; padding-top: 9px; }
+  .ji8-scope .j8-card-price { display: grid; grid-template-columns: auto 1fr; gap: 0 3px; }
+  .ji8-scope .j8-card-price small { grid-column: 1 / -1; }
+  .ji8-scope .j8-card-price strong { font-size: 15px; }
+  .ji8-scope .j8-card-price del { display: none; }
+  .ji8-scope .j8-card-stock { font-size: 8px; }
+  .ji8-scope .j8-skeleton-card { height: 190px; }
+  .ji8-scope .j8-bottom-nav { position: fixed; left: 7px; right: 7px; bottom: max(7px, env(safe-area-inset-bottom)); z-index: 45; display: grid; grid-template-columns: repeat(5, 1fr); padding: 4px; border: 1px solid var(--line); border-radius: 15px; background: var(--header); box-shadow: var(--shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+  .ji8-scope .j8-bottom-nav a { position: relative; display: grid; place-items: center; gap: 1px; min-width: 0; padding: 5px 1px; border-radius: 10px; color: var(--muted); font-size: 9px; line-height: 1.2; white-space: nowrap; overflow: hidden; }   /* G17：min-width:0 + nowrap */
+  .ji8-scope .j8-bottom-nav a > span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .ji8-scope .j8-bottom-nav a svg { width: 18px; height: 18px; }
+  .ji8-scope .j8-bottom-nav a.is-active, .ji8-scope .j8-bottom-nav a.active { background: var(--accent-soft); color: var(--accent-strong); }
+  .ji8-scope .j8-bottom-nav .j8-cart-count { right: 14%; top: 0; }
+  .ji8-scope .j8-support { right: 10px; bottom: calc(90px + env(safe-area-inset-bottom)); width: 46px; min-height: 46px; height: 46px; padding: 0; border-radius: 14px; font-size: 0; }
+  .ji8-scope .j8-support svg { width: 25px; height: 25px; }
+  .ji8-scope .j8-support span { display: none; }
+  .ji8-scope .back-to-top.back-to-top { right: 10px; bottom: calc(148px + env(safe-area-inset-bottom)); width: 46px; height: 46px; }
+  /* G2 / D14：商品详情走 classic 回退（自带 ProductMobileBar fixed bottom-0 z-40）：隐藏浮动底栏，客服/回顶上移 */
+  .ji8-scope.is-product .j8-bottom-nav { display: none; }
+  .ji8-scope.is-product .j8-support { bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .ji8-scope.is-product .back-to-top.back-to-top { bottom: calc(142px + env(safe-area-inset-bottom)); }
+  /* G10：共享 Toast（Teleport 到 body，bottom-6 left-1/2）移到顶栏下方，避免压住浮动底栏；
+     Tailwind md: = 768 > 760，区间内不冲突 */
+  body.ji8-tokens > div.z-\[100\].pointer-events-none { bottom: auto; top: 71px; }
+}
+
+@media (max-width: 390px) {
+  .ji8-scope .j8-brand-text strong { font-size: 13px; }
+  .ji8-scope .j8-growth { padding-inline: 5px; font-size: 8px; }
+}
+
+@media (max-width: 360px) {
+  .ji8-scope .j8-card { min-height: 184px; padding: 10px; }
+  .ji8-scope .j8-card h3, .ji8-scope .j8-card-title { font-size: 11px; }
+  .ji8-scope .j8-card-price strong { font-size: 14px; }
+  .ji8-scope .j8-card-stock { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ji8-scope *, .ji8-scope *::before, .ji8-scope *::after { animation: none !important; transition: none !important; }
+}

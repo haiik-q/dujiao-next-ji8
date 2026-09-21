@@ -530,7 +530,8 @@ const (
 const (
 	StorefrontTemplateClassic = "classic"
 	StorefrontTemplateVault   = "vault"
-	StorefrontTemplateDefault = StorefrontTemplateClassic
+	StorefrontTemplateJi8     = "ji8"
+	StorefrontTemplateDefault = StorefrontTemplateJi8 // 独占站点；上游发行版保持 Classic
 )
 
 // 站点语言常量

@@ -28,6 +28,7 @@ export function useProductList(options: UseProductListOptions = {}) {
   const currentPage = ref(1)
   const pageSize = ref(defaultPageSize)
   const totalPages = ref(0)
+  const total = ref(0)
   const showFilterDrawer = ref(false)
   const expandedParentIds = ref<number[]>([])
 
@@ -102,6 +103,7 @@ export function useProductList(options: UseProductListOptions = {}) {
       products.value = response.data.data || []
       if (response.data.pagination) {
         totalPages.value = response.data.pagination.total_page || 0
+        total.value = Number(response.data.pagination.total) || 0
       }
     } catch (error) {
       console.error('Failed to load products:', error)
@@ -214,6 +216,7 @@ export function useProductList(options: UseProductListOptions = {}) {
     currentPage,
     pageSize,
     totalPages,
+    total,
     showFilterDrawer,
     expandedParentIds,
     categoryGroups,

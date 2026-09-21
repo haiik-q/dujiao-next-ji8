@@ -51,6 +51,49 @@
     "notice": "Notice",
     "about": "About"
   },
+  "ji8": {
+    "hero": {
+      "eyebrow": "DIGITAL SERVICES",
+      "title": "{site} · AI services, one stop",
+      "subtitle": "Digital goods delivered automatically the moment you pay.",
+      "mobileLead": "Bookmark us at {host}",
+      "share": "Share site",
+      "shareCopied": "Site link copied"
+    },
+    "store": {
+      "eyebrow": "STORE CATALOG",
+      "sectionEyebrow": "SELECTED PRODUCTS",
+      "title": "All products"
+    },
+    "section": {
+      "eyebrow": "STORE",
+      "count": "{count} items"
+    },
+    "categories": {
+      "eyebrow": "CATEGORIES",
+      "title": "Categories",
+      "close": "Close"
+    },
+    "nav": {
+      "shop": "Shop",
+      "orders": "Orders",
+      "tutorials": "Guides",
+      "recharge": "Top up",
+      "affiliate": "Earn commission",
+      "reseller": "Become a reseller",
+      "support": "Support"
+    },
+    "card": {
+      "recommended": "Featured",
+      "priceLabel": "Price",
+      "stock": "Stock {count}",
+      "stockUnlimited": "In stock"
+    },
+    "empty": {
+      "title": "No products found",
+      "hint": "Try another keyword or category"
+    }
+  },
   "vault": {
     "hero": {
       "badge": "Instant delivery · Digital goods",

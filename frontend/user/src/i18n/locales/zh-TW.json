@@ -51,6 +51,49 @@
     "notice": "公告",
     "about": "關於"
   },
+  "ji8": {
+    "hero": {
+      "eyebrow": "DIGITAL SERVICES",
+      "title": "{site} · AI 服務一站直達",
+      "subtitle": "數位商品自動出貨，付款後憑證即時送達。",
+      "mobileLead": "本站短鏈 {host} 可收藏",
+      "share": "分享本站",
+      "shareCopied": "站點連結已複製"
+    },
+    "store": {
+      "eyebrow": "STORE CATALOG",
+      "sectionEyebrow": "SELECTED PRODUCTS",
+      "title": "全部商品"
+    },
+    "section": {
+      "eyebrow": "STORE",
+      "count": "{count} 件商品"
+    },
+    "categories": {
+      "eyebrow": "CATEGORIES",
+      "title": "商品分類",
+      "close": "關閉"
+    },
+    "nav": {
+      "shop": "購物",
+      "orders": "查訂單",
+      "tutorials": "使用教學",
+      "recharge": "儲值優惠",
+      "affiliate": "推廣領佣金",
+      "reseller": "成為分銷",
+      "support": "線上客服"
+    },
+    "card": {
+      "recommended": "推薦",
+      "priceLabel": "到手價",
+      "stock": "庫存 {count}",
+      "stockUnlimited": "庫存充足"
+    },
+    "empty": {
+      "title": "暫未找到相關商品",
+      "hint": "換個關鍵字或分類試試"
+    }
+  },
   "vault": {
     "hero": {
       "badge": "即時發貨 · 數位商品",

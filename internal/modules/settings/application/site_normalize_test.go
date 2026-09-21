@@ -447,6 +447,28 @@ func TestUpdateSiteSettingNormalizedCurrency(t *testing.T) {
 	}
 }
 
+func TestUpdateSiteSettingNormalizedStorefrontTemplate(t *testing.T) {
+	repo := newMockSettingRepo()
+	svc := NewService(repo)
+	cases := map[string]string{
+		" ji8 ":   constants.StorefrontTemplateJi8,
+		"vault":   constants.StorefrontTemplateVault,
+		"classic": constants.StorefrontTemplateClassic,
+		"unknown": constants.StorefrontTemplateDefault,
+	}
+	for raw, want := range cases {
+		result, err := svc.Update(constants.SettingKeySiteConfig, map[string]interface{}{
+			constants.SettingFieldStorefrontTemplate: raw,
+		})
+		if err != nil {
+			t.Fatalf("update site config failed: %v", err)
+		}
+		if got := result[constants.SettingFieldStorefrontTemplate]; got != want {
+			t.Fatalf("storefront_template %q => %v, want %q", raw, got, want)
+		}
+	}
+}
+
 func TestUpdateOrderRefundSettingNormalized(t *testing.T) {
 	repo := newMockSettingRepo()
 	svc := NewService(repo)
