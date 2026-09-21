@@ -39,6 +39,10 @@
       <RouterLink v-if="noticeEnabled" to="/notice" class="j8-icon-btn j8-only-mobile" :aria-label="t('nav.notice')">
         <Megaphone />
       </RouterLink>
+      <!-- 移动端：2FA 动态验证码入口（桌面走主导航） -->
+      <RouterLink to="/2fa" class="j8-icon-btn j8-only-mobile" :aria-label="t('ji8.nav.totp')" :title="t('ji8.nav.totp')">
+        <KeyRound />
+      </RouterLink>
       <RouterLink to="/cart" class="j8-icon-btn" :aria-label="t('navbar.cart')">
         <ShoppingCart />
         <span v-if="cartCount > 0" class="j8-cart-count">{{ cartCount > 99 ? '99+' : cartCount }}</span>
@@ -89,7 +93,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ShoppingCart, User, LogOut, Languages, Megaphone } from 'lucide-vue-next'
+import { ShoppingCart, User, LogOut, Languages, Megaphone, KeyRound } from 'lucide-vue-next'
 import { useAppStore } from '../../../stores/app'
 import { useCartStore } from '../../../stores/cart'
 import { useUserAuthStore } from '../../../stores/userAuth'

@@ -10,6 +10,7 @@
     <nav>
       <RouterLink :to="ordersPath">{{ t('ji8.nav.orders') }}</RouterLink>
       <RouterLink v-if="blogEnabled" to="/blog">{{ t('ji8.nav.tutorials') }}</RouterLink>
+      <RouterLink to="/2fa">{{ t('ji8.nav.totp') }}</RouterLink>
       <RouterLink v-if="noticeEnabled" to="/notice">{{ t('nav.notice') }}</RouterLink>
       <RouterLink v-if="aboutEnabled" to="/about">{{ t('nav.about') }}</RouterLink>
       <a

@@ -279,6 +279,16 @@ const router = createRouter({
             component: templateView('About', () => import('../views/About.vue')),
         },
         {
+            // 2FA 动态验证码：ji8 模板专属的纯本地工具页（不经 templateView 回退）
+            path: '/2fa',
+            name: 'two-factor',
+            component: () => import('../templates/ji8/TwoFactor.vue'),
+        },
+        {
+            path: '/2fa.html',
+            redirect: '/2fa',
+        },
+        {
             path: '/terms',
             name: 'terms',
             component: templateView('Legal', () => import('../views/Legal.vue')),

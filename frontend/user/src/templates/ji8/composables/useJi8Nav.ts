@@ -12,6 +12,7 @@ import {
   Ticket,
   ShoppingCart,
   User,
+  ShieldCheck,
 } from 'lucide-vue-next'
 import { useAppStore } from '../../../stores/app'
 import { useUserAuthStore } from '../../../stores/userAuth'
@@ -29,6 +30,7 @@ export interface Ji8NavItem {
   /** route 走 <RouterLink>，link 走原生 <a> */
   type: 'route' | 'link'
   target?: string
+  /** 仅当路径完全相等时高亮（首页、/2fa 等无子路由的页面） */
   exact?: boolean
   /** promo=无边框渐变（充值优惠）、growth=带边框渐变（推广领佣金）、gold=金字（成为分销） */
   tone?: 'promo' | 'growth' | 'gold'
@@ -81,6 +83,7 @@ export function useJi8Nav() {
     if (blogEnabled.value) {
       items.push({ key: 'tutorials', path: '/blog', label: t('ji8.nav.tutorials'), icon: BookOpen, type: 'route' })
     }
+    items.push({ key: 'totp', path: '/2fa', label: t('ji8.nav.totp'), icon: ShieldCheck, type: 'route', exact: true })
     if (supportLink.value) {
       items.push({ key: 'support', path: supportLink.value, label: t('ji8.nav.support'), icon: Ticket, type: 'link', target: '_blank' })
     }
@@ -108,10 +111,10 @@ export function useJi8Nav() {
     { key: 'me', path: accountPath.value, label: t('bottomNav.me'), icon: User, type: 'route' },
   ])
 
-  /** 按 key 判活（G8）：避免已登录时 /me 与 /me/orders 在 /me/orders 同时高亮 */
+  /** 按 key 判活（G8）：避免已登录时 /me 与 /me/orders 在 /me/orders 同时高亮；exact 项（首页、/2fa）只精确匹配 */
   const isActive = (item: Ji8NavItem, path: string): boolean => {
     if (item.type === 'link') return false
-    if (item.exact || item.path === '/') return path === '/'
+    if (item.exact || item.path === '/') return path === item.path
     if (item.key === 'me') {
       return path === '/me' || (path.startsWith('/me/') && !path.startsWith('/me/orders')) || path.startsWith('/auth')
     }

@@ -1,0 +1,142 @@
+/* =========================================================================
+   ji8 · 2FA 动态验证码页（/2fa）
+   移植自 ai.bahk.cn/totp-tool.css：类名改为 .j8-twofa-* / .j8-totp-*，
+   全部限定在 .ji8-scope 下，颜色只用 ji8.css 已定义的令牌（暗色自动跟随）。
+   断点与参考站一致：≤760px 单列；桌面端无结果时单列居中（.is-empty）。
+   ========================================================================= */
+
+/* ---------- 页面骨架 / hero ---------- */
+.ji8-scope .j8-container.j8-twofa-main { display: grid; align-content: start; grid-auto-rows: max-content; gap: 22px; padding-top: 24px; padding-bottom: 70px; }
+.ji8-scope .j8-twofa-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px; padding: 30px 4px 8px; }
+.ji8-scope .j8-twofa-hero h1 { margin: 7px 0 9px; color: var(--text); font-size: 48px; font-weight: 800; line-height: 1.08; letter-spacing: -.03em; }
+.ji8-scope .j8-twofa-hero p { max-width: 760px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.ji8-scope .j8-twofa-privacy-badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.ji8-scope .j8-twofa-privacy-badges span { display: inline-flex; align-items: center; min-height: 36px; border: 1px solid var(--accent-line); border-radius: var(--r-pill); padding: 0 13px; background: var(--accent-soft); color: var(--accent-strong); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.ji8-scope .j8-twofa-panel { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-soft); }
+
+/* ---------- 工具区：输入卡 + 结果卡 ---------- */
+.ji8-scope .j8-totp-tool { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); gap: 22px; align-items: start; }
+.ji8-scope .j8-totp-input-card, .ji8-scope .j8-totp-result-card { min-width: 0; border: 1px solid var(--line); border-radius: 18px; padding: 23px; background: var(--surface); }
+.ji8-scope .j8-totp-input-card { display: grid; gap: 18px; }
+.ji8-scope .j8-totp-input-card header > span { display: block; color: var(--accent-strong); font-size: 11px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.ji8-scope .j8-totp-input-card header h2 { margin: 6px 0 8px; color: var(--text); font-size: 25px; font-weight: 750; line-height: 1.25; }
+.ji8-scope .j8-totp-input-card header p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.ji8-scope .j8-totp-input-card label { display: grid; gap: 8px; }
+.ji8-scope .j8-totp-input-card label > span { color: var(--text); font-size: 13px; font-weight: 850; }
+.ji8-scope .j8-totp-input-card textarea { width: 100%; min-height: 176px; resize: vertical; border: 1px solid var(--line-strong); border-radius: 13px; padding: 15px; background: var(--surface-2); color: var(--text); font: 500 14px/1.65 var(--font-mono); outline: 0; box-shadow: none; transition: border-color .15s, box-shadow .15s; }
+.ji8-scope .j8-totp-input-card textarea::placeholder { color: var(--muted); }
+.ji8-scope .j8-totp-input-card textarea:focus, .ji8-scope .j8-totp-input-card textarea:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.ji8-scope .j8-totp-input-actions { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 10px; }
+.ji8-scope .j8-totp-input-actions button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border-radius: 11px; padding: 0 14px; font-size: 14px; font-weight: 850; white-space: nowrap; transition: transform .15s, background .15s, border-color .15s, opacity .15s; }
+.ji8-scope .j8-totp-btn-primary { border: 0; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); color: #fff; box-shadow: var(--shadow-primary); }
+.ji8-scope .j8-totp-btn-primary:hover { transform: translateY(-1px); }
+.ji8-scope .j8-totp-btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.ji8-scope .j8-totp-btn-secondary { border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
+.ji8-scope .j8-totp-btn-secondary:hover { border-color: var(--accent-line); color: var(--accent-strong); }
+.ji8-scope .j8-totp-shortcut { margin: -8px 0 0; color: var(--muted); font-size: 11px; text-align: right; }
+.ji8-scope .j8-totp-local-note { display: grid; gap: 3px; margin: 0; padding: 13px 14px; border: 1px solid var(--accent-line); border-radius: 12px; background: var(--accent-soft); }
+.ji8-scope .j8-totp-local-note b { color: var(--accent-strong); font-size: 12px; }
+.ji8-scope .j8-totp-local-note span { color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+/* ---------- 结果卡（单密钥） ---------- */
+.ji8-scope .j8-totp-result-card { display: grid; gap: 16px; background: linear-gradient(150deg, var(--surface) 0%, color-mix(in srgb, var(--accent) 7%, var(--surface)) 100%); }
+.ji8-scope .j8-totp-single-result { display: grid; gap: 16px; }
+.ji8-scope .j8-totp-code-panel { display: grid; grid-template-columns: minmax(0, 1fr) 92px; align-items: center; gap: 18px; min-height: 188px; padding: 22px; border: 1px solid var(--accent-line); border-radius: 17px; background: color-mix(in srgb, var(--surface) 88%, transparent); }
+.ji8-scope .j8-totp-code-panel > div:first-child { min-width: 0; display: grid; gap: 8px; }
+.ji8-scope .j8-totp-code-panel > div:first-child > span { color: var(--accent-strong); font-size: 12px; font-weight: 850; }
+.ji8-scope .j8-totp-code-panel output { display: block; font: 900 clamp(36px, 5vw, 55px)/1 var(--font-mono); letter-spacing: .04em; color: var(--text); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-totp-code-panel output.is-error { font-size: clamp(20px, 3vw, 28px); color: var(--red); }
+.ji8-scope .j8-totp-code-panel small { overflow: hidden; color: var(--muted); font-size: 11px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-totp-countdown { --totp-progress: 1; width: 82px; height: 82px; display: grid; place-content: center; justify-items: center; border-radius: 50%; background: radial-gradient(circle at center, var(--surface) 63%, transparent 65%), conic-gradient(var(--accent) calc(var(--totp-progress) * 1turn), var(--line) 0); box-shadow: inset 0 0 0 1px var(--accent-soft); }
+.ji8-scope .j8-totp-countdown b { color: var(--text); font-size: 25px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-totp-countdown small { margin-top: -2px; color: var(--muted); font-size: 10px; }
+.ji8-scope .j8-totp-copy-button { min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px; padding: 0 16px; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); color: #fff; font-size: 15px; font-weight: 900; box-shadow: var(--shadow-primary); transition: transform .15s, opacity .15s; }
+.ji8-scope .j8-totp-copy-button svg, .ji8-scope .j8-totp-multiple-copy svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.ji8-scope .j8-totp-copy-button:hover { transform: translateY(-1px); }
+.ji8-scope .j8-totp-copy-button:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+.ji8-scope .j8-totp-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.ji8-scope .j8-totp-meta div { min-width: 0; display: grid; gap: 4px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); }
+.ji8-scope .j8-totp-meta dt { color: var(--muted); font-size: 10px; }
+.ji8-scope .j8-totp-meta dd { margin: 0; overflow-wrap: anywhere; color: var(--text); font-size: 12px; font-weight: 850; }
+.ji8-scope .j8-totp-time-note { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+/* ---------- 结果卡（多密钥） ---------- */
+.ji8-scope .j8-totp-multiple-result { display: grid; gap: 14px; }
+.ji8-scope .j8-totp-multiple-header { display: grid; gap: 5px; padding: 2px 2px 4px; }
+.ji8-scope .j8-totp-multiple-header > div { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.ji8-scope .j8-totp-multiple-header span { color: var(--accent-strong); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.ji8-scope .j8-totp-multiple-header h3 { margin: 0; color: var(--text); font-size: 20px; font-weight: 750; line-height: 1.25; }
+.ji8-scope .j8-totp-multiple-header h3 b { color: var(--accent-strong); }
+.ji8-scope .j8-totp-multiple-header p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.ji8-scope .j8-totp-multiple-list { display: grid; gap: 11px; }
+.ji8-scope .j8-totp-multiple-card { display: grid; gap: 12px; border: 1px solid var(--accent-line); border-radius: 15px; padding: 15px; background: color-mix(in srgb, var(--surface) 90%, transparent); box-shadow: var(--shadow-soft); }
+.ji8-scope .j8-totp-multiple-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ji8-scope .j8-totp-multiple-card-header > div { min-width: 0; display: grid; gap: 3px; }
+.ji8-scope .j8-totp-multiple-card-header b { color: var(--text); font-size: 14px; }
+.ji8-scope .j8-totp-multiple-card-header > div span { overflow: hidden; color: var(--muted); font: 600 10px/1.45 var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-totp-multiple-settings { flex: none; border-radius: var(--r-pill); padding: 5px 8px; background: var(--accent-soft); color: var(--accent-strong); font-size: 9px; font-weight: 850; white-space: nowrap; }
+.ji8-scope .j8-totp-multiple-code-row { display: grid; grid-template-columns: minmax(0, 1fr) 58px auto; align-items: center; gap: 11px; }
+.ji8-scope .j8-totp-multiple-code { min-width: 0; display: grid; gap: 5px; }
+.ji8-scope .j8-totp-multiple-code > span { color: var(--accent-strong); font-size: 10px; font-weight: 850; }
+.ji8-scope .j8-totp-multiple-code output { display: block; font: 900 clamp(28px, 3.4vw, 38px)/1 var(--font-mono); letter-spacing: .035em; color: var(--text); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-totp-multiple-code output.is-error { font-size: 18px; color: var(--red); }
+.ji8-scope .j8-totp-countdown.is-compact { width: 56px; height: 56px; }
+.ji8-scope .j8-totp-countdown.is-compact b { font-size: 18px; }
+.ji8-scope .j8-totp-multiple-copy { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 10px; padding: 0 13px; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); color: #fff; font-size: 11px; font-weight: 900; white-space: nowrap; transition: transform .15s, opacity .15s; }
+.ji8-scope .j8-totp-multiple-copy:hover { transform: translateY(-1px); }
+.ji8-scope .j8-totp-multiple-copy:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+.ji8-scope .j8-totp-multiple-card-status { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.ji8-scope .j8-totp-multiple-card-status.is-error { color: var(--red); }
+
+/* ---------- 状态行 ---------- */
+.ji8-scope .j8-totp-status { grid-column: 1 / -1; min-height: 20px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: center; }
+.ji8-scope .j8-totp-status.is-error { color: var(--red); }
+.ji8-scope .j8-totp-status.is-success { color: var(--accent-strong); }
+
+/* 桌面端无结果时：输入卡单列居中 */
+@media (min-width: 761px) {
+  .ji8-scope .j8-totp-tool.is-empty { grid-template-columns: minmax(0, 780px); justify-content: center; }
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 760px) {
+  .ji8-scope .j8-container.j8-twofa-main { gap: 9px; padding-top: 4px; }
+  .ji8-scope .j8-twofa-hero { grid-template-columns: 1fr; gap: 9px; padding: 10px 2px 3px; }
+  .ji8-scope .j8-twofa-hero h1 { margin: 4px 0 0; font-size: 29px; }
+  .ji8-scope .j8-twofa-hero p { font-size: 11px; }
+  .ji8-scope .j8-twofa-privacy-badges { justify-content: flex-start; gap: 5px; }
+  .ji8-scope .j8-twofa-privacy-badges span { min-height: 28px; padding: 0 8px; font-size: 9px; }
+  .ji8-scope .j8-twofa-panel { padding: 8px; border-radius: 18px; }
+  .ji8-scope .j8-totp-tool { grid-template-columns: 1fr; gap: 8px; }
+  .ji8-scope .j8-totp-input-card, .ji8-scope .j8-totp-result-card { border-radius: 14px; padding: 13px; }
+  .ji8-scope .j8-totp-input-card { gap: 12px; }
+  .ji8-scope .j8-totp-input-card header h2 { margin: 4px 0 5px; font-size: 19px; }
+  .ji8-scope .j8-totp-input-card header p { font-size: 10px; line-height: 1.5; }
+  .ji8-scope .j8-totp-input-card label { gap: 6px; }
+  .ji8-scope .j8-totp-input-card textarea { height: 104px; min-height: 104px; padding: 12px; font-size: 12px; }
+  .ji8-scope .j8-totp-input-actions { grid-template-columns: minmax(0, 1fr) 78px; gap: 7px; }
+  .ji8-scope .j8-totp-input-actions button { min-width: 0; min-height: 44px; padding-inline: 10px; }
+  .ji8-scope .j8-totp-shortcut { display: none; }
+  .ji8-scope .j8-totp-local-note { padding: 10px 11px; }
+  .ji8-scope .j8-totp-result-card { gap: 10px; }
+  .ji8-scope .j8-totp-single-result { gap: 10px; }
+  .ji8-scope .j8-totp-code-panel { grid-template-columns: minmax(0, 1fr) 64px; gap: 10px; min-height: 116px; padding: 12px; }
+  .ji8-scope .j8-totp-code-panel output { font-size: 32px; }
+  .ji8-scope .j8-totp-countdown { width: 58px; height: 58px; }
+  .ji8-scope .j8-totp-countdown b { font-size: 19px; }
+  .ji8-scope .j8-totp-copy-button { min-height: 44px; }
+  .ji8-scope .j8-totp-meta { gap: 6px; }
+  .ji8-scope .j8-totp-meta div { padding: 8px 9px; }
+  .ji8-scope .j8-totp-time-note { line-height: 1.45; }
+  .ji8-scope .j8-totp-multiple-result { gap: 10px; }
+  .ji8-scope .j8-totp-multiple-header h3 { font-size: 18px; }
+  .ji8-scope .j8-totp-multiple-card { gap: 10px; padding: 12px; }
+  .ji8-scope .j8-totp-multiple-card-header { gap: 8px; }
+  .ji8-scope .j8-totp-multiple-card-header > div span { max-width: 58vw; }
+  .ji8-scope .j8-totp-multiple-settings { padding: 4px 7px; }
+  .ji8-scope .j8-totp-multiple-code-row { grid-template-columns: minmax(0, 1fr) 52px; gap: 8px; }
+  .ji8-scope .j8-totp-multiple-code output { font-size: 29px; }
+  .ji8-scope .j8-totp-countdown.is-compact { width: 50px; height: 50px; }
+  .ji8-scope .j8-totp-countdown.is-compact b { font-size: 16px; }
+  .ji8-scope .j8-totp-multiple-copy { grid-column: 1 / -1; width: 100%; min-height: 42px; }
+}
