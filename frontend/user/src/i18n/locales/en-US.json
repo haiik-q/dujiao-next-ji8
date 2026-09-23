@@ -219,6 +219,25 @@
         "status": "Status",
         "action": "Action"
       }
+    },
+    "product": {
+      "back": "Back to shop",
+      "share": "Share",
+      "shared": "Product link copied",
+      "sharedWithAff": "Copied product link with your referral code",
+      "skuTitle": "Options",
+      "decrease": "Decrease",
+      "increase": "Increase",
+      "saved": "Save {amount}",
+      "promoReseller": "Become a reseller · Pay less",
+      "promoAffiliate": "Refer & earn commission",
+      "promoDesc": "Share products to earn cashback",
+      "promoLink": "Learn more",
+      "payable": "Amount due",
+      "payableNote": "Coupons and payment method are chosen at checkout",
+      "detailTitle": "Product details",
+      "noticeTitle": "Before you buy",
+      "noticeBody": "Please make sure your contact details are correct. Digital goods are non-refundable once delivered."
     }
   },
   "vault": {

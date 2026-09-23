@@ -219,6 +219,25 @@
         "status": "订单状态",
         "action": "操作"
       }
+    },
+    "product": {
+      "back": "返回购物",
+      "share": "分享",
+      "shared": "商品链接已复制",
+      "sharedWithAff": "已复制带你推广码的商品链接",
+      "skuTitle": "商品规格",
+      "decrease": "减少",
+      "increase": "增加",
+      "saved": "立省 {amount}",
+      "promoReseller": "成为分销 · 购买更省",
+      "promoAffiliate": "推广领佣金 · 分享赚返现",
+      "promoDesc": "分享商品还能赚返现",
+      "promoLink": "查看权益",
+      "payable": "应付金额",
+      "payableNote": "优惠券与支付方式在结算页选择",
+      "detailTitle": "商品详情",
+      "noticeTitle": "购买须知",
+      "noticeBody": "下单前请确认联系方式填写正确，虚拟商品发货后不支持无理由退款！"
     }
   },
   "vault": {

@@ -219,6 +219,25 @@
         "status": "訂單狀態",
         "action": "操作"
       }
+    },
+    "product": {
+      "back": "返回購物",
+      "share": "分享",
+      "shared": "商品連結已複製",
+      "sharedWithAff": "已複製帶你推廣碼的商品連結",
+      "skuTitle": "商品規格",
+      "decrease": "減少",
+      "increase": "增加",
+      "saved": "立省 {amount}",
+      "promoReseller": "成為分銷 · 購買更省",
+      "promoAffiliate": "推廣領佣金 · 分享賺返現",
+      "promoDesc": "分享商品還能賺返現",
+      "promoLink": "查看權益",
+      "payable": "應付金額",
+      "payableNote": "優惠券與支付方式在結帳頁選擇",
+      "detailTitle": "商品詳情",
+      "noticeTitle": "購買須知",
+      "noticeBody": "下單前請確認聯絡方式填寫正確，虛擬商品出貨後不支援無理由退款！"
     }
   },
   "vault": {

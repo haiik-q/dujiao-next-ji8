@@ -326,6 +326,12 @@ html[data-telegram-mini-app="true"] body {
     color: var(--ui-text-secondary);
   }
 
+  /* 富文本编辑器把颜色写在外层 <span style="color">，加粗/斜体等在内层；
+     内层不能再套主题色，否则后台设置的文字颜色会被覆盖成黑色 */
+  .theme-prose [style*="color"] :where(strong, b, em, i, u, s, del, mark, code, sub, sup) {
+    color: inherit;
+  }
+
   .theme-prose a {
     color: var(--ui-accent);
     text-decoration-line: underline;

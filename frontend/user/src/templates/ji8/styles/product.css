@@ -1,0 +1,323 @@
+/* =========================================================================
+   ji8 商品详情（仿 ai.bahk.cn/product.html）
+   规则同 ji8.css：限定 .ji8-scope、未分层、颜色只引用 ji8 令牌。
+   ========================================================================= */
+
+.ji8-scope .j8-pd { display: grid; gap: 16px; align-content: start; padding-top: 24px; }
+
+.ji8-scope .j8-pd-back {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.ji8-scope .j8-pd-back svg { width: 15px; height: 15px; }
+.ji8-scope .j8-pd-back:hover { color: var(--accent-strong); border-color: var(--accent-line); }
+
+.ji8-scope .j8-pd-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ---------- 左：图片 ---------- */
+.ji8-scope .j8-pd-media {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  background: var(--surface-2);
+}
+.ji8-scope .j8-pd-stage {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  max-height: 520px;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--surface);
+}
+.ji8-scope .j8-pd-stage > img { width: 100%; height: 100%; object-fit: contain; }
+.ji8-scope .j8-pd-logo.j8-brand-icon {
+  width: 58%;
+  height: 58%;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+}
+.ji8-scope .j8-pd-logo.j8-brand-icon :is(svg, img) { width: 100%; height: 100%; }
+.ji8-scope .j8-pd-logo.j8-brand-icon b { font-size: 120px; }
+
+.ji8-scope .j8-pd-thumbs { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+.ji8-scope .j8-pd-thumbs button {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 11px;
+  background: var(--surface);
+  opacity: .65;
+}
+.ji8-scope .j8-pd-thumbs button.is-active { border-color: var(--accent); opacity: 1; }
+.ji8-scope .j8-pd-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- 右：购买区 ---------- */
+.ji8-scope .j8-pd-info { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 26px 24px 24px; }
+.ji8-scope .j8-pd-info h1 { font-size: 25px; font-weight: 900; line-height: 1.3; color: var(--text); overflow-wrap: anywhere; }
+
+.ji8-scope .j8-pd-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -6px; }
+.ji8-scope .j8-pd-chips > span,
+.ji8-scope .j8-pd-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.ji8-scope .j8-pd-chips svg { width: 12px; height: 12px; }
+.ji8-scope .j8-pd-chips .is-accent,
+.ji8-scope .j8-pd-share { background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-pd-chips .is-warm { background: var(--amber-soft); color: var(--amber); }
+.ji8-scope .j8-pd-chips .is-danger { background: var(--red-soft); color: var(--red); }
+.ji8-scope .j8-pd-share:hover { background: var(--accent); color: #fff; }
+
+.ji8-scope .j8-pd-price-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.ji8-scope .j8-pd-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+.ji8-scope .j8-pd-price-sym { font-size: 18px; font-weight: 800; color: var(--text); }
+.ji8-scope .j8-pd-price strong {
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.01em;
+}
+.ji8-scope .j8-pd-price del { font-size: 14px; color: var(--muted); }
+.ji8-scope .j8-pd-price-tag {
+  align-self: center;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 800;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.ji8-scope .j8-pd-price-tag.is-promo { background: var(--red-soft); color: var(--red); }
+.ji8-scope .j8-pd-price-tag.is-member { background: var(--amber-soft); color: var(--amber); }
+
+.ji8-scope .j8-pd-promo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 250px;
+  padding: 11px 14px;
+  border: 1px solid var(--promo-line);
+  border-radius: 13px;
+  background: linear-gradient(135deg, #fff8e6, #fff1e3);
+  box-shadow: var(--promo-shadow);
+}
+.ji8-scope .j8-pd-promo > svg { flex: none; width: 26px; height: 26px; color: var(--gold); fill: color-mix(in srgb, var(--gold) 35%, transparent); }
+.ji8-scope .j8-pd-promo > span { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.ji8-scope .j8-pd-promo b { font-size: 13px; font-weight: 800; color: var(--text); }
+.ji8-scope .j8-pd-promo small { font-size: 11px; color: var(--muted); }
+.ji8-scope .j8-pd-promo em { flex: none; font-style: normal; font-size: 11.5px; font-weight: 800; color: var(--promo-text); }
+.ji8-scope .j8-pd-promo:hover em { color: var(--promo-text-hover); }
+:is(html.dark) .ji8-scope .j8-pd-promo { background: var(--amber-soft); }
+
+.ji8-scope .j8-pd-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 12.5px;
+}
+.ji8-scope .j8-pd-note b { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; }
+.ji8-scope .j8-pd-note svg { width: 14px; height: 14px; }
+.ji8-scope .j8-pd-note.is-accent { background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-pd-note.is-warm { background: var(--amber-soft); color: var(--amber); }
+
+.ji8-scope .j8-pd-field > label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.ji8-scope .j8-pd-skus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ji8-scope .j8-pd-skus button {
+  display: grid;
+  gap: 4px;
+  min-height: 58px;
+  padding: 10px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: left;
+  transition: border-color .15s, background .15s;
+}
+.ji8-scope .j8-pd-skus button:hover:not(:disabled) { border-color: var(--accent-line); }
+.ji8-scope .j8-pd-skus button.is-active { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent) inset; }
+.ji8-scope .j8-pd-skus button.is-disabled { opacity: .5; border-style: dashed; cursor: not-allowed; }
+.ji8-scope .j8-pd-skus b { font-size: 13.5px; font-weight: 800; color: var(--text); overflow-wrap: anywhere; }
+.ji8-scope .j8-pd-skus small { font-size: 11.5px; color: var(--muted); }
+.ji8-scope .j8-pd-skus button.is-active small { color: var(--accent-strong); }
+.ji8-scope .j8-pd-hint { margin-top: 6px; font-size: 12px; color: var(--amber); }
+
+.ji8-scope .j8-pd-qty {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.ji8-scope .j8-pd-qty button { display: grid; place-items: center; background: var(--surface-2); color: var(--text); }
+.ji8-scope .j8-pd-qty button:hover:not(:disabled) { background: var(--surface-3); }
+.ji8-scope .j8-pd-qty button:disabled { color: var(--muted); opacity: .5; }
+.ji8-scope .j8-pd-qty svg { width: 16px; height: 16px; }
+.ji8-scope .j8-pd-qty input {
+  min-width: 0;
+  border-inline: 1px solid var(--line);
+  background: transparent;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.ji8-scope .j8-pd-desc {
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ui-text-secondary);
+  white-space: pre-line;
+}
+
+.ji8-scope .j8-pd-actions { display: grid; gap: 10px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); }
+.ji8-scope .j8-pd-alert { padding: 10px 12px; border-radius: 11px; font-size: 12.5px; font-weight: 700; }
+.ji8-scope .j8-pd-alert.is-danger { background: var(--red-soft); color: var(--red); }
+.ji8-scope .j8-pd-alert.is-warm { background: var(--amber-soft); color: var(--amber); }
+.ji8-scope .j8-pd-total { display: flex; align-items: center; justify-content: space-between; }
+.ji8-scope .j8-pd-total span { font-size: 14px; color: var(--muted); }
+.ji8-scope .j8-pd-total strong { font-size: 24px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-pd-total-note { margin-top: -8px; text-align: right; font-size: 11px; color: var(--muted); }
+
+.ji8-scope .j8-pd-buttons { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; }
+.ji8-scope .j8-pd-cart,
+.ji8-scope .j8-pd-buy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 48px;
+  border-radius: 13px;
+  font-size: 15px;
+  font-weight: 800;
+  transition: transform .15s, box-shadow .15s, opacity .15s;
+}
+.ji8-scope .j8-pd-cart { border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-pd-cart svg { width: 17px; height: 17px; }
+.ji8-scope .j8-pd-buy {
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), #5fd6c9);
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+}
+.ji8-scope .j8-pd-buy:hover:not(:disabled),
+.ji8-scope .j8-pd-cart:hover:not(:disabled) { transform: translateY(-1px); }
+.ji8-scope .j8-pd-buy:disabled,
+.ji8-scope .j8-pd-cart:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+/* ---------- 商品详情 ---------- */
+.ji8-scope .j8-pd-detail {
+  padding: 24px 28px 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-soft);
+}
+.ji8-scope .j8-pd-detail > h2 { margin-bottom: 14px; font-size: 18px; font-weight: 900; color: var(--text); }
+.ji8-scope .j8-pd-prose { max-width: none; font-size: 14px; line-height: 1.75; }
+.ji8-scope .j8-pd-prose :where(p) { margin: 0 0 12px; }
+.ji8-scope .j8-pd-prose :where(p:last-child) { margin-bottom: 0; }
+.ji8-scope .j8-pd-prose :where(img) { max-width: 100%; height: auto; border-radius: 12px; }
+.ji8-scope .j8-pd-prose :where(ul, ol) { margin: 0 0 12px; padding-left: 1.4em; }
+.ji8-scope .j8-pd-prose :where(ul) { list-style: disc; }
+.ji8-scope .j8-pd-prose :where(ol) { list-style: decimal; }
+.ji8-scope .j8-pd-prose :where(h1, h2, h3, h4) { margin: 18px 0 10px; font-weight: 800; line-height: 1.4; }
+.ji8-scope .j8-pd-prose :where(h1) { font-size: 22px; }
+.ji8-scope .j8-pd-prose :where(h2) { font-size: 19px; }
+.ji8-scope .j8-pd-prose :where(h3, h4) { font-size: 16px; }
+.ji8-scope .j8-pd-prose a { text-decoration-line: underline; text-decoration-color: currentColor; }
+
+.ji8-scope .j8-pd-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.ji8-scope .j8-pd-posts a {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  transition: border-color .15s;
+}
+.ji8-scope .j8-pd-posts a:hover { border-color: var(--accent-line); }
+.ji8-scope .j8-pd-posts img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 9px; }
+.ji8-scope .j8-pd-posts b { font-size: 14px; color: var(--text); }
+.ji8-scope .j8-pd-posts small { font-size: 12px; color: var(--muted); }
+
+/* ---------- 骨架 ---------- */
+.ji8-scope .j8-pd-skeleton { display: grid; gap: 16px; }
+.ji8-scope :is(.j8-pd-sk-back, .j8-pd-sk-block, .j8-pd-sk-line) { border-radius: 12px; background: var(--surface-3); animation: j8-pd-pulse 1.4s ease-in-out infinite; }
+.ji8-scope .j8-pd-sk-back { width: 110px; height: 38px; }
+.ji8-scope .j8-pd-sk-block { aspect-ratio: 1 / 1; max-height: 520px; }
+.ji8-scope .j8-pd-sk-line { height: 18px; }
+.ji8-scope .j8-pd-sk-line.is-lg { height: 32px; width: 80%; }
+.ji8-scope .j8-pd-sk-line.is-sm { width: 45%; }
+.ji8-scope .j8-pd-sk-line.is-btn { height: 48px; margin-top: auto; }
+@keyframes j8-pd-pulse { 50% { opacity: .5; } }
+
+/* ---------- 平板 / 手机 ---------- */
+@media (max-width: 1023px) {
+  .ji8-scope .j8-pd { padding-top: 16px; gap: 12px; }
+  .ji8-scope .j8-pd-card { grid-template-columns: minmax(0, 1fr); }
+  .ji8-scope .j8-pd-stage { max-height: 360px; }
+  .ji8-scope .j8-pd-sk-block { max-height: 360px; }
+  /* classic 移动购买条 fixed 在底部，给页面留出空间 */
+  .ji8-scope .j8-pd { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 640px) {
+  .ji8-scope .j8-pd-media { padding: 14px; }
+  .ji8-scope .j8-pd-stage { aspect-ratio: 4 / 3; }
+  .ji8-scope .j8-pd-info { padding: 18px 16px; gap: 14px; }
+  .ji8-scope .j8-pd-info h1 { font-size: 20px; }
+  .ji8-scope .j8-pd-price strong { font-size: 30px; }
+  .ji8-scope .j8-pd-promo { min-width: 0; width: 100%; }
+  .ji8-scope .j8-pd-skus { grid-template-columns: minmax(0, 1fr); }
+  .ji8-scope .j8-pd-buttons { grid-template-columns: 1fr 1.6fr; }
+  .ji8-scope .j8-pd-detail { padding: 18px 16px 20px; }
+}
+
+/* 购买须知：与商品详情之间用分隔线隔开 */
+.ji8-scope .j8-pd-notice { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
+.ji8-scope .j8-pd-notice.is-first { margin-top: 0; padding-top: 0; border-top: 0; }
+.ji8-scope .j8-pd-notice > h2 { margin-bottom: 10px; font-size: 18px; font-weight: 900; color: var(--text); }
+.ji8-scope .j8-pd-notice > p { font-size: 14px; line-height: 1.7; color: var(--ui-text-secondary); }
