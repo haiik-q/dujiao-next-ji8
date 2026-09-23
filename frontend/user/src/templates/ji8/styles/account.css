@@ -1,0 +1,441 @@
+/* =========================================================================
+   ji8 个人中心（仿 ai.bahk.cn/account.html）
+   规则同 ji8.css：全部限定在 .ji8-scope 下，未分层以压过被劫持的 utility；
+   颜色只引用 ji8 令牌，暗色随令牌自动翻转。
+   ========================================================================= */
+
+.ji8-scope .j8-acc {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  padding-top: 24px;
+}
+
+/* ---------- 侧栏 ---------- */
+.ji8-scope .j8-acc-side {
+  position: sticky;
+  top: calc(var(--site-header-height) + 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-soft);
+  max-height: calc(100vh - var(--site-header-height) - 48px);
+  overflow-y: auto;
+}
+.ji8-scope .j8-acc-user {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 8px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.ji8-scope .j8-acc-user > div { min-width: 0; display: grid; gap: 2px; }
+.ji8-scope .j8-acc-user b { font-size: 15px; font-weight: 800; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-acc-user small { font-size: 12px; color: var(--muted); }
+
+.ji8-scope .j8-acc-avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-mark);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff;
+  font-weight: 900;
+  font-size: 17px;
+  box-shadow: var(--shadow-mark);
+}
+.ji8-scope .j8-acc-avatar.is-lg { width: 56px; height: 56px; font-size: 24px; border-radius: 16px; }
+
+.ji8-scope .j8-acc-nav { display: grid; gap: 3px; }
+.ji8-scope .j8-acc-nav-label {
+  margin: 10px 8px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.ji8-scope .j8-acc-nav-label:first-child { margin-top: 2px; }
+.ji8-scope .j8-acc-nav button,
+.ji8-scope .j8-acc-back {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: var(--r-item);
+  color: var(--ui-text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  transition: background .15s, color .15s;
+}
+.ji8-scope .j8-acc-nav button:hover { background: var(--surface-2); color: var(--text); }
+.ji8-scope .j8-acc-nav button.is-active { background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-acc-nav i,
+.ji8-scope .j8-acc-back i {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.ji8-scope .j8-acc-nav i svg,
+.ji8-scope .j8-acc-back i svg { width: 16px; height: 16px; }
+.ji8-scope .j8-acc-nav button.is-active i { background: var(--accent); color: #fff; }
+
+.ji8-scope .j8-acc-back {
+  margin-top: 6px;
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.ji8-scope .j8-acc-back:hover { border-color: var(--accent-line); color: var(--accent-strong); }
+
+.ji8-scope .j8-acc-chips { display: none; }
+
+/* ---------- 主区 ---------- */
+.ji8-scope .j8-acc-main { min-width: 0; display: grid; gap: 14px; align-content: start; }
+
+.ji8-scope .j8-acc-head,
+.ji8-scope .j8-acc-card,
+.ji8-scope .j8-acc-quick > button,
+.ji8-scope .j8-acc-stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-soft);
+}
+
+.ji8-scope .j8-acc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+}
+.ji8-scope .j8-acc-head .j8-eyebrow { font-size: 11px; letter-spacing: .16em; }
+.ji8-scope .j8-acc-head h1 { margin-top: 6px; font-size: 26px; font-weight: 900; color: var(--text); line-height: 1.2; }
+.ji8-scope .j8-acc-head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.ji8-scope .j8-acc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color .15s, color .15s;
+}
+.ji8-scope .j8-acc-btn svg { width: 14px; height: 14px; }
+.ji8-scope .j8-acc-btn:hover { border-color: var(--accent-line); color: var(--accent-strong); }
+.ji8-scope .j8-acc-btn.is-danger { color: var(--red); }
+.ji8-scope .j8-acc-btn.is-danger:hover { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+
+/* 欢迎卡 */
+.ji8-scope .j8-acc-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 30px 26px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(circle at 92% 20%, rgba(18, 168, 154, .16), transparent 42%),
+    linear-gradient(120deg, var(--surface) 30%, color-mix(in srgb, var(--accent) 9%, var(--surface)));
+  box-shadow: var(--shadow-soft);
+}
+.ji8-scope .j8-acc-hero-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.ji8-scope .j8-acc-hero-main > div { min-width: 0; }
+.ji8-scope .j8-acc-hero-eyebrow { font-size: 12px; font-weight: 800; color: var(--accent-strong); }
+.ji8-scope .j8-acc-hero h2 {
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.ji8-scope .j8-acc-hero p { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.ji8-scope .j8-acc-hero-side { display: flex; align-items: flex-end; gap: 14px; flex: none; }
+
+.ji8-scope .j8-acc-invite label { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.ji8-scope .j8-acc-invite > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 46px;
+  padding: 0 6px 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.ji8-scope .j8-acc-invite b { font-family: var(--font-mono); font-size: 15px; font-weight: 800; letter-spacing: .06em; color: var(--accent-strong); }
+.ji8-scope .j8-acc-invite button {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 800;
+}
+.ji8-scope .j8-acc-invite button:hover { background: var(--accent); color: #fff; }
+
+.ji8-scope .j8-acc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 50px;
+  padding: 0 18px;
+  border-radius: 13px;
+  background: #172033;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(23, 32, 51, .22);
+  transition: transform .15s;
+}
+.ji8-scope .j8-acc-cta svg { width: 18px; height: 18px; }
+.ji8-scope .j8-acc-cta:hover { transform: translateY(-1px); }
+:is(html.dark) .ji8-scope .j8-acc-cta { background: var(--accent); color: var(--on-accent); }
+
+/* 快捷入口 / 统计 */
+.ji8-scope .j8-acc-quick,
+.ji8-scope .j8-acc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+.ji8-scope .j8-acc-quick > button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 84px;
+  padding: 14px 16px;
+  text-align: left;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.ji8-scope .j8-acc-quick > button:hover { transform: translateY(-2px); border-color: var(--accent-line); box-shadow: var(--shadow); }
+.ji8-scope .j8-acc-quick i,
+.ji8-scope .j8-acc-stat i,
+.ji8-scope .j8-acc-card-head i {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-icon);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.ji8-scope .j8-acc-quick i svg,
+.ji8-scope .j8-acc-stat i svg { width: 19px; height: 19px; }
+.ji8-scope .j8-acc-quick span { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.ji8-scope .j8-acc-quick b { font-size: 14px; font-weight: 800; color: var(--text); }
+.ji8-scope .j8-acc-quick small { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+.ji8-scope .j8-acc-quick-arrow { flex: none; width: 15px; height: 15px; color: var(--muted); }
+
+.ji8-scope .j8-acc-stat { display: flex; align-items: flex-start; gap: 12px; padding: 18px 16px; }
+.ji8-scope .j8-acc-stat > div { min-width: 0; display: grid; gap: 4px; }
+.ji8-scope .j8-acc-stat small { font-size: 12px; color: var(--muted); }
+.ji8-scope .j8-acc-stat strong {
+  font-size: 23px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.ji8-scope .j8-acc-stat span { font-size: 11.5px; color: var(--muted); }
+
+/* 卡片 */
+.ji8-scope .j8-acc-card { padding: 22px 24px; }
+.ji8-scope .j8-acc-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.ji8-scope .j8-acc-card-head i { width: 44px; height: 44px; border-radius: 13px; }
+.ji8-scope .j8-acc-card-head i svg { width: 21px; height: 21px; }
+.ji8-scope .j8-acc-card-head > div { flex: 1; min-width: 0; }
+.ji8-scope .j8-acc-card-head span { font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+.ji8-scope .j8-acc-card-head h3 { font-size: 20px; font-weight: 900; color: var(--text); }
+.ji8-scope .j8-acc-link { flex: none; font-size: 13px; font-weight: 800; color: var(--accent-strong); }
+.ji8-scope .j8-acc-link:hover { text-decoration: underline; }
+
+.ji8-scope .j8-acc-info { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+.ji8-scope .j8-acc-info > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--line);
+}
+.ji8-scope .j8-acc-info dt { font-size: 13px; color: var(--muted); }
+.ji8-scope .j8-acc-info dd { font-size: 14px; font-weight: 700; color: var(--text); overflow-wrap: anywhere; }
+
+.ji8-scope .j8-acc-empty {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 22px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 13px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.ji8-scope .j8-acc-empty a { font-weight: 800; color: var(--accent-strong); }
+
+.ji8-scope .j8-acc-table-wrap { overflow-x: auto; }
+.ji8-scope .j8-acc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ji8-scope .j8-acc-table th {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  font-weight: 700;
+  color: var(--ui-text-secondary);
+  white-space: nowrap;
+}
+.ji8-scope .j8-acc-table td { padding: 16px 10px; border-bottom: 1px solid var(--line); color: var(--text); vertical-align: middle; }
+.ji8-scope .j8-acc-table tr:last-child td { border-bottom: 0; }
+.ji8-scope .j8-acc-mono { font-family: var(--font-mono); font-size: 12.5px; font-weight: 800; }
+.ji8-scope .j8-acc-amount { color: var(--accent-strong); font-weight: 800; white-space: nowrap; }
+.ji8-scope .j8-acc-product { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+.ji8-scope .j8-acc-product .j8-brand-icon { flex: none; width: 34px; height: 34px; }
+
+.ji8-scope .j8-acc-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.ji8-scope .j8-acc-pill.is-success { background: var(--accent-soft); color: var(--accent-strong); }
+.ji8-scope .j8-acc-pill.is-warning { background: var(--amber-soft); color: var(--amber); }
+.ji8-scope .j8-acc-pill.is-danger { background: var(--red-soft); color: var(--red); }
+.ji8-scope .j8-acc-pill.is-info { background: var(--blue-soft); color: var(--blue); }
+.ji8-scope .j8-acc-pill.is-accent { background: var(--accent-soft); color: var(--accent); }
+
+.ji8-scope .j8-acc-row-actions { display: flex; gap: 6px; }
+.ji8-scope .j8-acc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.ji8-scope .j8-acc-btn-primary:hover { background: var(--accent-strong); }
+.ji8-scope .j8-acc-btn-primary.is-warm { background: var(--amber); }
+
+/* ---------- 平板：侧栏收为横向 chips ---------- */
+@media (max-width: 1023px) {
+  .ji8-scope .j8-acc { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-top: 16px; }
+  .ji8-scope .j8-acc-side { display: none; }
+  .ji8-scope .j8-acc-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+    scrollbar-width: none;
+  }
+  .ji8-scope .j8-acc-chips::-webkit-scrollbar { display: none; }
+  .ji8-scope .j8-acc-chips button {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--ui-text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .ji8-scope .j8-acc-chips button svg { width: 14px; height: 14px; }
+  .ji8-scope .j8-acc-chips button.is-active { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent-strong); }
+  .ji8-scope .j8-acc-hero { flex-direction: column; align-items: stretch; }
+  .ji8-scope .j8-acc-hero-side { align-items: flex-end; }
+  .ji8-scope .j8-acc-invite { flex: 1; min-width: 0; }
+  .ji8-scope .j8-acc-invite > div { justify-content: space-between; }
+}
+
+/* ---------- 手机 ---------- */
+@media (max-width: 640px) {
+  .ji8-scope .j8-acc-head { padding: 16px; }
+  .ji8-scope .j8-acc-head h1 { font-size: 22px; }
+  .ji8-scope .j8-acc-btn { height: 34px; padding: 0 11px; }
+  .ji8-scope .j8-acc-hero { padding: 20px 16px; gap: 16px; }
+  .ji8-scope .j8-acc-hero-main { align-items: flex-start; }
+  .ji8-scope .j8-acc-avatar.is-lg { width: 46px; height: 46px; font-size: 20px; border-radius: 13px; }
+  .ji8-scope .j8-acc-hero h2 { font-size: 21px; }
+  .ji8-scope .j8-acc-hero-side { gap: 10px; }
+  .ji8-scope .j8-acc-cta { height: 46px; padding: 0 14px; gap: 8px; }
+  .ji8-scope .j8-acc-quick,
+  .ji8-scope .j8-acc-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ji8-scope .j8-acc-quick > button { min-height: 72px; padding: 12px; gap: 10px; }
+  .ji8-scope .j8-acc-quick i { width: 34px; height: 34px; }
+  .ji8-scope .j8-acc-quick-arrow { display: none; }
+  .ji8-scope .j8-acc-stat { padding: 14px 12px; gap: 10px; }
+  .ji8-scope .j8-acc-stat i { width: 34px; height: 34px; }
+  .ji8-scope .j8-acc-stat strong { font-size: 19px; }
+  .ji8-scope .j8-acc-card { padding: 18px 16px; }
+  .ji8-scope .j8-acc-card-head h3 { font-size: 18px; }
+  .ji8-scope .j8-acc-info { grid-template-columns: 1fr; }
+  .ji8-scope .j8-acc-info > div { grid-template-columns: 110px minmax(0, 1fr); }
+
+  /* 最近购买：表格拆成卡片 */
+  .ji8-scope .j8-acc-table thead { display: none; }
+  .ji8-scope .j8-acc-table,
+  .ji8-scope .j8-acc-table tbody,
+  .ji8-scope .j8-acc-table tr,
+  .ji8-scope .j8-acc-table td { display: block; width: 100%; }
+  .ji8-scope .j8-acc-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 12px;
+    margin-bottom: 12px;
+    padding: 6px 14px 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .ji8-scope .j8-acc-table td { padding: 10px 0 0; border: 0; }
+  .ji8-scope .j8-acc-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .ji8-scope .j8-acc-table td:nth-child(1),
+  .ji8-scope .j8-acc-table td:nth-child(3),
+  .ji8-scope .j8-acc-table td:nth-child(7) { grid-column: 1 / -1; }
+  .ji8-scope .j8-acc-table td:nth-child(7)::before { display: none; }
+  .ji8-scope .j8-acc-row-actions { padding-top: 4px; }
+  .ji8-scope .j8-acc-row-actions > * { flex: 1; height: 40px; }
+}

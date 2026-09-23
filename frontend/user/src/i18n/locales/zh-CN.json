@@ -152,6 +152,73 @@
       "unsupported": "当前浏览器不支持安全的本地 2FA 计算，请更换较新的浏览器。",
       "generateFailed": "生成失败",
       "unknownAccount": "未识别"
+    },
+    "account": {
+      "home": "我的主页",
+      "backToShop": "返回购物主页",
+      "shop": "购物",
+      "logout": "退出登录",
+      "welcome": "欢迎回来",
+      "welcomeDesc": "余额、订单、推广和账户安全都集中在这里管理。",
+      "inviteCode": "我的邀请码",
+      "copy": "复制",
+      "copied": "推广链接已复制",
+      "copyFailed": "复制失败，请手动复制",
+      "continueShopping": "继续购物",
+      "goShopping": "去逛逛",
+      "profileTitle": "个人资料",
+      "editProfile": "修改个人信息",
+      "recentTitle": "最近购买",
+      "allRecords": "全部记录",
+      "viewOrder": "查看订单",
+      "moreItems": " 等 {n} 件",
+      "group": {
+        "account": "账户",
+        "finance": "财务",
+        "promo": "推广合作"
+      },
+      "quick": {
+        "wallet": "充值中心",
+        "walletDesc": "为账户余额充值",
+        "orders": "购买记录",
+        "ordersDesc": "查看付款和发货状态",
+        "giftCard": "礼品卡兑换",
+        "giftCardDesc": "兑换礼品卡到余额",
+        "security": "安全中心",
+        "securityDesc": "修改密码与登录保护",
+        "affiliate": "我的邀请",
+        "affiliateDesc": "有效订单 {n} 笔 · 查看佣金"
+      },
+      "stat": {
+        "balance": "可用余额",
+        "balanceHint": "可用于余额付款",
+        "recharged": "累计充值",
+        "rechargedHint": "支付成功的充值金额",
+        "spent": "累计消费",
+        "spentHint": "共 {n} 笔订单",
+        "level": "会员等级",
+        "commission": "可提现佣金",
+        "commissionHint": "待确认 {amount}"
+      },
+      "info": {
+        "account": "登录账号",
+        "nickname": "昵称",
+        "email": "邮箱状态",
+        "level": "会员等级",
+        "currentIp": "本次登录 IP",
+        "currentTime": "本次登录时间",
+        "lastIp": "上次登录 IP",
+        "lastTime": "上次登录时间"
+      },
+      "col": {
+        "orderNo": "订单号",
+        "time": "购买时间",
+        "product": "商品",
+        "qty": "数量",
+        "amount": "金额",
+        "status": "订单状态",
+        "action": "操作"
+      }
     }
   },
   "vault": {

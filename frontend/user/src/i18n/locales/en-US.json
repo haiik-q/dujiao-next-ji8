@@ -152,6 +152,73 @@
       "unsupported": "This browser cannot compute 2FA codes securely. Please use a newer browser.",
       "generateFailed": "Failed",
       "unknownAccount": "Unknown"
+    },
+    "account": {
+      "home": "Dashboard",
+      "backToShop": "Back to store",
+      "shop": "Shop",
+      "logout": "Log out",
+      "welcome": "Welcome back",
+      "welcomeDesc": "Manage your balance, orders, referrals and account security in one place.",
+      "inviteCode": "My invite code",
+      "copy": "Copy",
+      "copied": "Referral link copied",
+      "copyFailed": "Copy failed, please copy manually",
+      "continueShopping": "Continue shopping",
+      "goShopping": "Browse products",
+      "profileTitle": "Profile",
+      "editProfile": "Edit profile",
+      "recentTitle": "Recent purchases",
+      "allRecords": "All records",
+      "viewOrder": "View order",
+      "moreItems": " +{n} more",
+      "group": {
+        "account": "Account",
+        "finance": "Finance",
+        "promo": "Partnership"
+      },
+      "quick": {
+        "wallet": "Top up",
+        "walletDesc": "Add funds to your balance",
+        "orders": "Purchases",
+        "ordersDesc": "Payment and delivery status",
+        "giftCard": "Gift cards",
+        "giftCardDesc": "Redeem a gift card to balance",
+        "security": "Security",
+        "securityDesc": "Password and login protection",
+        "affiliate": "Referrals",
+        "affiliateDesc": "{n} valid orders · view commission"
+      },
+      "stat": {
+        "balance": "Available balance",
+        "balanceHint": "Usable for balance payment",
+        "recharged": "Total top-ups",
+        "rechargedHint": "Successful top-up amount",
+        "spent": "Total spent",
+        "spentHint": "{n} orders in total",
+        "level": "Member level",
+        "commission": "Withdrawable commission",
+        "commissionHint": "Pending {amount}"
+      },
+      "info": {
+        "account": "Login account",
+        "nickname": "Nickname",
+        "email": "Email status",
+        "level": "Member level",
+        "currentIp": "Current login IP",
+        "currentTime": "Current login time",
+        "lastIp": "Previous login IP",
+        "lastTime": "Previous login time"
+      },
+      "col": {
+        "orderNo": "Order No.",
+        "time": "Purchased at",
+        "product": "Product",
+        "qty": "Qty",
+        "amount": "Amount",
+        "status": "Status",
+        "action": "Action"
+      }
     }
   },
   "vault": {
