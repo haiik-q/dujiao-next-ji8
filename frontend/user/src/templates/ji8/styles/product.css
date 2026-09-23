@@ -3,10 +3,11 @@
    规则同 ji8.css：限定 .ji8-scope、未分层、颜色只引用 ji8 令牌。
    ========================================================================= */
 
-.ji8-scope .j8-pd { display: grid; gap: 16px; align-content: start; padding-top: 24px; }
+/* flex 而非 grid：grid 子项的 sticky 只在自身网格行内生效，返回按钮会吸附不住 */
+.ji8-scope .j8-pd { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; }
 
 .ji8-scope .j8-pd-back {
-  justify-self: start;
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -22,6 +23,18 @@
 }
 .ji8-scope .j8-pd-back svg { width: 15px; height: 15px; }
 .ji8-scope .j8-pd-back:hover { color: var(--accent-strong); border-color: var(--accent-line); }
+
+/* 桌面：滚动时吸附在顶栏下方（同 ai.bahk.cn .back-link），半透明毛玻璃 */
+@media (min-width: 1024px) {
+  .ji8-scope .j8-pd-back {
+    position: sticky;
+    top: calc(var(--site-header-height) + 12px);
+    z-index: 38;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+}
 
 .ji8-scope .j8-pd-card {
   display: grid;

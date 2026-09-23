@@ -15,7 +15,7 @@
     </div>
 
     <template v-else-if="product">
-      <router-link to="/products" class="j8-pd-back">
+      <router-link to="/products" class="j8-pd-back" @click.prevent="goBack">
         <ChevronLeft />
         <span>{{ t('ji8.product.back') }}</span>
       </router-link>
@@ -234,6 +234,7 @@
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, Crown, Minus, Pencil, Plus, RotateCw, Share2, ShoppingCart, Tag, Zap } from 'lucide-vue-next'
 import { affiliateAPI } from '../../api'
@@ -260,6 +261,13 @@ import './styles/product.css'
 const { t } = useI18n()
 const appStore = useAppStore()
 const userAuthStore = useUserAuthStore()
+const router = useRouter()
+
+// 返回购物：站内有上一页就后退（保留分类/滚动位置），直接打开详情页时回商品列表
+const goBack = () => {
+  if (window.history.state?.back) router.back()
+  else router.push('/products')
+}
 
 // 移动端固定购买条：桌面购买区出屏后显示
 const purchaseActionsRef = ref<HTMLElement | null>(null)
