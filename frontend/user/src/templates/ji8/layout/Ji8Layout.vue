@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import '../styles/ji8.css'
@@ -35,6 +35,17 @@ useHead({
     { name: 'theme-color', content: '#0f1620', media: '(prefers-color-scheme: dark)' },
   ],
 })
+
+// 单页应用切换路由时 DOM 被替换但选区不会重置：开启光标浏览(F7)或刚点过文字时，
+// 残留光标会落到新页面第一段文字（如商品页的「返回购物」）上闪烁。换页后清掉即可。
+watch(
+  () => route.path,
+  () => {
+    const selection = window.getSelection()
+    if (selection && selection.type !== 'Range') selection.removeAllRanges()
+  },
+  { flush: 'post' },
+)
 
 onMounted(() => document.body.classList.add('ji8-tokens'))
 onUnmounted(() => document.body.classList.remove('ji8-tokens'))
