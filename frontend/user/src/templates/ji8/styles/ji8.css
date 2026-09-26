@@ -314,6 +314,9 @@ body.ji8-tokens {
 .ji8-scope .j8-brand-icon > img { width: 100%; height: 100%; object-fit: contain; }
 .ji8-scope .j8-brand-svg { fill: currentColor; }
 .ji8-scope .j8-cat-logo > .j8-brand-icon > svg { width: 18px; height: 18px; }
+/* 后台上传的分类 logo：内缩到与品牌 svg 相近的视觉尺寸；暗色下垫浅底，防黑色 logo 融进深色背景 */
+.ji8-scope .j8-cat-logo > .j8-brand-icon > img { box-sizing: border-box; padding: 6px; }
+.dark .ji8-scope .j8-cat-logo > .j8-brand-icon > img { background: #eef2f5; }
 .ji8-scope .j8-brand-icon > b { font-size: 14px; }
 .ji8-scope .j8-cat-item > span { font-size: 11px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ji8-scope .j8-cat-item > b { min-width: 25px; padding: 3px 6px; border-radius: var(--r-pill); background: var(--surface-2); color: var(--muted); font-size: 8px; font-weight: 600; line-height: 1.2; text-align: center; font-variant-numeric: tabular-nums; }
@@ -336,6 +339,9 @@ body.ji8-tokens {
 .ji8-scope .j8-card-icon { flex: 0 0 auto; width: 62px; height: 62px; display: grid; place-items: center; border-radius: 16px; overflow: hidden; background: linear-gradient(145deg, var(--surface-3), var(--surface-2)); color: var(--accent-strong); font-size: 16px; font-weight: 900; text-transform: uppercase; }
 .ji8-scope .j8-card-icon img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 .ji8-scope .j8-card-icon > .j8-brand-icon > svg { width: 55%; height: 55%; }
+/* 无商品图、借用分类 logo 时（.is-logo）：同上内缩，暗色垫浅底 */
+.ji8-scope .j8-card-icon.is-logo img { box-sizing: border-box; padding: 13px; background: transparent; }
+.dark .ji8-scope .j8-card-icon.is-logo img { background: #eef2f5; }
 .ji8-scope .j8-card-icon > .j8-brand-icon > b { font-size: 20px; }
 .ji8-scope .j8-card-badge { position: relative; flex: 0 0 auto; padding: 4px 7px; border-radius: var(--r-pill); background: var(--amber-soft); color: var(--amber); font-size: 9px; font-weight: 700; line-height: 1.3; white-space: nowrap; }
 .ji8-scope .j8-card-badge.sold, .ji8-scope .j8-card-badge.is-sold { background: var(--red-soft); color: var(--red); }

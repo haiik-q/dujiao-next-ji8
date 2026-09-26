@@ -1,7 +1,7 @@
 <template>
   <RouterLink :to="`/products/${product.slug}`" class="j8-card" :class="{ 'is-sold-out': soldOut }">
     <div class="j8-card-top">
-      <span class="j8-card-icon">
+      <span class="j8-card-icon" :class="{ 'is-logo': !productImage }">
         <Ji8BrandIcon :slug="product.category?.slug" :name="title" :image="iconImage" />
       </span>
       <span class="j8-card-badge" :class="{ sold: soldOut }">{{ badgeLabel }}</span>
@@ -61,7 +61,8 @@ const soldOut = computed(() => isSoldOut(props.product))
 const promo = computed(() => hasPromotionPrice(props.product))
 
 // 图标：商品首图 → 分类图标 → 品牌 logo / 通用图标 → 标题首字（后两级及图片加载失败回落由 Ji8BrandIcon 处理）
-const iconImage = computed(() => getFirstImageUrl(props.product?.images) || getImageUrl(props.product?.category?.icon))
+const productImage = computed(() => getFirstImageUrl(props.product?.images))
+const iconImage = computed(() => productImage.value || getImageUrl(props.product?.category?.icon))
 
 // 标签优先（最多 maxTags 枚，色调 tone-1/2/3 循环）；没有标签时才回落到交付 / 购买类型 chips
 const tags = computed<string[]>(() => {
