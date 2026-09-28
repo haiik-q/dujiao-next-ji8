@@ -48,24 +48,27 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { Headset, X } from 'lucide-vue-next'
+import { useAppStore } from '../../../stores/app'
 import { useJi8Nav } from '../composables/useJi8Nav'
 import { JI8_WECHAT_ID, WECHAT_ICON_PATH } from '../utils/contact'
 import { copyText } from '../../../utils/clipboard'
 import { toast } from '../../../composables/useToast'
 
 /**
- * 右下角客服浮标：配置了微信号 → 微信按钮，点开卡片（微信号 + 复制，另有 telegram/whatsapp 时附链接）；
- * 未配置微信号 → 回落为 contact.telegram || contact.whatsapp 外链浮标，二者皆空则不渲染（D6）。
+ * 右下角客服浮标：主站且配置了微信号 → 微信按钮，点开卡片（微信号 + 复制，另有 telegram/whatsapp 时附链接）；
+ * 分销站或未配置微信号 → 回落为 contact 外链浮标（分销站为分销商自己的客服），皆空则不渲染（D6）。
  */
 const { t } = useI18n()
 const route = useRoute()
+const appStore = useAppStore()
 const { supportLink } = useJi8Nav()
 
-const wechatId = JI8_WECHAT_ID.trim()
+// 微信号是主站的：分销站不显示，避免分销商的客人加到主站客服
+const wechatId = computed(() => (appStore.isResellerTenant ? '' : JI8_WECHAT_ID.trim()))
 const panelId = 'j8-wechat-panel'
 const open = ref(false)
 const copied = ref(false)
@@ -74,7 +77,7 @@ let copiedTimer: number | undefined
 
 const copyId = async () => {
   try {
-    await copyText(wechatId)
+    await copyText(wechatId.value)
     copied.value = true
     toast.success(t('ji8.wechat.copied'))
     window.clearTimeout(copiedTimer)

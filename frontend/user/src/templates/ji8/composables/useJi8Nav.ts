@@ -54,8 +54,11 @@ export function useJi8Nav() {
 
   const ordersPath = computed(() => (userAuthStore.isAuthenticated ? '/me/orders' : '/guest/orders'))
   const accountPath = computed(() => (userAuthStore.isAuthenticated ? '/me' : '/auth/login'))
+  // support_url 只由分销站点设置下发（主站 contact 归一化后只有 telegram / whatsapp）
   const supportLink = computed(() =>
-    String(appStore.config?.contact?.telegram || appStore.config?.contact?.whatsapp || '').trim(),
+    String(
+      appStore.config?.contact?.telegram || appStore.config?.contact?.whatsapp || appStore.config?.contact?.support_url || '',
+    ).trim(),
   )
 
   /** 顶栏促销 pill（桌面全部显示；移动端只显示第一枚，D16） */

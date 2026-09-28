@@ -377,6 +377,9 @@ func (s *SiteConfigService) ApplyPublicConfigOverlay(ctx context.Context, tenant
 	}
 	brand["site_url"] = mailbrand.ResellerFallback(brandHost).SiteURL
 	out["brand"] = brand
+	// 主站首页公告永不下发到分销站：分销商未保存站点设置（cfg 为空）或资料非激活时也不继承，
+	// 已保存设置时再由 applyResellerSiteConfigToPublicConfig 按其自有公告回填。
+	delete(out, "announcement")
 	if s == nil || s.repo == nil {
 		return out, nil
 	}

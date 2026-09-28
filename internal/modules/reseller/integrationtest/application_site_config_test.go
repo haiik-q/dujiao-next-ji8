@@ -239,6 +239,31 @@ func TestResellerSiteConfigServiceOverlayEmitsActiveAnnouncement(t *testing.T) {
 	}
 }
 
+func TestResellerSiteConfigServiceOverlayDropsMainAnnouncementWithoutSavedConfig(t *testing.T) {
+	db := openResellerManagementServiceTestDB(t)
+	repo := resellergormstore.New(db)
+	user := seedResellerManagementUser(t, db, "site-config-unsaved@example.test")
+	profile := resellerdomain.Profile{UserID: user.ID, Status: resellerdomain.ProfileStatusActive, SettlementStatus: resellerdomain.SettlementStatusNormal}
+	if err := db.Create(&profile).Error; err != nil {
+		t.Fatalf("create profile failed: %v", err)
+	}
+	svc := NewResellerSiteConfigService(repo)
+	tenant := ResellerTenantContext("shop.example.test", profile.ID, user.ID, "shop.example.test")
+	out, err := svc.ApplyPublicConfigOverlay(context.Background(), tenant, map[string]interface{}{
+		"announcement": map[string]interface{}{"type": "info", "version": "main0000"},
+		"currency":     "CNY",
+	})
+	if err != nil {
+		t.Fatalf("apply overlay failed: %v", err)
+	}
+	if _, exists := out["announcement"]; exists {
+		t.Fatalf("reseller without saved config must not inherit the main announcement, got %+v", out["announcement"])
+	}
+	if out["currency"] != "CNY" {
+		t.Fatalf("global inherited fields should remain, got currency=%v", out["currency"])
+	}
+}
+
 func resellerSiteConfigTestMap(value interface{}) map[string]interface{} {
 	switch typed := value.(type) {
 	case jsonmap.JSON:
