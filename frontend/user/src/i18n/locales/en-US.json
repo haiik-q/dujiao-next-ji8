@@ -84,6 +84,17 @@
       "support": "Support",
       "totp": "2FA Codes"
     },
+    "wechat": {
+      "button": "WeChat",
+      "title": "WeChat Support",
+      "idLabel": "WeChat ID",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Copy failed, please copy it manually",
+      "tip": "Open WeChat → Add Contacts → paste the ID to search. Please note \"ji8 + order no. / top-up\" in your request.",
+      "otherSupport": "Other support",
+      "close": "Close"
+    },
     "card": {
       "recommended": "Featured",
       "priceLabel": "Price",

@@ -84,6 +84,17 @@
       "support": "線上客服",
       "totp": "動態驗證碼"
     },
+    "wechat": {
+      "button": "微信客服",
+      "title": "微信客服",
+      "idLabel": "微信號",
+      "copy": "複製",
+      "copied": "已複製",
+      "copyFailed": "複製失敗，請手動複製",
+      "tip": "打開微信 → 添加朋友 → 貼上微信號搜尋。添加時請備註「ji8 + 訂單號 / 充值」。",
+      "otherSupport": "其他客服管道",
+      "close": "關閉"
+    },
     "card": {
       "recommended": "推薦",
       "priceLabel": "到手價",
