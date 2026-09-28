@@ -64,6 +64,7 @@ export async function setI18nLocale(locale: string): Promise<void> {
     }
     if (pendingLocale !== locale) return
     i18n.global.locale.value = locale
+    if (typeof document !== 'undefined') document.documentElement.lang = locale
 }
 
 // 空闲时预取其余语言包：让语言切换即时生效，也避免部署更新后旧页面
