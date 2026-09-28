@@ -188,6 +188,20 @@ const handleExport = async () => {
   }
 }
 
+// 链上对账：按链跳转区块浏览器（地址页可直接看到入账列表）
+const chainExplorers: Record<string, string> = {
+  bsc: 'https://bscscan.com',
+  polygon: 'https://polygonscan.com',
+  ethereum: 'https://etherscan.io',
+  arbitrum: 'https://arbiscan.io',
+  base: 'https://basescan.org',
+}
+const chainExplorerUrl = (chain: string | undefined, kind: 'address' | 'tx', value: string | undefined) => {
+  const base = chainExplorers[String(chain || '').toLowerCase()]
+  if (!base || !value) return ''
+  return `${base}/${kind}/${value}`
+}
+
 const openDetail = async (payment: { id: number }) => {
   showDetail.value = true
   detailLoading.value = true
@@ -691,6 +705,47 @@ watch(
                 <div class="text-foreground break-all text-sm">{{ detailPayment.provider_ref || '-' }}</div>
               </CardContent>
             </Card>
+
+            <div v-if="detailPayment.gateway_order_no || detailPayment.chain_amount" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card v-if="detailPayment.gateway_order_no" class="rounded-lg border-border bg-background shadow-none">
+                <CardContent class="p-4">
+                  <div class="text-xs text-muted-foreground mb-2">{{ t('admin.payments.detailGatewayOrderNo') }}</div>
+                  <div class="text-foreground font-mono break-all text-sm">{{ detailPayment.gateway_order_no }}</div>
+                </CardContent>
+              </Card>
+              <Card v-if="detailPayment.chain_amount" class="rounded-lg border-border bg-background shadow-none">
+                <CardContent class="p-4">
+                  <div class="text-xs text-muted-foreground mb-2">{{ t('admin.payments.detailChainAmount') }}</div>
+                  <div class="text-foreground font-mono text-sm">
+                    {{ detailPayment.chain_amount }} USDT<span v-if="detailPayment.chain" class="text-muted-foreground"> · {{ detailPayment.chain.toUpperCase() }}</span>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card v-if="detailPayment.wallet_address" class="rounded-lg border-border bg-background shadow-none">
+                <CardContent class="p-4">
+                  <div class="text-xs text-muted-foreground mb-2">{{ t('admin.payments.detailWalletAddress') }}</div>
+                  <a
+                    v-if="chainExplorerUrl(detailPayment.chain, 'address', detailPayment.wallet_address)"
+                    :href="chainExplorerUrl(detailPayment.chain, 'address', detailPayment.wallet_address)"
+                    target="_blank" rel="noopener noreferrer"
+                    class="text-primary font-mono break-all text-sm hover:underline"
+                  >{{ detailPayment.wallet_address }}</a>
+                  <div v-else class="text-foreground font-mono break-all text-sm">{{ detailPayment.wallet_address }}</div>
+                </CardContent>
+              </Card>
+              <Card v-if="detailPayment.chain_tx_hash" class="rounded-lg border-border bg-background shadow-none">
+                <CardContent class="p-4">
+                  <div class="text-xs text-muted-foreground mb-2">{{ t('admin.payments.detailChainTxHash') }}</div>
+                  <a
+                    v-if="chainExplorerUrl(detailPayment.chain, 'tx', detailPayment.chain_tx_hash)"
+                    :href="chainExplorerUrl(detailPayment.chain, 'tx', detailPayment.chain_tx_hash)"
+                    target="_blank" rel="noopener noreferrer"
+                    class="text-primary font-mono break-all text-sm hover:underline"
+                  >{{ detailPayment.chain_tx_hash }}</a>
+                  <div v-else class="text-foreground font-mono break-all text-sm">{{ detailPayment.chain_tx_hash }}</div>
+                </CardContent>
+              </Card>
+            </div>
 
             <Card v-if="detailPayment.pay_url" class="rounded-lg border-border bg-background shadow-none">
               <CardContent class="p-4">

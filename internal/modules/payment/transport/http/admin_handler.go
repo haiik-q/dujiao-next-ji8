@@ -9,6 +9,7 @@ import (
 	"time"
 
 	paymentdomain "github.com/dujiao-next/internal/modules/payment/domain"
+	paymentpresenter "github.com/dujiao-next/internal/modules/payment/transport/presenter"
 
 	orderdomain "github.com/dujiao-next/internal/modules/order/domain"
 
@@ -69,6 +70,11 @@ type AdminPaymentItem struct {
 	RechargeNo         string `json:"recharge_no,omitempty"`
 	RechargeStatus     string `json:"recharge_status,omitempty"`
 	RechargeUserID     uint   `json:"recharge_user_id,omitempty"`
+	// 链上收款（BEpusdt 等二维码渠道）对账信息：详情接口从脱敏前的 payload 提取，方便人工核对到账
+	ChainAmount   string `json:"chain_amount,omitempty"`
+	Chain         string `json:"chain,omitempty"`
+	WalletAddress string `json:"wallet_address,omitempty"`
+	ChainTxHash   string `json:"chain_tx_hash,omitempty"`
 }
 
 type paymentRechargeMeta struct {
@@ -247,6 +253,7 @@ func (h *AdminHandler) GetAdminPayment(c *gin.Context) {
 		return
 	}
 	rechargeMeta := rechargeMetaMap[payment.ID]
+	chainInfo := paymentpresenter.ExtractCryptoWalletInfo(payment.ProviderType, payment.InteractionMode, payment.ProviderPayload)
 	safePayment := redactAdminPayment(*payment)
 	response.Success(c, AdminPaymentItem{
 		Payment:            safePayment,
@@ -256,7 +263,20 @@ func (h *AdminHandler) GetAdminPayment(c *gin.Context) {
 		RechargeNo:         rechargeMeta.RechargeNo,
 		RechargeStatus:     rechargeMeta.Status,
 		RechargeUserID:     rechargeMeta.UserID,
+		ChainAmount:        chainInfo.ChainAmount,
+		Chain:              chainInfo.Chain,
+		WalletAddress:      chainInfo.Address,
+		ChainTxHash:        paymentChainTxHash(*payment),
 	})
+}
+
+// paymentChainTxHash 读取回调写入 payload 的链上交易哈希（BEpusdt 为 block_transaction_id），未支付时为空。
+func paymentChainTxHash(payment paymentdomain.Payment) string {
+	value, ok := payment.ProviderPayload["block_transaction_id"]
+	if !ok || value == nil {
+		return ""
+	}
+	return strings.TrimSpace(fmt.Sprint(value))
 }
 
 func redactAdminPayment(payment paymentdomain.Payment) paymentdomain.Payment {

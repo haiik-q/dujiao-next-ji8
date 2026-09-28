@@ -477,6 +477,11 @@ export interface AdminPayment {
   recharge_user_id?: number
   recharge_status?: string
   provider_ref?: string
+  gateway_order_no?: string
+  chain_amount?: string
+  chain?: string
+  wallet_address?: string
+  chain_tx_hash?: string
   pay_url?: string
   qr_code?: string
   provider_payload?: Record<string, unknown>
