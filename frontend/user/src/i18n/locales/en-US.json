@@ -1436,7 +1436,8 @@
       "submitFailed": "Submit failed, please try again",
       "manualFormInvalid": "Please complete required information before submitting",
       "selectPayment": "Please select a payment method"
-    }
+    },
+    "xCheckButton": "Check gift eligibility"
   },
   "payment": {
     "title": "Payment",

@@ -1436,7 +1436,8 @@
       "submitFailed": "提交失敗，請稍後重試",
       "manualFormInvalid": "請先完善交付資訊再提交",
       "selectPayment": "請選擇支付方式"
-    }
+    },
+    "xCheckButton": "自檢能否接收贈禮"
   },
   "payment": {
     "title": "發起支付",

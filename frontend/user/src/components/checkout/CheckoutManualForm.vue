@@ -72,6 +72,11 @@
               :placeholder="getManualFieldPlaceholder(field)"
             />
 
+            <XHandleCheck
+              v-if="field.key === 'x_handle'"
+              :handle="String(getFieldValue(manualItem.itemKey, field.key) || '')"
+            />
+
             <p
               v-if="submitAttempted && manualFieldError(manualItem.itemKey, field.key)"
               class="text-xs text-destructive"
@@ -90,6 +95,7 @@ import { useI18n } from 'vue-i18n'
 import { useLocalized } from '../../composables/useProduct'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import XHandleCheck from './XHandleCheck.vue'
 
 const selectClass =
   'h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'

@@ -1389,7 +1389,8 @@
       "submitFailed": "提交失败，请稍后重试",
       "manualFormInvalid": "请完善交付信息后再提交",
       "selectPayment": "请选择支付方式"
-    }
+    },
+    "xCheckButton": "自检能否接收赠礼"
   },
   "payment": {
     "title": "发起支付",
