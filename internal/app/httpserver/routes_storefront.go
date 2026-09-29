@@ -22,6 +22,7 @@ import (
 	resellertransport "github.com/dujiao-next/internal/modules/reseller/transport/http/user"
 	publicconfigtransport "github.com/dujiao-next/internal/modules/settings/transport/http/public"
 	wallettransport "github.com/dujiao-next/internal/modules/wallet/transport/http"
+	xchecktransport "github.com/dujiao-next/internal/modules/xcheck/transport/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -65,6 +66,7 @@ func registerStorefrontRoutes(
 	guestReadRule middleware.RateLimitRule,
 	guestWriteRule middleware.RateLimitRule,
 	giftCardRedeemRule middleware.RateLimitRule,
+	xCheckRule middleware.RateLimitRule,
 ) {
 	storefront := apiV1.Group("")
 	storefront.Use(middleware.ResellerTenantMiddleware(c.ResellerDomainResolver))
@@ -81,6 +83,10 @@ func registerStorefrontRoutes(
 		affiliatetransport.RegisterPublicRoutes(public, affiliateHandler)
 		memberleveltransport.RegisterPublicRoutes(public, publicMemberLevelHandler)
 	}
+	xchecktransport.RegisterPublicRoutes(
+		public.Group("", middleware.RateLimitMiddleware(redisClient, xCheckRule, middleware.KeyByIP)),
+		xchecktransport.NewHandler(c.XCheckService),
+	)
 
 	// 游客接口
 	guest := storefront.Group("/guest")

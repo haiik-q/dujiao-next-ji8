@@ -18,6 +18,10 @@ export const categoryAPI = {
     list: (params?: any) => api.get('/public/categories', { params }),
 }
 
+export const xCheckAPI = {
+    check: (handle: string) => api.post('/public/x-check', { handle }),
+}
+
 export const memberLevelAPI = {
     list: () => api.get('/public/member-levels'),
 }

@@ -289,6 +289,12 @@ const router = createRouter({
             redirect: '/2fa',
         },
         {
+            // X Premium 赠礼资格自检（ji8 模板专属，调用 /public/x-check）
+            path: '/x-check',
+            name: 'x-check',
+            component: () => import('../templates/ji8/XCheck.vue'),
+        },
+        {
             path: '/terms',
             name: 'terms',
             component: templateView('Legal', () => import('../views/Legal.vue')),

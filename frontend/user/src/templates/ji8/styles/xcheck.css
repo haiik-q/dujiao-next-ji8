@@ -1,0 +1,65 @@
+/* =========================================================================
+   ji8 · X Premium 赠礼资格自检（/x-check 页面 + 商品详情内嵌 compact 版）
+   颜色只用 ji8.css 令牌，暗色自动跟随。
+   ========================================================================= */
+
+.ji8-scope .j8-container.j8-xcheck-main { display: grid; align-content: start; grid-auto-rows: max-content; gap: 22px; padding-top: 24px; padding-bottom: 70px; }
+.ji8-scope .j8-xcheck-hero { padding: 30px 4px 8px; }
+.ji8-scope .j8-xcheck-hero h1 { margin: 7px 0 9px; color: var(--text); font-size: 44px; font-weight: 800; line-height: 1.1; letter-spacing: -.03em; }
+.ji8-scope .j8-xcheck-hero p { max-width: 720px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.ji8-scope .j8-xcheck-panel { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, .8fr); gap: 22px; align-items: start; padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-soft); }
+.ji8-scope .j8-xcheck-rules { padding: 20px; border: 1px solid var(--accent-line); border-radius: 16px; background: var(--accent-soft); }
+.ji8-scope .j8-xcheck-rules h2 { margin: 0 0 10px; color: var(--accent-strong); font-size: 14px; font-weight: 850; }
+.ji8-scope .j8-xcheck-rules ul { display: grid; gap: 8px; margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+/* ---------- 自检组件 ---------- */
+.ji8-scope .j8-xcheck { display: grid; gap: 14px; min-width: 0; }
+.ji8-scope .j8-xcheck-form { display: grid; gap: 12px; }
+.ji8-scope .j8-xcheck-form label { display: grid; gap: 8px; }
+.ji8-scope .j8-xcheck-form label > span { color: var(--text); font-size: 13px; font-weight: 850; }
+.ji8-scope .j8-xcheck textarea,
+.ji8-scope .j8-xcheck input { width: 100%; min-width: 0; border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); color: var(--text); font: 500 14px/1.6 var(--font-mono); outline: 0; transition: border-color .15s, box-shadow .15s; }
+.ji8-scope .j8-xcheck textarea { min-height: 120px; resize: vertical; }
+.ji8-scope .j8-xcheck textarea:focus,
+.ji8-scope .j8-xcheck input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.ji8-scope .j8-xcheck textarea::placeholder,
+.ji8-scope .j8-xcheck input::placeholder { color: var(--muted); }
+.ji8-scope .j8-xcheck-inline { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.ji8-scope .j8-xcheck-btn { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 11px; padding: 0 16px; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); color: #fff; font-size: 14px; font-weight: 850; white-space: nowrap; box-shadow: var(--shadow-primary); transition: transform .15s, opacity .15s; }
+.ji8-scope .j8-xcheck-btn svg { width: 16px; height: 16px; }
+.ji8-scope .j8-xcheck-btn:hover { transform: translateY(-1px); }
+.ji8-scope .j8-xcheck-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.ji8-scope .j8-xcheck-spin { animation: j8-xcheck-spin 1s linear infinite; }
+@keyframes j8-xcheck-spin { to { transform: rotate(360deg); } }
+.ji8-scope .j8-xcheck-note { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.ji8-scope .j8-xcheck-error { margin: 0; color: var(--red); font-size: 13px; }
+
+.ji8-scope .j8-xcheck-results { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.ji8-scope .j8-xcheck-results li { display: grid; grid-template-columns: 40px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); }
+.ji8-scope .j8-xcheck-results img,
+.ji8-scope .j8-xcheck-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.ji8-scope .j8-xcheck-avatar { display: grid; place-items: center; background: var(--line); color: var(--muted); }
+.ji8-scope .j8-xcheck-avatar svg { width: 18px; height: 18px; }
+.ji8-scope .j8-xcheck-results b { display: block; overflow: hidden; color: var(--text); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-xcheck-results b small { color: var(--muted); font-weight: 500; }
+.ji8-scope .j8-xcheck-results p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.ji8-scope .j8-xcheck-icon { width: 22px; height: 22px; }
+.ji8-scope .j8-xcheck-results li.is-good { border-color: color-mix(in srgb, var(--accent-strong) 45%, var(--line)); }
+.ji8-scope .j8-xcheck-results li.is-good .j8-xcheck-icon,
+.ji8-scope .j8-xcheck-results li.is-good p { color: var(--accent-strong); }
+.ji8-scope .j8-xcheck-results li.is-bad { border-color: color-mix(in srgb, var(--red) 40%, var(--line)); }
+.ji8-scope .j8-xcheck-results li.is-bad .j8-xcheck-icon { color: var(--red); }
+.ji8-scope .j8-xcheck-results li.is-warn .j8-xcheck-icon { color: var(--amber); }
+
+/* 商品详情内嵌版 */
+.ji8-scope .j8-pd-xcheck { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--accent-line); border-radius: 16px; background: var(--accent-soft); }
+.ji8-scope .j8-pd-xcheck > b { color: var(--accent-strong); font-size: 14px; }
+.ji8-scope .j8-xcheck.is-compact .j8-xcheck-results li { background: var(--surface); }
+
+@media (max-width: 760px) {
+  .ji8-scope .j8-xcheck-hero h1 { font-size: 32px; }
+  .ji8-scope .j8-xcheck-panel { grid-template-columns: 1fr; padding: 16px; }
+}
+@media (max-width: 420px) {
+  .ji8-scope .j8-xcheck-inline { grid-template-columns: 1fr; }
+}

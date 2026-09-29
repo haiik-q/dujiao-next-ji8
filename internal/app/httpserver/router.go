@@ -229,6 +229,14 @@ func SetupRouter(cfg *config.Config, c *container.Container) *gin.Engine {
 		BlockSeconds:  60,
 		MessageKey:    "error.rate_limited",
 	}
+	// X ID 自检：每个 IP 5 分钟最多 10 次，防止刷接口耗尽查询小号额度
+	xCheckRule := middleware.RateLimitRule{
+		Prefix:        fmt.Sprintf("%s:rate:x_check", redisPrefix),
+		WindowSeconds: 300,
+		MaxRequests:   10,
+		BlockSeconds:  300,
+		MessageKey:    "error.rate_limited",
+	}
 	// 礼品卡兑换：按用户+IP 计数
 	giftCardRedeemRule := middleware.RateLimitRule{
 		Prefix:        fmt.Sprintf("%s:rate:gift_card_redeem", redisPrefix),
@@ -260,7 +268,7 @@ func SetupRouter(cfg *config.Config, c *container.Container) *gin.Engine {
 	sitemaptransport.RegisterRoutes(r, sitemaptransport.NewHandler(c.SitemapService, sitemapbrand.New(c.SettingService)))
 
 	apiV1 := r.Group("/api/v1")
-	registerStorefrontRoutes(apiV1, cfg, c, publicContentHandler, publicCatalogHandler, publicCategoryHandler, userResellerHandler, userResellerProductSettingHandler, userResellerFinanceHandler, userResellerOrderHandler, userApiCredentialHandler, userAuditLogHandler, userGiftCardHandler, publicMemberLevelHandler, userProfileHandler, userEmailHandler, userPasswordHandler, userVerifyHandler, userTelegramOIDCHandler, userTelegramHandler, userGoogleHandler, userLoginHandler, user2FAHandler, publicConfigHandler, userCartHandler, userOrderHandler, guestOrderHandler, orderPreviewHandler, orderCreateHandler, paymentLatestHandler, paymentWriteHandler, userWalletHandler, redisClient, loginRule, guestReadRule, guestWriteRule, giftCardRedeemRule)
+	registerStorefrontRoutes(apiV1, cfg, c, publicContentHandler, publicCatalogHandler, publicCategoryHandler, userResellerHandler, userResellerProductSettingHandler, userResellerFinanceHandler, userResellerOrderHandler, userApiCredentialHandler, userAuditLogHandler, userGiftCardHandler, publicMemberLevelHandler, userProfileHandler, userEmailHandler, userPasswordHandler, userVerifyHandler, userTelegramOIDCHandler, userTelegramHandler, userGoogleHandler, userLoginHandler, user2FAHandler, publicConfigHandler, userCartHandler, userOrderHandler, guestOrderHandler, orderPreviewHandler, orderCreateHandler, paymentLatestHandler, paymentWriteHandler, userWalletHandler, redisClient, loginRule, guestReadRule, guestWriteRule, giftCardRedeemRule, xCheckRule)
 	registerUpstreamRoutes(apiV1, c, upstreamHandler, redisClient, upstreamAPIRule, callbackRule)
 	registerChannelRoutes(apiV1, c, channelHandler, channelMemberLevelHandler, channelGiftCardHandler, channelAffiliateHandler, channelTelegramBotHandler, channelWalletHandler, redisClient, channelAPIRule)
 	registerPaymentCallbackRoutes(apiV1, paymentCallbackHandler, paymentWebhookHandler, redisClient, callbackRule)

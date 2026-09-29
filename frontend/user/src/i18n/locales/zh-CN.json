@@ -82,7 +82,8 @@
       "affiliate": "推广领佣金",
       "reseller": "成为分销",
       "support": "在线客服",
-      "totp": "动态验证码"
+      "totp": "动态验证码",
+      "xcheck": "X 自检"
     },
     "wechat": {
       "button": "微信客服",
@@ -249,6 +250,33 @@
       "detailTitle": "商品详情",
       "noticeTitle": "购买须知",
       "noticeBody": "下单前请确认联系方式填写正确，虚拟商品发货后不支持无理由退款！"
+    },
+    "xcheck": {
+      "eyebrow": "X PREMIUM",
+      "title": "X Premium 赠礼资格自检",
+      "subtitle": "下单前先查一下你的 X 账号能否接收 Premium 赠礼，避免付款后无法开通。",
+      "productTitle": "下单前先自检 X ID",
+      "inputLabel": "X 用户名",
+      "placeholder": "例如 {'@'}elonmusk 或 x.com/elonmusk",
+      "placeholderMulti": "每行一个，最多 5 个，例如：\n{'@'}user1\nx.com/user2",
+      "check": "查询",
+      "checking": "查询中…",
+      "note": "自检结果仅供参考，不影响下单；同一账号 10 分钟内重复查询返回缓存结果。",
+      "empty": "请先填写 X 用户名",
+      "tooMany": "一次最多查询 {n} 个，已只查询前 {n} 个",
+      "invalid": "用户名格式不正确（1-15 位字母、数字或下划线）",
+      "eligible": "符合赠礼资格，可以下单开通",
+      "failed": "查询失败，请稍后重试",
+      "rulesTitle": "以下情况无法接收 Premium 赠礼",
+      "reasons": {
+        "already_premium": "账号已经是 Premium（蓝标），需等当前订阅到期后再开",
+        "verified_organization": "官方 / 机构 / 政府认证账号无法接收赠礼",
+        "protected": "账号处于保护（私密）状态，请先关闭保护",
+        "hidden_subscriptions": "资料页隐藏了订阅，请先在隐私设置中取消隐藏",
+        "suspended": "账号已被封禁",
+        "not_found": "找不到该账号，请检查 X 用户名",
+        "not_eligible": "X 显示该账号暂不符合赠礼资格"
+      }
     }
   },
   "vault": {

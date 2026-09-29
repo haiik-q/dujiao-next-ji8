@@ -78,6 +78,7 @@ import (
 	uploadapp "github.com/dujiao-next/internal/modules/upload/application"
 	walletapp "github.com/dujiao-next/internal/modules/wallet/application"
 	walletgormstore "github.com/dujiao-next/internal/modules/wallet/infrastructure/gormstore"
+	xcheckapp "github.com/dujiao-next/internal/modules/xcheck/application"
 	"github.com/dujiao-next/internal/queue"
 	"github.com/dujiao-next/internal/shared/mailbrand"
 )
@@ -151,6 +152,7 @@ type Container struct {
 	CategoryService               *categoryapp.Service
 	SettingService                *settingsapp.Service
 	SitemapService                *sitemapapp.Service
+	XCheckService                 *xcheckapp.Service
 	CartService                   *cartapp.Service
 	WalletService                 *walletapp.Service
 	OrderRefundService            *orderrefund.Service

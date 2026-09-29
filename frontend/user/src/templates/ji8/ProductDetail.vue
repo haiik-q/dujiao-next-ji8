@@ -146,6 +146,11 @@
 
           <p v-if="description" class="j8-pd-desc">{{ description }}</p>
 
+          <div v-if="isXPremiumProduct" class="j8-pd-xcheck">
+            <b>{{ t('ji8.xcheck.productTitle') }}</b>
+            <Ji8XCheck compact />
+          </div>
+
           <div ref="purchaseActionsRef" class="j8-pd-actions">
             <p v-if="cannotPurchaseReason" class="j8-pd-alert is-danger">{{ cannotPurchaseReason }}</p>
             <p v-if="purchaseWarning" class="j8-pd-alert is-warm">{{ purchaseWarning }}</p>
@@ -250,8 +255,10 @@ import ProductMobileBar from '../../components/product/ProductMobileBar.vue'
 import EmptyState from '../../components/EmptyState.vue'
 import { Button } from '@/components/ui/button'
 import Ji8BrandIcon from './components/Ji8BrandIcon.vue'
+import Ji8XCheck from './components/Ji8XCheck.vue'
 import { currencySymbol, formatMoney } from './utils/price'
 import './styles/product.css'
+import './styles/xcheck.css'
 
 /**
  * ji8 商品详情（仿 ai.bahk.cn/product.html）：
@@ -315,6 +322,8 @@ onUnmounted(() => {
 })
 
 const title = computed(() => (product.value ? String(getLocalizedText(product.value.title) || '') : ''))
+// X / 推特 Premium 类商品在详情页内嵌赠礼资格自检
+const isXPremiumProduct = computed(() => /(\bx\b|twitter|推特).*(premium|会员|蓝标)|(premium|会员|蓝标).*(\bx\b|twitter|推特)/i.test(title.value))
 const description = computed(() => (product.value ? String(getLocalizedText(product.value.description) || '').trim() : ''))
 
 const money = (amount: unknown) => formatMoney(amount, siteCurrency.value)

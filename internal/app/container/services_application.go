@@ -29,6 +29,8 @@ import (
 	sitemapcache "github.com/dujiao-next/internal/modules/sitemap/infrastructure/cacheadapter"
 	sitemapcatalog "github.com/dujiao-next/internal/modules/sitemap/infrastructure/catalogreader"
 	walletapp "github.com/dujiao-next/internal/modules/wallet/application"
+	xcheckapp "github.com/dujiao-next/internal/modules/xcheck/application"
+	xcheckweb "github.com/dujiao-next/internal/modules/xcheck/infrastructure/xweb"
 	"github.com/dujiao-next/internal/platform/database/gormdb"
 	giftcardredeemgormuow "github.com/dujiao-next/internal/workflows/giftcardredeem/infrastructure/gormuow"
 )
@@ -73,6 +75,12 @@ func (c *Container) initApplicationServices() {
 		panic(err)
 	}
 	c.SitemapService = sitemapService
+	// X ID 自检：查询小号放在工作目录的 x-accounts.txt（不存在则接口返回不可用）
+	xAccounts, err := xcheckweb.LoadAccounts("x-accounts.txt")
+	if err != nil {
+		logger.Warnw("xcheck_accounts_load_failed", "error", err)
+	}
+	c.XCheckService = xcheckapp.NewService(xcheckweb.NewClient(xAccounts))
 	c.CartService = cartapp.NewService(c.CartRepo, c.ProductRepo, c.ProductSKURepo, c.PromotionRepo, c.SettingService)
 	c.WalletService = walletapp.NewService(walletapp.Options{
 		Repository: c.WalletRepo, Transactions: c.WalletRepo,

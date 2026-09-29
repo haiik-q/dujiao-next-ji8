@@ -82,7 +82,8 @@
       "affiliate": "Earn commission",
       "reseller": "Become a reseller",
       "support": "Support",
-      "totp": "2FA Codes"
+      "totp": "2FA Codes",
+      "xcheck": "X Check"
     },
     "wechat": {
       "button": "WeChat",
@@ -249,6 +250,33 @@
       "detailTitle": "Product details",
       "noticeTitle": "Before you buy",
       "noticeBody": "Please make sure your contact details are correct. Digital goods are non-refundable once delivered."
+    },
+    "xcheck": {
+      "eyebrow": "X PREMIUM",
+      "title": "X Premium Gift Eligibility Check",
+      "subtitle": "Check whether your X account can receive a Premium gift before you pay.",
+      "productTitle": "Check your X ID before ordering",
+      "inputLabel": "X username",
+      "placeholder": "e.g. {'@'}elonmusk or x.com/elonmusk",
+      "placeholderMulti": "One per line, up to 5, e.g.:\n{'@'}user1\nx.com/user2",
+      "check": "Check",
+      "checking": "Checking…",
+      "note": "The check is for reference only and does not block checkout; repeated checks within 10 minutes return a cached result.",
+      "empty": "Enter an X username first",
+      "tooMany": "Up to {n} at a time; only the first {n} were checked",
+      "invalid": "Invalid username (1-15 letters, digits or underscores)",
+      "eligible": "Eligible for a Premium gift, you can place the order",
+      "failed": "The check failed, please retry later",
+      "rulesTitle": "These accounts cannot receive a Premium gift",
+      "reasons": {
+        "already_premium": "Already on Premium (blue check); order after the current subscription ends",
+        "verified_organization": "Official / organization / government verified accounts",
+        "protected": "Protected (private) accounts; turn protection off first",
+        "hidden_subscriptions": "Subscriptions hidden on the profile; unhide them in privacy settings first",
+        "suspended": "Suspended accounts",
+        "not_found": "Account not found; check the X username",
+        "not_eligible": "X reports this account is not eligible for gifting right now"
+      }
     }
   },
   "vault": {
