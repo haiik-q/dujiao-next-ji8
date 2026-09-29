@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCartStore, type CartItem } from '../stores/cart'
@@ -43,7 +43,15 @@ interface ManualFormProduct {
  * 结算页共享逻辑（classic + vault 双模板共用）。
  * 完整保留原 views/Checkout.vue 的行为，仅抽离为 composable。
  */
-export function useCheckout() {
+export interface UseCheckoutOptions {
+  /**
+   * 商品页一步下单：直接用传入的订单项（当前选中的规格 × 数量）结算，
+   * 不读购物车 / 立即购买 store，下单成功后也不清空它们。
+   */
+  items?: Ref<CartItem[]>
+}
+
+export function useCheckout(options: UseCheckoutOptions = {}) {
   const router = useRouter()
   const route = useRoute()
   const cartStore = useCartStore()
@@ -55,8 +63,11 @@ export function useCheckout() {
   const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
   const { resolveWholesalePriceAmount } = useProductLabels()
 
-  const isBuyNowMode = computed(() => route.query.mode === 'buynow')
+  const inlineItems = options.items
+  const isInlineMode = !!inlineItems
+  const isBuyNowMode = computed(() => isInlineMode || route.query.mode === 'buynow')
   const cartItems = computed<CartItem[]>(() => {
+    if (inlineItems) return inlineItems.value
     if (isBuyNowMode.value) {
       return buyNowStore.item ? [buyNowStore.item] : []
     }
@@ -793,6 +804,7 @@ export function useCheckout() {
   }
 
   const clearSourceStore = () => {
+    if (isInlineMode) return
     if (isBuyNowMode.value) {
       buyNowStore.clear()
     } else {
@@ -1181,6 +1193,9 @@ export function useCheckout() {
     // submit
     submitting,
     canSubmit,
+    submitBlockedReason,
+    error,
+    previewError,
     handleSubmit,
   }
 }

@@ -277,6 +277,17 @@
         "not_found": "找不到该账号，请检查 X 用户名",
         "not_eligible": "X 显示该账号暂不符合赠礼资格"
       }
+    },
+    "checkout": {
+      "email": "电子邮箱",
+      "emailPlaceholder": "用于接收订单通知和查询订单",
+      "orderPassword": "订单查询密码",
+      "orderPasswordPlaceholder": "自己设置，至少 6 位，查订单时要用",
+      "guestHint": "无需注册，凭邮箱和订单查询密码即可在「查订单」里查看订单。",
+      "loginInstead": "已有账号？登录购买",
+      "useBalance": "使用余额付款",
+      "balance": "当前余额",
+      "balanceNotEnough": "余额不足，还需在线支付 {amount}"
     }
   },
   "vault": {

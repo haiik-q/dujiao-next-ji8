@@ -146,7 +146,7 @@
 
           <p v-if="description" class="j8-pd-desc">{{ description }}</p>
 
-          <div v-if="isXPremiumProduct" class="j8-pd-xcheck">
+          <div v-if="isXPremiumProduct && !hasXHandleField" class="j8-pd-xcheck">
             <b>{{ t('ji8.xcheck.productTitle') }}</b>
             <Ji8XCheck compact />
           </div>
@@ -155,24 +155,17 @@
             <p v-if="cannotPurchaseReason" class="j8-pd-alert is-danger">{{ cannotPurchaseReason }}</p>
             <p v-if="purchaseWarning" class="j8-pd-alert is-warm">{{ purchaseWarning }}</p>
 
-            <div class="j8-pd-total">
-              <span>{{ t('ji8.product.payable') }}</span>
-              <strong>{{ money(totalAmount) }}</strong>
-            </div>
-            <p class="j8-pd-total-note">{{ t('ji8.product.payableNote') }}</p>
-
             <button v-if="requiresLogin" type="button" class="j8-pd-buy" @click="goLogin">
               {{ t('productDetail.loginToBuy') }}
             </button>
-            <div v-else class="j8-pd-buttons">
-              <button type="button" class="j8-pd-cart" :disabled="!canPurchase" @click="addToCart">
-                <ShoppingCart />
-                {{ t('productDetail.addToCart') }}
-              </button>
-              <button type="button" class="j8-pd-buy" :disabled="!canPurchase" @click="buyNow">
-                {{ t('productDetail.buyNow') }}
-              </button>
-            </div>
+            <!-- 一步下单：交付信息 / 游客信息 / 付款方式直接在商品页填写并提交 -->
+            <Ji8InlineCheckout
+              v-else
+              ref="inlineCheckoutRef"
+              :items="checkoutItems"
+              :disabled="!canPurchase"
+              @add-to-cart="addToCart"
+            />
           </div>
         </div>
       </section>
@@ -218,7 +211,7 @@
         :product-promotion-price-display="mobileBarProductPromotionPriceDisplay"
         :product-price-display="mobileBarProductPriceDisplay"
         @add-to-cart="addToCart"
-        @buy-now="buyNow"
+        @buy-now="submitFromMobileBar"
         @go-login="goLogin"
       />
     </template>
@@ -241,7 +234,7 @@
 import { computed, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronLeft, Crown, Minus, Pencil, Plus, RotateCw, Share2, ShoppingCart, Tag, Zap } from 'lucide-vue-next'
+import { ChevronLeft, Crown, Minus, Pencil, Plus, RotateCw, Share2, Tag, Zap } from 'lucide-vue-next'
 import { affiliateAPI } from '../../api'
 import { useAppStore } from '../../stores/app'
 import { useUserAuthStore } from '../../stores/userAuth'
@@ -256,6 +249,7 @@ import EmptyState from '../../components/EmptyState.vue'
 import { Button } from '@/components/ui/button'
 import Ji8BrandIcon from './components/Ji8BrandIcon.vue'
 import Ji8XCheck from './components/Ji8XCheck.vue'
+import Ji8InlineCheckout from './components/Ji8InlineCheckout.vue'
 import { currencySymbol, formatMoney } from './utils/price'
 import './styles/product.css'
 import './styles/xcheck.css'
@@ -309,7 +303,7 @@ const {
   quantityEffectiveLimit, quantityEffectiveMin, handleQuantityInput,
   requiresLogin, requiresSKUSelection, canPurchase, cannotPurchaseReason,
   images,
-  addToCart, buyNow, goLogin, loadProduct,
+  addToCart, goLogin, loadProduct, buildItemPayload,
   mobileBarShowMemberPrice, mobileBarMemberPriceDisplay,
   mobileBarShowSkuPromotionPrice, mobileBarSkuPromotionPriceDisplay,
   mobileBarShowSkuPrice, mobileBarSkuPriceDisplay,
@@ -364,12 +358,19 @@ const priceTagText = computed(() => {
   return saved > 0 ? `${label} · ${t('ji8.product.saved', { amount: money(centsToAmount(saved)) })}` : label
 })
 
-/** 预估应付 = 当前单价 × 数量（优惠券等在结算页计算） */
-const totalAmount = computed(() => {
-  const cents = amountToCents(priceInfo.value.final)
-  if (cents === null) return priceInfo.value.final
-  return centsToAmount(cents * Math.max(1, Number(quantity.value) || 1))
-})
+/** 一步下单的订单项：当前规格 × 数量（不可购买时为空，结算组件不会试算） */
+const checkoutItems = computed(() => (product.value && canPurchase.value ? [buildItemPayload(selectedSku.value)] : []))
+const hasXHandleField = computed(() =>
+  Array.isArray(product.value?.manual_form_schema?.fields) &&
+  product.value.manual_form_schema.fields.some((f: any) => f?.key === 'x_handle'),
+)
+
+// 移动端底部购买条：滚回下单区并尝试提交（未填完时显示具体缺什么）
+const inlineCheckoutRef = ref<InstanceType<typeof Ji8InlineCheckout> | null>(null)
+const submitFromMobileBar = () => {
+  purchaseActionsRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  inlineCheckoutRef.value?.submit()
+}
 
 const promoCard = computed(() => {
   if (appStore.canAccessResellerConsole) return { to: '/reseller', title: t('ji8.product.promoReseller') }

@@ -277,6 +277,17 @@
         "not_found": "Account not found; check the X username",
         "not_eligible": "X reports this account is not eligible for gifting right now"
       }
+    },
+    "checkout": {
+      "email": "Email",
+      "emailPlaceholder": "For order notifications and lookup",
+      "orderPassword": "Order lookup password",
+      "orderPasswordPlaceholder": "Set your own, at least 6 characters",
+      "guestHint": "No sign-up needed: look up the order later with this email and password.",
+      "loginInstead": "Have an account? Sign in",
+      "useBalance": "Pay with balance",
+      "balance": "Balance",
+      "balanceNotEnough": "Not enough balance, {amount} to pay online"
     }
   },
   "vault": {

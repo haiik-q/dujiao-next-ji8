@@ -691,6 +691,8 @@ export function useProductDetail(options: { onLoaded?: () => void } = {}) {
     categoryName, images,
     // 动作
     addToCart, buyNow, goLogin, loadProduct,
+    // 商品页一步下单用：按当前规格 / 数量构造订单项
+    buildItemPayload,
     // 移动端购买条
     mobileBarShowMemberPrice, mobileBarMemberPriceDisplay,
     mobileBarShowSkuPromotionPrice, mobileBarSkuPromotionPriceDisplay,

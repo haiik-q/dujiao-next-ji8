@@ -334,3 +334,59 @@
 .ji8-scope .j8-pd-notice.is-first { margin-top: 0; padding-top: 0; border-top: 0; }
 .ji8-scope .j8-pd-notice > h2 { margin-bottom: 10px; font-size: 18px; font-weight: 900; color: var(--text); }
 .ji8-scope .j8-pd-notice > p { font-size: 14px; line-height: 1.7; color: var(--ui-text-secondary); }
+
+/* ---------- 一步下单（Ji8InlineCheckout）：交付信息 / 游客信息 / 付款方式 ---------- */
+.ji8-scope .j8-ic { display: grid; gap: 14px; }
+.ji8-scope .j8-ic-field { display: grid; gap: 6px; }
+.ji8-scope .j8-ic-field > label { font-size: 13px; font-weight: 700; color: var(--muted); }
+.ji8-scope .j8-ic-field > label b { margin-left: 3px; color: var(--red); }
+.ji8-scope .j8-ic-field input:not([type="radio"]):not([type="checkbox"]),
+.ji8-scope .j8-ic-field textarea,
+.ji8-scope .j8-ic-field select {
+  width: 100%; min-width: 0; min-height: 46px; padding: 10px 14px;
+  border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface);
+  color: var(--text); font-size: 14px; outline: 0; transition: border-color .15s, box-shadow .15s;
+}
+.ji8-scope .j8-ic-field textarea { resize: vertical; }
+.ji8-scope .j8-ic-field input:focus, .ji8-scope .j8-ic-field textarea:focus, .ji8-scope .j8-ic-field select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.ji8-scope .j8-ic-field input::placeholder, .ji8-scope .j8-ic-field textarea::placeholder { color: var(--muted); }
+.ji8-scope .j8-ic-with-action { display: grid; gap: 6px; }
+.ji8-scope .j8-ic-options { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--text); }
+.ji8-scope .j8-ic-options label { display: inline-flex; align-items: center; gap: 6px; }
+.ji8-scope .j8-ic-options input { accent-color: var(--accent); }
+.ji8-scope .j8-ic-error { margin: 0; font-size: 12px; color: var(--red); }
+.ji8-scope .j8-ic-hint { margin: -4px 0 0; font-size: 12px; line-height: 1.55; color: var(--muted); }
+.ji8-scope .j8-ic-hint a { margin-left: 4px; color: var(--accent-strong); font-weight: 700; }
+.ji8-scope .j8-ic-hint.is-ok { margin: 0; color: var(--accent-strong); }
+.ji8-scope .j8-ic-hint.is-right { margin-top: -10px; text-align: right; }
+
+.ji8-scope .j8-ic-pay { display: grid; gap: 10px; padding: 14px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+.ji8-scope .j8-ic-pay h3 { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; font-weight: 700; color: var(--muted); }
+.ji8-scope .j8-ic-pay h3 svg { width: 15px; height: 15px; }
+.ji8-scope .j8-ic-channels { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.ji8-scope .j8-ic-channel,
+.ji8-scope .j8-ic-balance {
+  display: flex; align-items: center; gap: 10px; min-height: 54px; padding: 10px 12px; text-align: left;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text); cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.ji8-scope .j8-ic-channel:hover:not(:disabled), .ji8-scope .j8-ic-balance:hover { border-color: var(--accent-line); }
+.ji8-scope .j8-ic-channel:disabled { opacity: .5; cursor: not-allowed; }
+.ji8-scope .j8-ic-channel.is-active, .ji8-scope .j8-ic-balance.is-active { border-color: var(--accent); background: var(--accent-soft); }
+.ji8-scope .j8-ic-channel > i { flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-strong); background: var(--surface); }
+.ji8-scope .j8-ic-channel.is-active > i { border: 5px solid var(--accent); }
+.ji8-scope .j8-ic-channel img { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 6px; object-fit: contain; }
+.ji8-scope .j8-ic-channel span, .ji8-scope .j8-ic-balance span { display: grid; min-width: 0; }
+.ji8-scope .j8-ic-channel b, .ji8-scope .j8-ic-balance b { overflow: hidden; font-size: 14px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.ji8-scope .j8-ic-channel small, .ji8-scope .j8-ic-balance small { font-size: 11px; color: var(--muted); }
+.ji8-scope .j8-ic-balance input { accent-color: var(--accent); width: 16px; height: 16px; }
+.ji8-scope .j8-ic-balance svg { flex: 0 0 auto; width: 20px; height: 20px; color: var(--accent-strong); }
+.ji8-scope .j8-ic-balance em { margin-left: auto; font-size: 11px; font-style: normal; color: var(--amber); text-align: right; }
+
+.ji8-scope .j8-ic-total { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--line); }
+.ji8-scope .j8-ic-total span { font-size: 14px; color: var(--muted); }
+.ji8-scope .j8-ic-total strong { font-size: 24px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
+.ji8-scope .j8-ic-alert { margin: 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; background: var(--amber-soft); color: var(--amber); }
+.ji8-scope .j8-ic-alert.is-error { background: var(--red-soft); color: var(--red); }
+.ji8-scope .j8-ic-spin { width: 16px; height: 16px; animation: j8-ic-spin 1s linear infinite; }
+@keyframes j8-ic-spin { to { transform: rotate(360deg); } }
