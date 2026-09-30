@@ -126,9 +126,7 @@
             <img v-if="channel.icon" :src="getImageUrl(channel.icon)" alt="" loading="lazy" />
             <span>
               <b>{{ channel.name }}</b>
-              <small v-if="channel.fee_policy === 'customer_surcharge'">
-                {{ t('payment.feeLabel') }} {{ formatChannelFeeRate(channel) }} + {{ formatChannelFixedFee(channel) }}
-              </small>
+              <small v-if="channelFeeText(channel)">{{ channelFeeText(channel) }}</small>
               <small v-else-if="isChannelDisabledForAmount(channel)">{{ channelAmountLimitHint(channel) }}</small>
             </span>
           </button>
@@ -143,6 +141,9 @@
       <span>{{ t('ji8.product.payable') }}</span>
       <strong>{{ formatMoney(displayTotal, previewCurrency) }}</strong>
     </div>
+    <p v-if="selectedFeeCents > 0" class="j8-ic-hint is-right">
+      {{ t('payment.feeLabel') }} {{ formatMoney(centsToAmount(selectedFeeCents), previewCurrency) }}
+    </p>
     <p v-if="Number(previewMemberDiscount) > 0" class="j8-ic-hint is-right">
       {{ t('checkout.previewMemberDiscount') }} -{{ formatMoney(previewMemberDiscount, previewCurrency) }}
     </p>
@@ -175,7 +176,7 @@ import ImageCaptcha from '../../../components/captcha/ImageCaptcha.vue'
 import TurnstileCaptcha from '../../../components/captcha/TurnstileCaptcha.vue'
 import XHandleCheck from '../../../components/checkout/XHandleCheck.vue'
 import { formatMoney } from '../utils/price'
-import { centsToAmount } from '../../../utils/money'
+import { amountToCents, basisPointsToPercent, centsToAmount, rateToBasisPoints } from '../../../utils/money'
 
 /**
  * 商品页一步下单：交付信息 + 游客邮箱/查询密码 + 付款方式 + 提交，直接调用 create-and-pay 后进入付款页。
@@ -200,12 +201,32 @@ const {
   error, previewError, canSubmit, submitBlockedReason,
   showBalanceOption, walletLoading, walletBalance, useBalance, walletOnlyPayment, expectedOnlinePayCents,
   requiresOnlineChannel, paymentChannels, selectedChannelId,
-  isChannelDisabledForAmount, channelAmountLimitHint, handleSelectChannel, formatChannelFeeRate, formatChannelFixedFee,
+  isChannelDisabledForAmount, channelAmountLimitHint, handleSelectChannel,
   submitting, handleSubmit,
 } = useCheckout({ items: toRef(props, 'items') })
 
+// 买家承担手续费（后台 payment_config.customer_fee_enabled）时，按选中渠道把手续费算进应付金额，与后端 calculatePaymentAmounts 一致
+const channelFee = (channel: any) => ({
+  bp: channel?.fee_policy === 'customer_surcharge' ? rateToBasisPoints(channel?.fee_rate) || 0 : 0,
+  fixedCents: channel?.fee_policy === 'customer_surcharge' ? amountToCents(String(channel?.fixed_fee ?? '')) || 0 : 0,
+})
+const channelFeeText = (channel: any) => {
+  const { bp, fixedCents } = channelFee(channel)
+  const parts: string[] = []
+  if (bp > 0) parts.push(`${Number(basisPointsToPercent(bp))}%`)
+  if (fixedCents > 0) parts.push(formatMoney(centsToAmount(fixedCents), previewCurrency.value))
+  return parts.length ? `${t('payment.feeLabel')} ${parts.join(' + ')}` : ''
+}
+const selectedFeeCents = computed(() => {
+  if (walletOnlyPayment.value || !requiresOnlineChannel.value) return 0
+  const channel = paymentChannels.value.find((c: any) => c.id === selectedChannelId.value)
+  if (!channel || isChannelDisabledForAmount(channel)) return 0
+  const { bp, fixedCents } = channelFee(channel)
+  return Math.round((expectedOnlinePayCents.value * bp) / 10000) + fixedCents
+})
+
 // 服务端试算前（如游客未填邮箱）previewTotal 自动回落为单价 × 数量
-const displayTotal = computed(() => previewTotal.value)
+const displayTotal = computed(() => centsToAmount((amountToCents(previewTotal.value) || 0) + selectedFeeCents.value))
 
 // 未点提交前只显示接口错误，不提前把「请填写…」类提示甩给客人
 const alertText = computed(() => {
