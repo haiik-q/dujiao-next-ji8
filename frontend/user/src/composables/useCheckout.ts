@@ -375,7 +375,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
   const manualFormProducts = computed<ManualFormProduct[]>(() => {
     const grouped = new Map<number, ManualFormProduct>()
     cartItems.value.forEach((item) => {
-      if (item.fulfillmentType !== 'manual' && item.fulfillmentType !== 'upstream') {
+      if (item.fulfillmentType !== 'manual' && item.fulfillmentType !== 'upstream' && item.fulfillmentType !== 'auto') {
         return
       }
       const fields = normalizeManualFormSchema(item.manualFormSchema)

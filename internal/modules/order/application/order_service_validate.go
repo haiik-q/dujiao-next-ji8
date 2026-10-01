@@ -209,7 +209,7 @@ func (s *OrderService) buildOrderResult(input orderCreateParams) (*orderBuildRes
 		manualSchemaSnapshot := jsonmap.JSON{}
 		manualSubmission := jsonmap.JSON{}
 		if !input.SkipManualFormCheck && (fulfillmentType == constants.FulfillmentTypeManual ||
-			(fulfillmentType == constants.FulfillmentTypeUpstream && len(product.ManualFormSchemaJSON) > 0)) {
+			((fulfillmentType == constants.FulfillmentTypeUpstream || fulfillmentType == constants.FulfillmentTypeAuto) && len(product.ManualFormSchemaJSON) > 0)) {
 			submission := resolveManualFormSubmission(manualFormData, product.ID, sku.ID)
 			normalizedSchema, normalizedSubmission, err := manualform.ValidateAndNormalize(product.ManualFormSchemaJSON, submission)
 			if err != nil {

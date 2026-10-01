@@ -351,7 +351,7 @@ const parseManualFormSchemaForEdit = (rawSchema: Record<string, unknown> | null 
 }
 
 const normalizeManualFormSchemaForSubmit = () => {
-  if (form.fulfillment_type !== 'manual') {
+  if (form.fulfillment_type !== 'manual' && form.fulfillment_type !== 'auto') {
     return { fields: [] }
   }
   const fields = (form.manual_form_schema?.fields || [])
@@ -860,7 +860,7 @@ watch(
             <p v-else class="mt-1 text-xs text-muted-foreground">{{ t('admin.products.form.manualStockTotalTip') }}</p>
           </div>
 
-          <div v-if="form.fulfillment_type === 'manual' || editingIsMapped" class="col-span-1 md:col-span-2 rounded-xl border border-border bg-muted/20 p-4 space-y-4">
+          <div v-if="form.fulfillment_type === 'manual' || form.fulfillment_type === 'auto' || editingIsMapped" class="col-span-1 md:col-span-2 rounded-xl border border-border bg-muted/20 p-4 space-y-4">
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="text-sm font-semibold text-foreground">{{ t('admin.products.form.manualFormSchemaTitle') }}</h3>

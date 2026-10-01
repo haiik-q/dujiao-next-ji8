@@ -123,7 +123,8 @@ func (s *WriteService) Create(input CreateProductInput) (*productdomain.Product,
 		IsActive:             isActive,
 		SortOrder:            input.SortOrder,
 	}
-	if fulfillmentType == constants.FulfillmentTypeManual {
+	// ji8：自动发货商品也可配置下单表单（如 X 会员的接收用户名），交付后由外部脚本按表单内容处理
+	if fulfillmentType == constants.FulfillmentTypeManual || fulfillmentType == constants.FulfillmentTypeAuto {
 		normalizedSchemaJSON, err := manualform.NormalizeSchema(jsonmap.JSON(input.ManualFormSchemaJSON))
 		if err != nil {
 			return nil, err
