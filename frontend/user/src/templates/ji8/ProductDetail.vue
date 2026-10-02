@@ -29,7 +29,7 @@
             @touchend.passive="onTouchEnd"
           >
             <img v-if="currentImage" :src="currentImage" :alt="title" />
-            <Ji8BrandIcon v-else class="j8-pd-logo" :slug="product.category?.slug" :name="title" />
+            <Ji8BrandIcon v-else class="j8-pd-logo" :slug="product.category?.slug" :name="title" :image="fallbackLogo" />
           </div>
           <div v-if="images.length > 1" class="j8-pd-thumbs">
             <button
@@ -251,6 +251,7 @@ import Ji8BrandIcon from './components/Ji8BrandIcon.vue'
 import Ji8XCheck from './components/Ji8XCheck.vue'
 import Ji8InlineCheckout from './components/Ji8InlineCheckout.vue'
 import { currencySymbol, formatMoney } from './utils/price'
+import { matchBrandIcon } from './utils/brandIcons'
 import './styles/product.css'
 import './styles/xcheck.css'
 
@@ -316,6 +317,12 @@ onUnmounted(() => {
 })
 
 const title = computed(() => (product.value ? String(getLocalizedText(product.value.title) || '') : ''))
+// 无商品图时：内置品牌库认得的用矢量 logo（跟随明暗主题），认不得的才用后台上传的分类图标（避免退化成首字母）
+const fallbackLogo = computed(() => {
+  const category = product.value?.category
+  if (!category?.icon || matchBrandIcon(category.slug, title.value)) return ''
+  return getImageUrl(category.icon)
+})
 // X / 推特 Premium 类商品在详情页内嵌赠礼资格自检
 const isXPremiumProduct = computed(() => /(\bx\b|twitter|推特).*(premium|会员|蓝标)|(premium|会员|蓝标).*(\bx\b|twitter|推特)/i.test(title.value))
 const description = computed(() => (product.value ? String(getLocalizedText(product.value.description) || '').trim() : ''))
