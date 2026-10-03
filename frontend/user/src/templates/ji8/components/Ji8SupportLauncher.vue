@@ -8,7 +8,7 @@
       :aria-label="t('ji8.contact.title')"
     >
       <header>
-        <span class="j8-contact-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg></span>
+        <span class="j8-contact-badge"><Headset /></span>
         <strong>{{ t('ji8.contact.title') }}</strong>
         <button type="button" class="j8-contact-close" :aria-label="t('ji8.contact.close')" @click="open = false"><X /></button>
       </header>
@@ -51,7 +51,7 @@
       :aria-label="t('ji8.contact.button')"
       @click="open = !open"
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg>
+      <Headset />
       <span>{{ t('ji8.contact.button') }}</span>
     </button>
   </div>
