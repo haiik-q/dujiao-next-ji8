@@ -170,11 +170,16 @@ func (h *PublicHandler) decoratePublicProduct(product *productdomain.Product, pr
 	if len(userMemberLevelID) > 0 {
 		memberLevelID = userMemberLevelID[0]
 	}
-	if h.memberLevels != nil {
+	// ji8：只返回访客自己等级的价格。等级特价是给个别客户的批发价，原版会把所有等级的价格发给每个访客，
+	// 打开开发者工具就能看到；前端也只用当前用户等级那一条（useProduct.resolveMemberPriceAmount）。
+	if h.memberLevels != nil && memberLevelID > 0 {
 		levelPrices, _ := h.memberLevels.GetLevelPricesByProduct(product.ID)
 		if len(levelPrices) > 0 {
 			views := make([]productpresenter.MemberLevelPrice, 0, len(levelPrices))
 			for _, lp := range levelPrices {
+				if lp.MemberLevelID != memberLevelID {
+					continue
+				}
 				views = append(views, productpresenter.MemberLevelPrice{
 					MemberLevelID: lp.MemberLevelID,
 					SKUID:         lp.SKUID,
