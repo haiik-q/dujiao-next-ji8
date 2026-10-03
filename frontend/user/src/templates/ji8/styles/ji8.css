@@ -418,7 +418,7 @@ body.ji8-tokens {
 .ji8-scope .j8-contact-close { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); }
 .ji8-scope .j8-contact-close:hover { background: var(--surface-2); color: var(--text); }
 .ji8-scope .j8-contact-close svg { width: 16px; height: 16px; }
-.ji8-scope .j8-contact-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ji8-scope .j8-contact-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; }
 .ji8-scope .j8-contact-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
 .ji8-scope .j8-contact-icon { flex: none; width: 26px; height: 26px; display: grid; place-items: center; }
 .ji8-scope .j8-contact-icon svg { width: 22px; height: 22px; fill: currentColor; }
