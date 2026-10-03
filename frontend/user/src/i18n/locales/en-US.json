@@ -85,14 +85,18 @@
       "totp": "2FA Codes",
       "xcheck": "X Check"
     },
-    "wechat": {
-      "button": "WeChat",
-      "title": "WeChat Support",
-      "idLabel": "WeChat ID",
+    "contact": {
+      "button": "Support",
+      "title": "Contact Support",
+      "telegramUser": "Telegram Support",
+      "telegramGroup": "Telegram Group",
+      "qqGroup": "QQ Group",
+      "chat": "Chat",
+      "join": "Join",
       "copy": "Copy",
       "copied": "Copied",
       "copyFailed": "Copy failed, please copy it manually",
-      "tip": "Open WeChat → Add Contacts → paste the ID to search. Please note \"ji8 + order no. / top-up\" in your request.",
+      "tip": "For order questions, please include your order number so we can help faster.",
       "otherSupport": "Other support",
       "close": "Close"
     },

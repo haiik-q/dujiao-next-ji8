@@ -85,14 +85,18 @@
       "totp": "动态验证码",
       "xcheck": "X 自检"
     },
-    "wechat": {
-      "button": "微信客服",
-      "title": "微信客服",
-      "idLabel": "微信号",
+    "contact": {
+      "button": "联系客服",
+      "title": "联系客服",
+      "telegramUser": "Telegram 客服",
+      "telegramGroup": "Telegram 群",
+      "qqGroup": "QQ 群",
+      "chat": "私聊",
+      "join": "加入",
       "copy": "复制",
       "copied": "已复制",
       "copyFailed": "复制失败，请手动复制",
-      "tip": "打开微信 → 添加朋友 → 粘贴微信号搜索。添加时请备注「ji8 + 订单号 / 充值」。",
+      "tip": "咨询订单请附上订单号，方便我们尽快处理。",
       "otherSupport": "其他客服渠道",
       "close": "关闭"
     },

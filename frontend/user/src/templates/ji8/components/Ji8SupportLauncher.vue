@@ -1,37 +1,58 @@
 <template>
-  <div v-if="wechatId" ref="rootRef" class="j8-wechat-launcher">
+  <div v-if="hasChannels" ref="rootRef" class="j8-contact-launcher">
     <div
       v-if="open"
       :id="panelId"
-      class="j8-wechat-panel"
+      class="j8-contact-panel"
       role="dialog"
-      :aria-label="t('ji8.wechat.title')"
+      :aria-label="t('ji8.contact.title')"
     >
       <header>
-        <span class="j8-wechat-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="WECHAT_ICON_PATH" /></svg></span>
-        <strong>{{ t('ji8.wechat.title') }}</strong>
-        <button type="button" class="j8-wechat-close" :aria-label="t('ji8.wechat.close')" @click="open = false"><X /></button>
+        <span class="j8-contact-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg></span>
+        <strong>{{ t('ji8.contact.title') }}</strong>
+        <button type="button" class="j8-contact-close" :aria-label="t('ji8.contact.close')" @click="open = false"><X /></button>
       </header>
-      <div class="j8-wechat-id">
-        <span>{{ t('ji8.wechat.idLabel') }}</span>
-        <code>{{ wechatId }}</code>
-        <button type="button" @click="copyId">{{ copied ? t('ji8.wechat.copied') : t('ji8.wechat.copy') }}</button>
-      </div>
-      <p>{{ t('ji8.wechat.tip') }}</p>
-      <a v-if="supportLink" class="j8-wechat-other" :href="supportLink" target="_blank" rel="noopener noreferrer">
-        <Headset /> {{ t('ji8.wechat.otherSupport') }}
+      <ul class="j8-contact-list">
+        <li v-if="channels.telegramUser">
+          <span class="j8-contact-icon is-telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg></span>
+          <div class="j8-contact-text">
+            <span>{{ t('ji8.contact.telegramUser') }}</span>
+            <code>@{{ channels.telegramUser }}</code>
+          </div>
+          <a :href="`https://t.me/${channels.telegramUser}`" target="_blank" rel="noopener noreferrer">{{ t('ji8.contact.chat') }}</a>
+        </li>
+        <li v-if="channels.telegramGroup">
+          <span class="j8-contact-icon is-telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg></span>
+          <div class="j8-contact-text">
+            <span>{{ t('ji8.contact.telegramGroup') }}</span>
+            <code class="is-link">{{ channels.telegramGroup.replace(/^https?:\/\//, '') }}</code>
+          </div>
+          <a :href="channels.telegramGroup" target="_blank" rel="noopener noreferrer">{{ t('ji8.contact.join') }}</a>
+        </li>
+        <li v-if="channels.qqGroup">
+          <span class="j8-contact-icon is-qq"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="QQ_ICON_PATH" /></svg></span>
+          <div class="j8-contact-text">
+            <span>{{ t('ji8.contact.qqGroup') }}</span>
+            <code>{{ channels.qqGroup }}</code>
+          </div>
+          <button type="button" @click="copyQq">{{ copied ? t('ji8.contact.copied') : t('ji8.contact.copy') }}</button>
+        </li>
+      </ul>
+      <p>{{ t('ji8.contact.tip') }}</p>
+      <a v-if="supportLink" class="j8-contact-other" :href="supportLink" target="_blank" rel="noopener noreferrer">
+        <Headset /> {{ t('ji8.contact.otherSupport') }}
       </a>
     </div>
     <button
       type="button"
-      class="j8-support j8-support--wechat"
+      class="j8-support j8-support--contact"
       :aria-expanded="open"
       :aria-controls="panelId"
-      :aria-label="t('ji8.wechat.button')"
+      :aria-label="t('ji8.contact.button')"
       @click="open = !open"
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path :d="WECHAT_ICON_PATH" /></svg>
-      <span>{{ t('ji8.wechat.button') }}</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path :d="TELEGRAM_ICON_PATH" /></svg>
+      <span>{{ t('ji8.contact.button') }}</span>
     </button>
   </div>
   <a
@@ -54,36 +75,44 @@ import { useRoute } from 'vue-router'
 import { Headset, X } from 'lucide-vue-next'
 import { useAppStore } from '../../../stores/app'
 import { useJi8Nav } from '../composables/useJi8Nav'
-import { JI8_WECHAT_ID, WECHAT_ICON_PATH } from '../utils/contact'
+import { JI8_SUPPORT, QQ_ICON_PATH, TELEGRAM_ICON_PATH } from '../utils/contact'
 import { copyText } from '../../../utils/clipboard'
 import { toast } from '../../../composables/useToast'
 
 /**
- * 右下角客服浮标：主站且配置了微信号 → 微信按钮，点开卡片（微信号 + 复制，另有 telegram/whatsapp 时附链接）；
- * 分销站或未配置微信号 → 回落为 contact 外链浮标（分销站为分销商自己的客服），皆空则不渲染（D6）。
+ * 右下角客服浮标：主站 → 「联系客服」按钮，点开卡片（Telegram 客服 / Telegram 群 / QQ 群，另有 telegram/whatsapp 时附链接）；
+ * 分销站或渠道全空 → 回落为 contact 外链浮标（分销站为分销商自己的客服），皆空则不渲染（D6）。
  */
 const { t } = useI18n()
 const route = useRoute()
 const appStore = useAppStore()
 const { supportLink } = useJi8Nav()
 
-// 微信号是主站的：分销站不显示，避免分销商的客人加到主站客服
-const wechatId = computed(() => (appStore.isResellerTenant ? '' : JI8_WECHAT_ID.trim()))
-const panelId = 'j8-wechat-panel'
+// 这些渠道是主站的：分销站不显示，避免分销商的客人找到主站客服
+const channels = computed(() => {
+  if (appStore.isResellerTenant) return { telegramUser: '', telegramGroup: '', qqGroup: '' }
+  return {
+    telegramUser: JI8_SUPPORT.telegramUser.trim().replace(/^@/, ''),
+    telegramGroup: JI8_SUPPORT.telegramGroup.trim(),
+    qqGroup: JI8_SUPPORT.qqGroup.trim(),
+  }
+})
+const hasChannels = computed(() => Object.values(channels.value).some(Boolean))
+const panelId = 'j8-contact-panel'
 const open = ref(false)
 const copied = ref(false)
 const rootRef = ref<HTMLElement | null>(null)
 let copiedTimer: number | undefined
 
-const copyId = async () => {
+const copyQq = async () => {
   try {
-    await copyText(wechatId.value)
+    await copyText(channels.value.qqGroup)
     copied.value = true
-    toast.success(t('ji8.wechat.copied'))
+    toast.success(t('ji8.contact.copied'))
     window.clearTimeout(copiedTimer)
     copiedTimer = window.setTimeout(() => (copied.value = false), 2000)
   } catch {
-    toast.error(t('ji8.wechat.copyFailed'))
+    toast.error(t('ji8.contact.copyFailed'))
   }
 }
 
