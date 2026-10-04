@@ -54,4 +54,6 @@ var (
 	ErrInvalidHandle = errors.New("invalid x handle")
 	// ErrUnavailable 表示没有可用的查询账号，或 X 暂时无法查询。
 	ErrUnavailable = errors.New("x lookup unavailable")
+	// ErrNotEligible 表示该账号现在不能接收 Premium 赠礼（下单时据此拒单）。
+	ErrNotEligible = errors.New("x handle not eligible for premium gift")
 )

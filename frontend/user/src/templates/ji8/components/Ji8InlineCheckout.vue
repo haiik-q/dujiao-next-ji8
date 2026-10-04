@@ -148,14 +148,14 @@
       {{ t('checkout.previewMemberDiscount') }} -{{ formatMoney(previewMemberDiscount, previewCurrency) }}
     </p>
 
-    <p v-if="alertText" class="j8-ic-alert" :class="{ 'is-error': !!(error || previewError) }">{{ alertText }}</p>
+    <p v-if="alertText" class="j8-ic-alert" :class="{ 'is-error': !!(error || previewError) || xHandleRejected }">{{ alertText }}</p>
 
     <div class="j8-pd-buttons">
       <button type="button" class="j8-pd-cart" :disabled="disabled" @click="emit('add-to-cart')">
         <ShoppingCart />
         {{ t('productDetail.addToCart') }}
       </button>
-      <button type="submit" class="j8-pd-buy" :disabled="disabled || submitting">
+      <button type="submit" class="j8-pd-buy" :disabled="disabled || submitting || !!xHandleBlockedReason" :title="xHandleBlockedReason">
         <Loader2 v-if="submitting" class="j8-ic-spin" />
         {{ submitting ? t('checkout.submitting') : t('checkout.submitButton') }}
       </button>
@@ -175,6 +175,7 @@ import { getImageUrl } from '../../../utils/image'
 import ImageCaptcha from '../../../components/captcha/ImageCaptcha.vue'
 import TurnstileCaptcha from '../../../components/captcha/TurnstileCaptcha.vue'
 import XHandleCheck from '../../../components/checkout/XHandleCheck.vue'
+import { getXHandleState } from '../../../composables/useXHandleGate'
 import { formatMoney } from '../utils/price'
 import { amountToCents, basisPointsToPercent, centsToAmount, rateToBasisPoints } from '../../../utils/money'
 
@@ -193,7 +194,7 @@ const loginLink = computed(() => `/auth/login?redirect=${encodeURIComponent(rout
 
 const {
   manualFormProducts, manualFormData, submitAttempted,
-  getManualFieldLabel, getManualFieldPlaceholder, manualFieldError,
+  getManualFieldLabel, getManualFieldPlaceholder, manualFieldError, xHandleBlockedReason,
   guestEmail, guestPassword, guestEmailValid,
   guestCaptchaEnabled, captchaProvider, guestCaptchaPayload, guestTurnstileToken, guestTurnstileSiteKey,
   guestImageCaptchaRef, guestTurnstileRef, handleGuestCaptchaConfigStale,
@@ -228,10 +229,18 @@ const selectedFeeCents = computed(() => {
 // 服务端试算前（如游客未填邮箱）previewTotal 自动回落为单价 × 数量
 const displayTotal = computed(() => centsToAmount((amountToCents(previewTotal.value) || 0) + selectedFeeCents.value))
 
+// X 账号检测结果是「不能接收」或检测失败（检测中、待检测只是黄色提示）
+const xHandleRejected = computed(() => manualFormProducts.value.some((product) => {
+  const status = getXHandleState(manualFormData.value[product.itemKey]?.x_handle)?.status
+  return status === 'ineligible' || status === 'error'
+}))
+
 // 未点提交前只显示接口错误，不提前把「请填写…」类提示甩给客人
 const alertText = computed(() => {
   if (error.value) return error.value
   if (previewError.value) return previewError.value
+  // X 账号没检测通过时按钮是灰的，直接说明原因
+  if (xHandleBlockedReason.value) return xHandleBlockedReason.value
   if (submitAttempted.value && !canSubmit.value) return submitBlockedReason.value
   return ''
 })
@@ -252,7 +261,7 @@ const toggleOption = (itemKey: string, key: string, option: string, type: string
 }
 
 const submit = () => {
-  if (props.disabled) return
+  if (props.disabled || xHandleBlockedReason.value) return
   void handleSubmit()
 }
 

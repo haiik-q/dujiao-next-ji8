@@ -107,3 +107,47 @@ func TestCheckDoesNotCacheErrors(t *testing.T) {
 		t.Fatalf("lookup calls = %d; want 2", lookup.calls)
 	}
 }
+
+func TestVerifyAlwaysAsksXAndRejectsIneligible(t *testing.T) {
+	lookup := &countingLookup{profile: domain.Profile{Found: true, ScreenName: "abc", GiftingEligible: boolPtr(true)}}
+	svc := NewService(lookup)
+	if _, err := svc.Check(context.Background(), "abc"); err != nil {
+		t.Fatal(err)
+	}
+	// 自检缓存里是「可以接收」，但下单前 X 改口了：必须以最新结果为准
+	lookup.profile = domain.Profile{Found: true, ScreenName: "abc", GiftingEligible: boolPtr(false)}
+	if err := svc.Verify(context.Background(), "@abc"); !errors.Is(err, domain.ErrNotEligible) {
+		t.Fatalf("Verify err = %v; want ErrNotEligible", err)
+	}
+	if lookup.calls != 2 {
+		t.Fatalf("lookup calls = %d; want 2 (Verify bypasses cache)", lookup.calls)
+	}
+	// 最新结果写回缓存，自检页也随之变为不符合
+	if res, err := svc.Check(context.Background(), "abc"); err != nil || res.Eligible {
+		t.Fatalf("Check after Verify = %+v, %v; want not eligible from cache", res, err)
+	}
+	if err := svc.Verify(context.Background(), "bad handle!"); !errors.Is(err, domain.ErrInvalidHandle) {
+		t.Fatalf("Verify invalid handle err = %v", err)
+	}
+}
+
+func TestVerifyFallsBackToRecentEligibleWhenXUnavailable(t *testing.T) {
+	lookup := &countingLookup{profile: domain.Profile{Found: true, ScreenName: "abc", GiftingEligible: boolPtr(true)}}
+	svc := NewService(lookup)
+	now := time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
+	svc.now = func() time.Time { return now }
+	if err := svc.Verify(context.Background(), "abc"); err != nil {
+		t.Fatalf("Verify eligible err = %v", err)
+	}
+	lookup.err = errors.New("x 429")
+	if err := svc.Verify(context.Background(), "abc"); err != nil {
+		t.Fatalf("Verify with recent eligible result should pass, got %v", err)
+	}
+	if err := svc.Verify(context.Background(), "other"); !errors.Is(err, domain.ErrUnavailable) {
+		t.Fatalf("Verify without cached result err = %v; want ErrUnavailable", err)
+	}
+	now = now.Add(CacheTTL + time.Second)
+	if err := svc.Verify(context.Background(), "abc"); !errors.Is(err, domain.ErrUnavailable) {
+		t.Fatalf("Verify after cache expiry err = %v; want ErrUnavailable", err)
+	}
+}

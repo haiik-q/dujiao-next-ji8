@@ -17,6 +17,7 @@ import { saveGuestOrderAuth } from '../utils/guestOrderAuth'
 import ImageCaptcha from '../components/captcha/ImageCaptcha.vue'
 import TurnstileCaptcha from '../components/captcha/TurnstileCaptcha.vue'
 import { useLocalized, useProductLabels } from './useProduct'
+import { getXHandleState } from './useXHandleGate'
 
 interface ManualFormField {
   key: string
@@ -525,6 +526,21 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     return manualFormValidation.value.errors[manualFieldErrorKey(itemKey, fieldKey)] || ''
   }
 
+  // ji8：表单里的 X 用户名（x_handle）必须检测通过才能下单；为空/格式错误交给上面的表单校验
+  const xHandleBlockedReason = computed(() => {
+    for (const product of manualFormProducts.value) {
+      if (!product.fields.some((field) => field.key === 'x_handle')) continue
+      const raw = manualFormData.value[product.itemKey]?.x_handle
+      if (!String(raw ?? '').trim()) continue
+      const state = getXHandleState(raw)
+      if (!state) return t('checkout.xHandleNeedCheck')
+      if (state.status === 'checking') return t('checkout.xHandleChecking')
+      if (state.status === 'ineligible') return t('checkout.xHandleIneligible', { handle: state.handle })
+      if (state.status === 'error') return t('checkout.xHandleCheckFailed')
+    }
+    return ''
+  })
+
   const buildManualFormDataPayload = () => {
     const payload: Record<string, any> = {}
     manualFormProducts.value.forEach((product) => {
@@ -594,6 +610,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     if (submitting.value) return false
     if (cartItems.value.length === 0) return false
     if (!manualFormValidation.value.valid) return false
+    if (xHandleBlockedReason.value) return false
     if (cartItems.value.some((item) => itemStockExceeded(item))) return false
     if (cartItems.value.some((item) => itemMinNotMet(item))) return false
     if (walletOnlyPayment.value && expectedOnlinePayCents.value > 0) return false
@@ -618,6 +635,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     if (!manualFormValidation.value.valid) {
       return manualFormValidation.value.firstError || t('checkout.errors.manualFormInvalid')
     }
+    if (xHandleBlockedReason.value) return xHandleBlockedReason.value
     const stockBlockedItem = cartItems.value.find((item) => itemStockExceeded(item))
     if (stockBlockedItem) {
       return itemStockHint(stockBlockedItem) || t('cart.stockOut')
@@ -1142,6 +1160,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     getManualFieldLabel,
     getManualFieldPlaceholder,
     manualFieldError,
+    xHandleBlockedReason,
     // coupon
     couponCode,
     isResellerTenant,

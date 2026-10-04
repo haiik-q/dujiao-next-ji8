@@ -265,7 +265,7 @@
       "placeholderMulti": "每行一个，最多 5 个，例如：\n{'@'}user1\nx.com/user2",
       "check": "查询",
       "checking": "查询中…",
-      "note": "自检结果仅供参考，不影响下单；同一账号 10 分钟内重复查询返回缓存结果。",
+      "note": "检测不通过的账号无法下单；同一账号 10 分钟内重复查询返回缓存结果。",
       "empty": "请先填写 X 用户名",
       "tooMany": "一次最多查询 {n} 个，已只查询前 {n} 个",
       "invalid": "用户名格式不正确（1-15 位字母、数字或下划线）",
@@ -1405,6 +1405,12 @@
       "manualFormInvalid": "请完善交付信息后再提交",
       "selectPayment": "请选择支付方式"
     },
+    "xCheckRetry": "重新检测",
+    "xHandleBlockedSuffix": "，无法下单，请换一个账号",
+    "xHandleNeedCheck": "请先检测 X 账号能否接收赠送",
+    "xHandleChecking": "正在检测 X 账号能否接收赠送…",
+    "xHandleIneligible": "{'@'}{handle} 目前无法接收 Premium 赠送，不能下单，请换一个账号",
+    "xHandleCheckFailed": "X 账号检测失败，请点「重新检测」，通过后才能下单",
     "xCheckButton": "自检能否接收赠礼"
   },
   "payment": {

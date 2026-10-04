@@ -265,7 +265,7 @@
       "placeholderMulti": "One per line, up to 5, e.g.:\n{'@'}user1\nx.com/user2",
       "check": "Check",
       "checking": "Checking…",
-      "note": "The check is for reference only and does not block checkout; repeated checks within 10 minutes return a cached result.",
+      "note": "Accounts that fail the check cannot be ordered for; repeated checks within 10 minutes return a cached result.",
       "empty": "Enter an X username first",
       "tooMany": "Up to {n} at a time; only the first {n} were checked",
       "invalid": "Invalid username (1-15 letters, digits or underscores)",
@@ -1452,6 +1452,12 @@
       "manualFormInvalid": "Please complete required information before submitting",
       "selectPayment": "Please select a payment method"
     },
+    "xCheckRetry": "Check again",
+    "xHandleBlockedSuffix": ". This account cannot be ordered for, please use another one",
+    "xHandleNeedCheck": "Please check whether the X account can receive a gift first",
+    "xHandleChecking": "Checking whether the X account can receive a gift…",
+    "xHandleIneligible": "{'@'}{handle} cannot receive a Premium gift right now, so the order cannot be placed. Please use another account",
+    "xHandleCheckFailed": "The X account check failed. Click \"Check again\"; you can order once it passes",
     "xCheckButton": "Check gift eligibility"
   },
   "payment": {

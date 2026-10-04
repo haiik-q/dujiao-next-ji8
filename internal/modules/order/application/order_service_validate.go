@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"fmt"
 	"net/mail"
 	"strconv"
@@ -89,6 +90,7 @@ func (s *OrderService) buildOrderResult(input orderCreateParams) (*orderBuildRes
 	if manualFormData == nil {
 		manualFormData = map[string]jsonmap.JSON{}
 	}
+	verifiedXHandles := map[string]bool{}
 	for _, item := range mergedItems {
 		if item.ProductID == 0 || item.Quantity <= 0 {
 			return nil, ErrInvalidOrderItem
@@ -217,6 +219,9 @@ func (s *OrderService) buildOrderResult(input orderCreateParams) (*orderBuildRes
 			}
 			manualSchemaSnapshot = normalizedSchema
 			manualSubmission = normalizedSubmission
+			if err := s.verifyXHandle(manualSubmission, verifiedXHandles); err != nil {
+				return nil, err
+			}
 		}
 
 		var promotionID *uint
@@ -369,6 +374,30 @@ func normalizeGuestEmail(raw string) (string, error) {
 
 func (s *OrderService) resolveExpireMinutes() int {
 	return ResolvePaymentExpireMinutes(s.settingService, s.expireMinutes)
+}
+
+// xHandleVerifyTimeout 覆盖查询客户端自身 20 秒超时与一次换号重试。
+const xHandleVerifyTimeout = 25 * time.Second
+
+// verifyXHandle ji8：表单里填了 x_handle 就向 X 核实能否接收 Premium 赠送，不符合直接拒单，客人拿不到卡密。
+// 只在创建订单时执行（预览跳过表单校验，不会走到这里）；同一订单里同一账号只查一次。
+func (s *OrderService) verifyXHandle(submission jsonmap.JSON, verified map[string]bool) error {
+	if s.xHandleVerifier == nil {
+		return nil
+	}
+	handle, _ := submission["x_handle"].(string)
+	handle = strings.TrimSpace(handle)
+	key := strings.ToLower(strings.TrimPrefix(handle, "@"))
+	if key == "" || verified[key] {
+		return nil
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), xHandleVerifyTimeout)
+	defer cancel()
+	if err := s.xHandleVerifier.Verify(ctx, handle); err != nil {
+		return err
+	}
+	verified[key] = true
+	return nil
 }
 
 func resolveManualFormSubmission(manualFormData map[string]jsonmap.JSON, productID, skuID uint) jsonmap.JSON {

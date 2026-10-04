@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"time"
@@ -50,6 +51,7 @@ type OrderService struct {
 	resellerAccounting      resellerAccountingTransactions
 	riskControlSvc          orderriskcontract.Controller
 	productMappingService   upstreamStockEnsurer
+	xHandleVerifier         XHandleVerifier
 	expireMinutes           int
 }
 
@@ -76,6 +78,12 @@ type resellerAccountingTransactions interface {
 	) error
 }
 
+// XHandleVerifier ji8：下单表单带 x_handle（X 会员的接收账号）时，创建订单前核实该账号现在能接收 Premium 赠送。
+// 返回的错误原样透传给接口层（xcheck 模块的 ErrNotEligible / ErrUnavailable / ErrInvalidHandle）。
+type XHandleVerifier interface {
+	Verify(ctx context.Context, handle string) error
+}
+
 // upstreamStockEnsurer 是下单校验依赖的最小 Catalog Mapping 用例端口。
 type upstreamStockEnsurer interface {
 	EnsureUpstreamStockForOrder(localSKUID uint, quantity int) error
@@ -100,6 +108,7 @@ type OrderServiceOptions struct {
 	ResellerAccounting      resellerAccountingTransactions
 	RiskControlService      orderriskcontract.Controller
 	ProductMappingService   upstreamStockEnsurer
+	XHandleVerifier         XHandleVerifier
 	ExpireMinutes           int
 }
 
@@ -132,6 +141,7 @@ func NewOrderService(opts OrderServiceOptions) *OrderService {
 		resellerAccounting:      opts.ResellerAccounting,
 		riskControlSvc:          opts.RiskControlService,
 		productMappingService:   opts.ProductMappingService,
+		xHandleVerifier:         opts.XHandleVerifier,
 		expireMinutes:           opts.ExpireMinutes,
 	}
 }

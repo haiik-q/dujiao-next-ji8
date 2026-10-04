@@ -3,6 +3,7 @@ package application
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strings"
 	"sync"
@@ -86,16 +87,46 @@ func (s *Service) Check(ctx context.Context, raw string) (domain.Result, error) 
 		return domain.Result{}, err
 	}
 	result := Evaluate(handle, profile, now)
+	s.store(key, result, now)
+	return result, nil
+}
 
+// Verify 下单时的强制核实：不读缓存、直接问 X（结果写回缓存）。不符合返回 ErrNotEligible；
+// X 查不了时，若 CacheTTL 内查到过「可以接收」仍放行（兑换站兑换和付款前还会再查），否则返回 ErrUnavailable。
+func (s *Service) Verify(ctx context.Context, raw string) error {
+	handle, err := NormalizeHandle(raw)
+	if err != nil {
+		return err
+	}
+	key := strings.ToLower(handle)
+	profile, lookupErr := s.lookup.Lookup(ctx, handle)
+	now := s.now()
+	if lookupErr != nil {
+		s.mu.Lock()
+		entry, ok := s.cache[key]
+		s.mu.Unlock()
+		if ok && now.Before(entry.expires) && entry.result.Eligible {
+			return nil
+		}
+		return fmt.Errorf("%w: %v", domain.ErrUnavailable, lookupErr)
+	}
+	result := Evaluate(handle, profile, now)
+	s.store(key, result, now)
+	if !result.Eligible {
+		return fmt.Errorf("%w: @%s %s", domain.ErrNotEligible, result.Handle, result.Reason)
+	}
+	return nil
+}
+
+func (s *Service) store(key string, result domain.Result, now time.Time) {
 	s.mu.Lock()
+	defer s.mu.Unlock()
 	for k, e := range s.cache {
 		if !now.Before(e.expires) {
 			delete(s.cache, k)
 		}
 	}
 	s.cache[key] = cacheEntry{result: result, expires: now.Add(CacheTTL)}
-	s.mu.Unlock()
-	return result, nil
 }
 
 // Evaluate 根据资料判定资格。以 X 返回的 premium_gifting_eligible 为准，原因按常见程度依次判断。

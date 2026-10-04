@@ -15,6 +15,7 @@ import (
 	couponcontract "github.com/dujiao-next/internal/modules/coupon/contract"
 	promotioncontract "github.com/dujiao-next/internal/modules/promotion/contract"
 	resellermodule "github.com/dujiao-next/internal/modules/reseller/contract"
+	xcheckdomain "github.com/dujiao-next/internal/modules/xcheck/domain"
 	"github.com/dujiao-next/internal/platform/http/ginutil"
 	"github.com/dujiao-next/internal/platform/http/response"
 	"github.com/dujiao-next/internal/shared/jsonmap"
@@ -369,6 +370,9 @@ var userOrderCommonErrorRules = []mappedError{
 	{target: manualform.ErrFieldInvalid, code: response.CodeBadRequest, key: "error.manual_form_field_invalid"},
 	{target: manualform.ErrTypeInvalid, code: response.CodeBadRequest, key: "error.manual_form_type_invalid"},
 	{target: manualform.ErrOptionInvalid, code: response.CodeBadRequest, key: "error.manual_form_option_invalid"},
+	{target: xcheckdomain.ErrNotEligible, code: response.CodeBadRequest, key: "error.x_handle_not_eligible"},
+	{target: xcheckdomain.ErrInvalidHandle, code: response.CodeBadRequest, key: "error.x_check_invalid_handle"},
+	{target: xcheckdomain.ErrUnavailable, code: response.CodeBadRequest, key: "error.x_handle_check_unavailable"},
 }
 
 var userOrderPreviewExtraErrorRules = []mappedError{
@@ -404,6 +408,9 @@ var guestOrderCommonErrorRules = []mappedError{
 	{target: manualform.ErrFieldInvalid, code: response.CodeBadRequest, key: "error.manual_form_field_invalid"},
 	{target: manualform.ErrTypeInvalid, code: response.CodeBadRequest, key: "error.manual_form_type_invalid"},
 	{target: manualform.ErrOptionInvalid, code: response.CodeBadRequest, key: "error.manual_form_option_invalid"},
+	{target: xcheckdomain.ErrNotEligible, code: response.CodeBadRequest, key: "error.x_handle_not_eligible"},
+	{target: xcheckdomain.ErrInvalidHandle, code: response.CodeBadRequest, key: "error.x_check_invalid_handle"},
+	{target: xcheckdomain.ErrUnavailable, code: response.CodeBadRequest, key: "error.x_handle_check_unavailable"},
 }
 
 var guestOrderPreviewExtraErrorRules = []mappedError{
