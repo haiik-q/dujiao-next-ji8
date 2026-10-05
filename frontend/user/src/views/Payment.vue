@@ -115,6 +115,7 @@
                     <span v-if="walletAddressCopied" class="text-xs text-success">{{ t('payment.copied') }}</span>
                   </div>
                 </div>
+                <CryptoExactAmountNotice v-if="hasCryptoPaymentDetails" :details="cryptoPaymentDetails" class="mt-3 max-w-xl" />
               </div>
 
               <div v-else class="bg-secondary border rounded-2xl p-6">
@@ -412,6 +413,7 @@
                     <span v-if="walletAddressCopied" class="text-xs text-success">{{ t('payment.copied') }}</span>
                   </div>
                 </div>
+                <CryptoExactAmountNotice v-if="hasCryptoPaymentDetails" :details="cryptoPaymentDetails" />
                 <div v-if="paymentResult.pay_url" class="pt-2 flex flex-wrap items-center gap-2">
                   <Button type="button" variant="outline" size="sm" class="font-semibold" @click="handleCopyPayLink">
                     <Copy class="h-4 w-4" aria-hidden="true" />
@@ -494,6 +496,7 @@ import { Copy, ExternalLink } from 'lucide-vue-next'
 import { pageAlertVariant, pageAlertToneClass } from '../utils/alerts'
 import PaymentAmountBreakdown from '../components/payment/PaymentAmountBreakdown.vue'
 import PaymentChannelSelector from '../components/payment/PaymentChannelSelector.vue'
+import CryptoExactAmountNotice from '../components/payment/CryptoExactAmountNotice.vue'
 import EmptyState from '../components/EmptyState.vue'
 import CheckoutSteps from '../components/checkout/CheckoutSteps.vue'
 import { Input } from '@/components/ui/input'

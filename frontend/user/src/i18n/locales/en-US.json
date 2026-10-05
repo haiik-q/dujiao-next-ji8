@@ -1571,6 +1571,16 @@
       "success": "Success",
       "failed": "Failed",
       "expired": "Expired"
+    },
+    "exactAmount": {
+      "title": "The amount that arrives must be exactly {amount}, not a cent more or less",
+      "titleGeneric": "The amount that arrives must exactly match the amount due, not a cent more or less",
+      "exchange": "Exchanges (Binance, OKX, etc.) deduct a network fee on withdrawal, so withdraw \"amount due + fee\". For example, with a 0.01 fee, withdraw {fill} for this order. Check the \"amount received\" shown by the exchange.",
+      "exchangeGeneric": "Exchanges (Binance, OKX, etc.) deduct a network fee on withdrawal, so withdraw \"amount due + fee\". Check the \"amount received\" shown by the exchange.",
+      "wallet": "Sending from a personal wallet (TP, imToken, MetaMask, etc.)? Send exactly the amount due; the gas fee is paid separately in BNB / POL.",
+      "mismatch": "If the received amount does not match, the payment cannot be confirmed automatically and the order will expire. Contact support to recover it; a 1 USDT handling fee will be deducted.",
+      "showExample": "Show example",
+      "hideExample": "Hide example"
     }
   },
   "resellerConsole": {

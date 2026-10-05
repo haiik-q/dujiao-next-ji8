@@ -141,6 +141,11 @@ export function useRechargeOrderDetail() {
       interaction_mode: payload.interaction_mode,
       pay_url: payload.pay_url,
       qr_code: payload.qr_code,
+      // ji8：链上支付的应付数量和收款地址（原来漏传，充值页只显示二维码、看不到要转多少 USDT）
+      wallet_address: payload.wallet_address,
+      chain_amount: payload.chain_amount,
+      chain: payload.chain,
+      token_id: payload.token_id,
       expires_at: payload.expires_at,
       status: payload.status,
       fee_policy: payload.fee_policy,

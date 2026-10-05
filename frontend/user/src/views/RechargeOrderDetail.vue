@@ -120,6 +120,7 @@
                   <span v-if="walletAddressCopied" class="text-xs text-emerald-500">{{ t('payment.copied') }}</span>
                 </div>
               </div>
+              <CryptoExactAmountNotice v-if="hasCryptoPaymentDetails" :details="cryptoPaymentDetails" class="mt-3" />
               <div class="mt-4 flex flex-wrap items-center gap-3">
                 <Button v-if="payLink" type="button" variant="default" size="sm" class="font-bold" @click="handleOpenPayLink">
                   <ExternalLink class="h-4 w-4" aria-hidden="true" />
@@ -151,6 +152,7 @@ import { ExternalLink } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import EmptyState from '../components/EmptyState.vue'
+import CryptoExactAmountNotice from '../components/payment/CryptoExactAmountNotice.vue'
 import { useRechargeOrderDetail } from '../composables/useRechargeOrderDetail'
 
 const { t } = useI18n()
