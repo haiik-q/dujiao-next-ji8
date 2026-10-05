@@ -89,6 +89,11 @@ func (s *ManagementService) ApplyUserReseller(userID uint, input ResellerApplyIn
 			ApplyReason:      reason,
 			SettlementStatus: resellerdomain.SettlementStatusNormal,
 		}
+		if s.cfg.AutoApprove {
+			now := time.Now()
+			profile.Status = resellerdomain.ProfileStatusActive
+			profile.ReviewedAt = &now
+		}
 		if err := s.store.CreateProfile(profile); err != nil {
 			return nil, err
 		}

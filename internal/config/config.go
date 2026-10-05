@@ -298,6 +298,8 @@ type ResellerConfig struct {
 	TrustedForwardedHost bool     `mapstructure:"trusted_forwarded_host"`
 	SubdomainBase        string   `mapstructure:"subdomain_base"`
 	SelfApplyEnabled     bool     `mapstructure:"self_apply_enabled"`
+	// AutoApprove 首次自助申请直接通过（加价比例为 0），被驳回后再申请仍需人工审核；域名审核不受影响。
+	AutoApprove bool `mapstructure:"auto_approve"`
 	// SettlementConfirmDays 分销利润入账后转为可提现的确认天数（0 表示即时到账）。
 	SettlementConfirmDays int `mapstructure:"settlement_confirm_days"`
 }

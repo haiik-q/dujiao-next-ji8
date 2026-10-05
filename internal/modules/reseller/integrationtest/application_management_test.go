@@ -93,6 +93,39 @@ func TestResellerManagementApplyDisabledConfigRejects(t *testing.T) {
 	}
 }
 
+func TestResellerManagementAutoApproveActivatesFirstApplyOnly(t *testing.T) {
+	db := openResellerManagementServiceTestDB(t)
+	user := seedResellerManagementUser(t, db, "auto-approve@example.test")
+	svc := NewResellerManagementService(resellergormstore.New(db), config.ResellerConfig{
+		Enabled:          true,
+		SelfApplyEnabled: true,
+		AutoApprove:      true,
+	})
+
+	profile, err := svc.ApplyUserReseller(user.ID, ResellerApplyInput{Reason: "auto"})
+	if err != nil {
+		t.Fatalf("ApplyUserReseller failed: %v", err)
+	}
+	if profile.Status != resellerdomain.ProfileStatusActive || profile.ReviewedAt == nil || profile.ReviewedBy != nil {
+		t.Fatalf("expected auto-approved active profile, got %+v", profile)
+	}
+	if !profile.DefaultMarkupPercent.Decimal.IsZero() || !profile.MaxMarkupPercent.Decimal.IsZero() {
+		t.Fatalf("expected zero markups, got %+v", profile)
+	}
+
+	profile.Status = resellerdomain.ProfileStatusRejected
+	if err := db.Save(profile).Error; err != nil {
+		t.Fatalf("save rejected profile failed: %v", err)
+	}
+	reapplied, err := svc.ApplyUserReseller(user.ID, ResellerApplyInput{Reason: "again"})
+	if err != nil {
+		t.Fatalf("reapply failed: %v", err)
+	}
+	if reapplied.Status != resellerdomain.ProfileStatusPendingReview {
+		t.Fatalf("expected rejected reapply to stay pending, got %+v", reapplied)
+	}
+}
+
 func TestResellerManagementApproveActivatesProfileWithoutAutoSubdomain(t *testing.T) {
 	db := openResellerManagementServiceTestDB(t)
 	user := seedResellerManagementUser(t, db, "approve-reseller@example.test")
