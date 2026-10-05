@@ -1320,6 +1320,7 @@
       "passwordPlaceholder": "Set login password",
       "codeLabel": "Verification code",
       "codePlaceholder": "Enter email code",
+      "codeSpamHint": "Didn't get the code? Check your spam or junk folder, it may have been filtered there.",
       "sendCode": "Send code",
       "create": "Create account",
       "creating": "Registering...",

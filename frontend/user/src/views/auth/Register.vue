@@ -161,6 +161,7 @@
                 {{ countdown > 0 ? t('auth.common.countdown', { seconds: countdown }) : t('auth.common.sendCode') }}
               </Button>
             </div>
+            <p class="mt-1.5 text-xs text-amber-700 dark:text-amber-400">{{ t('auth.register.codeSpamHint') }}</p>
           </div>
 
           <label class="flex items-start gap-3 rounded-xl border bg-secondary px-4 py-3 text-sm text-muted-foreground transition-colors">

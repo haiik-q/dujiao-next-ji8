@@ -1320,6 +1320,7 @@
       "passwordPlaceholder": "設定登入密碼",
       "codeLabel": "驗證碼",
       "codePlaceholder": "輸入信箱驗證碼",
+      "codeSpamHint": "收不到驗證碼？請到信箱的「垃圾郵件」資料夾查看，可能被誤攔截了。",
       "sendCode": "發送驗證碼",
       "create": "建立帳號",
       "creating": "註冊中...",

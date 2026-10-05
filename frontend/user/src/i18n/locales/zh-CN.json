@@ -1273,6 +1273,7 @@
       "passwordPlaceholder": "设置登录密码",
       "codeLabel": "验证码",
       "codePlaceholder": "输入邮箱验证码",
+      "codeSpamHint": "收不到验证码？请到邮箱的「垃圾箱」或「广告邮件」里查看，可能被误拦截了。",
       "sendCode": "发送验证码",
       "create": "创建账号",
       "creating": "注册中...",
