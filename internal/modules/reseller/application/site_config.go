@@ -376,6 +376,9 @@ func (s *SiteConfigService) ApplyPublicConfigOverlay(ctx context.Context, tenant
 		brandHost = tenant.PrimaryDomain
 	}
 	brand["site_url"] = mailbrand.ResellerFallback(brandHost).SiteURL
+	// 主站站点描述（页脚那行，写着主站品牌）不下发到分销站；分销商在 SEO 里填了描述时
+	// 由 applyResellerSiteConfigToPublicConfig 回填，否则前台页脚回落为版权行。
+	delete(brand, "site_description")
 	out["brand"] = brand
 	// 主站首页公告永不下发到分销站：分销商未保存站点设置（cfg 为空）或资料非激活时也不继承，
 	// 已保存设置时再由 applyResellerSiteConfigToPublicConfig 按其自有公告回填。
@@ -486,6 +489,9 @@ func applyResellerSiteConfigToPublicConfig(out map[string]interface{}, cfg *rese
 	}
 	if cfg.Favicon != "" {
 		brand["site_icon"] = cfg.Favicon
+	}
+	if desc := resellerAnnouncementLocalizedMap(cfg.SEOJSON["description"]); hasAnnouncementContent(desc) {
+		brand["site_description"] = desc
 	}
 	out["brand"] = brand
 

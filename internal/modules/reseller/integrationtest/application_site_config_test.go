@@ -149,9 +149,10 @@ func TestResellerSiteConfigServiceApplyPublicConfigOverlay(t *testing.T) {
 	resellerID := profile.ID
 	base := map[string]interface{}{
 		"brand": map[string]interface{}{
-			"site_name": "Main Store",
-			"site_icon": "/dj.svg",
-			"site_url":  "https://main.example.test",
+			"site_name":        "Main Store",
+			"site_icon":        "/dj.svg",
+			"site_url":         "https://main.example.test",
+			"site_description": map[string]interface{}{"zh-CN": "主站描述"},
 		},
 		"currency": "CNY",
 		"seo": map[string]interface{}{
@@ -172,6 +173,9 @@ func TestResellerSiteConfigServiceApplyPublicConfigOverlay(t *testing.T) {
 	if brand["site_url"] != "https://shop.example.test" {
 		t.Fatalf("reseller brand must not inherit the main site URL: %+v", brand)
 	}
+	if _, exists := brand["site_description"]; exists {
+		t.Fatalf("reseller without seo description must not inherit the main site description: %+v", brand)
+	}
 	if out["currency"] != "CNY" {
 		t.Fatalf("global inherited fields should remain, got currency=%v", out["currency"])
 	}
@@ -189,6 +193,36 @@ func TestResellerSiteConfigServiceApplyPublicConfigOverlay(t *testing.T) {
 	tenantPayload := out["tenant"].(map[string]interface{})
 	if tenantPayload["mode"] != "reseller" || tenantPayload["host"] != "shop.example.test" {
 		t.Fatalf("unexpected tenant payload: %+v", tenantPayload)
+	}
+}
+
+func TestResellerSiteConfigServiceOverlayUsesSEODescriptionAsSiteDescription(t *testing.T) {
+	db := openResellerManagementServiceTestDB(t)
+	repo := resellergormstore.New(db)
+	user := seedResellerManagementUser(t, db, "site-config-description@example.test")
+	profile := resellerdomain.Profile{UserID: user.ID, Status: resellerdomain.ProfileStatusActive, SettlementStatus: resellerdomain.SettlementStatusNormal}
+	if err := db.Create(&profile).Error; err != nil {
+		t.Fatalf("create profile failed: %v", err)
+	}
+	svc := NewResellerSiteConfigService(repo)
+	if _, err := svc.UpdateUserSiteConfig(context.Background(), user.ID, ResellerSiteConfigInput{
+		SiteName: "Description Store",
+		SEO: ResellerSEOInput{
+			Description: LocalizedTextInput{"zh-CN": "分销站描述"},
+		},
+	}); err != nil {
+		t.Fatalf("save config failed: %v", err)
+	}
+	tenant := ResellerTenantContext("shop.example.test", profile.ID, user.ID, "shop.example.test")
+	out, err := svc.ApplyPublicConfigOverlay(context.Background(), tenant, map[string]interface{}{
+		"brand": map[string]interface{}{"site_description": map[string]interface{}{"zh-CN": "主站描述"}},
+	})
+	if err != nil {
+		t.Fatalf("apply overlay failed: %v", err)
+	}
+	desc := resellerSiteConfigTestMap(out["brand"].(map[string]interface{})["site_description"])
+	if desc["zh-CN"] != "分销站描述" {
+		t.Fatalf("reseller seo description should become the site description, got %+v", desc)
 	}
 }
 
