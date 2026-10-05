@@ -113,7 +113,7 @@ const config = computed(() => siteSnapshot.value?.config || null)
 const siteName = computed(() => config.value?.site_name || '')
 const supportChannelsReady = computed(() => {
   const support = config.value?.support || {}
-  return ['telegram', 'whatsapp', 'email', 'support_url'].filter((key) => Boolean((support as Record<string, string | undefined>)[key])).length
+  return ['telegram', 'whatsapp', 'email', 'support_url', 'wechat', 'qq'].filter((key) => Boolean((support as Record<string, string | undefined>)[key])).length
 })
 const readiness = computed(() => [
   { label: t('resellerConsole.site.readiness.brand'), done: Boolean(config.value?.site_name || config.value?.logo || config.value?.favicon) },

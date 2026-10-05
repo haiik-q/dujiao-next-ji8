@@ -48,6 +48,10 @@ func siteConfigFieldErrorKey(field string) string {
 		return "error.reseller_support_email_invalid"
 	case "support_url":
 		return "error.reseller_support_url_invalid"
+	case "support_wechat":
+		return "error.reseller_support_wechat_invalid"
+	case "support_qq":
+		return "error.reseller_support_qq_invalid"
 	case "image":
 		return "error.reseller_image_invalid"
 	case "link":

@@ -359,6 +359,7 @@ import {
     Compass,
     CircleAlert,
     CircleCheck,
+    Hash,
     Info,
     LifeBuoy,
     Link2,
@@ -366,6 +367,7 @@ import {
     Mail,
     Megaphone,
     MessageCircle,
+    MessagesSquare,
     Plus,
     RotateCcw,
     Search,
@@ -457,6 +459,8 @@ const supportFields = [
     { key: 'whatsapp' as const, label: 'personalCenter.reseller.siteConfig.fields.whatsapp', icon: MessageCircle, placeholder: 'https://wa.me/1234567890', hint: 'https://wa.me/…' },
     { key: 'email' as const, label: 'personalCenter.reseller.siteConfig.fields.email', icon: Mail, placeholder: 'support@example.com', hint: 'name@example.com' },
     { key: 'support_url' as const, label: 'personalCenter.reseller.siteConfig.fields.supportUrl', icon: LifeBuoy, placeholder: 'https://example.com/support', hint: 'https://…' },
+    { key: 'wechat' as const, label: 'personalCenter.reseller.siteConfig.fields.wechat', icon: MessagesSquare, placeholder: 'wxid_example', hint: 'A-Z a-z 0-9 _ -' },
+    { key: 'qq' as const, label: 'personalCenter.reseller.siteConfig.fields.qq', icon: Hash, placeholder: '123456789', hint: '5–12 digits' },
 ]
 
 const announcementTypeOptions = [
@@ -504,6 +508,8 @@ const createBlankForm = (): ResellerSiteConfigPayload => ({
         whatsapp: '',
         email: '',
         support_url: '',
+        wechat: '',
+        qq: '',
     },
     seo: {
         title: blankLocalizedText(),
@@ -558,6 +564,8 @@ const assignForm = (config?: ResellerSiteConfigData) => {
             whatsapp: config.support?.whatsapp || '',
             email: config.support?.email || '',
             support_url: config.support?.support_url || '',
+            wechat: config.support?.wechat || '',
+            qq: config.support?.qq || '',
         }
         next.seo = {
             title: normalizeLocalizedTextForForm(config.seo?.title),

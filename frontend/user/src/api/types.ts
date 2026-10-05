@@ -267,6 +267,8 @@ export interface ResellerSiteConfigPayload {
         whatsapp?: string
         email?: string
         support_url?: string
+        wechat?: string
+        qq?: string
     }
     seo?: {
         title: ResellerLocalizedText

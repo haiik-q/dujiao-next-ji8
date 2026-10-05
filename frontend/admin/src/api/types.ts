@@ -880,6 +880,8 @@ export interface AdminResellerSiteConfigPayload {
     whatsapp?: string
     email?: string
     support_url?: string
+    wechat?: string
+    qq?: string
   }
   seo?: {
     title?: AdminResellerLocalizedText

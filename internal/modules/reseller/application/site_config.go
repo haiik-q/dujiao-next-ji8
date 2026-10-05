@@ -7,6 +7,7 @@ import (
 	"hash/fnv"
 	"net/mail"
 	"net/url"
+	"regexp"
 	"strings"
 
 	resellercontract "github.com/dujiao-next/internal/modules/reseller/contract"
@@ -35,7 +36,16 @@ type ResellerSupportInput struct {
 	WhatsApp   string `json:"whatsapp"`
 	Email      string `json:"email"`
 	SupportURL string `json:"support_url"`
+	WeChat     string `json:"wechat"`
+	QQ         string `json:"qq"`
 }
+
+// 微信号（含手机号）只收字母、数字、下划线、横杠；QQ 号 / QQ 群号为 5–12 位数字。
+// 两者在前台只做「复制」，不拼链接。
+var (
+	resellerWeChatPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{2,64}$`)
+	resellerQQPattern     = regexp.MustCompile(`^[1-9][0-9]{4,11}$`)
+)
 
 type ResellerSEOInput struct {
 	Title          LocalizedTextInput `json:"title"`
@@ -170,7 +180,15 @@ func NormalizeResellerSupport(input ResellerSupportInput) (jsonmap.JSON, error) 
 	if err != nil {
 		return nil, newResellerFieldError("support_url")
 	}
-	return jsonmap.JSON{"telegram": telegram, "whatsapp": whatsApp, "email": email, "support_url": supportURL}, nil
+	wechat := trimLimit(input.WeChat, 64)
+	if wechat != "" && !resellerWeChatPattern.MatchString(wechat) {
+		return nil, newResellerFieldError("support_wechat")
+	}
+	qq := trimLimit(input.QQ, 20)
+	if qq != "" && !resellerQQPattern.MatchString(qq) {
+		return nil, newResellerFieldError("support_qq")
+	}
+	return jsonmap.JSON{"telegram": telegram, "whatsapp": whatsApp, "email": email, "support_url": supportURL, "wechat": wechat, "qq": qq}, nil
 }
 
 func normalizeResellerAnnouncement(input ResellerAnnouncementInput) jsonmap.JSON {
@@ -499,7 +517,7 @@ func applyResellerSiteConfigToPublicConfig(out map[string]interface{}, cfg *rese
 	if contact == nil {
 		contact = map[string]interface{}{}
 	}
-	for _, key := range []string{"telegram", "whatsapp", "email", "support_url"} {
+	for _, key := range []string{"telegram", "whatsapp", "email", "support_url", "wechat", "qq"} {
 		if value, ok := cfg.SupportJSON[key].(string); ok && strings.TrimSpace(value) != "" {
 			contact[key] = value
 		}

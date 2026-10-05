@@ -196,6 +196,37 @@ func TestResellerSiteConfigServiceApplyPublicConfigOverlay(t *testing.T) {
 	}
 }
 
+func TestResellerSiteConfigServiceWeChatAndQQSupport(t *testing.T) {
+	db := openResellerManagementServiceTestDB(t)
+	repo := resellergormstore.New(db)
+	user := seedResellerManagementUser(t, db, "site-config-wechat@example.test")
+	profile := resellerdomain.Profile{UserID: user.ID, Status: resellerdomain.ProfileStatusActive, SettlementStatus: resellerdomain.SettlementStatusNormal}
+	if err := db.Create(&profile).Error; err != nil {
+		t.Fatalf("create profile failed: %v", err)
+	}
+	svc := NewResellerSiteConfigService(repo)
+	for _, bad := range []ResellerSupportInput{{WeChat: "wx id"}, {QQ: "12ab5"}, {QQ: "0123456"}} {
+		if _, err := svc.UpdateUserSiteConfig(context.Background(), user.ID, ResellerSiteConfigInput{SiteName: "Bad", Support: bad}); err == nil {
+			t.Fatalf("invalid support %+v should be rejected", bad)
+		}
+	}
+	if _, err := svc.UpdateUserSiteConfig(context.Background(), user.ID, ResellerSiteConfigInput{
+		SiteName: "WeChat Store",
+		Support:  ResellerSupportInput{WeChat: " wxid_abc-123 ", QQ: "302524879"},
+	}); err != nil {
+		t.Fatalf("save config failed: %v", err)
+	}
+	tenant := ResellerTenantContext("shop.example.test", profile.ID, user.ID, "shop.example.test")
+	out, err := svc.ApplyPublicConfigOverlay(context.Background(), tenant, map[string]interface{}{})
+	if err != nil {
+		t.Fatalf("apply overlay failed: %v", err)
+	}
+	contact := out["contact"].(map[string]interface{})
+	if contact["wechat"] != "wxid_abc-123" || contact["qq"] != "302524879" {
+		t.Fatalf("wechat/qq should reach the public contact, got %+v", contact)
+	}
+}
+
 func TestResellerSiteConfigServiceOverlayUsesSEODescriptionAsSiteDescription(t *testing.T) {
 	db := openResellerManagementServiceTestDB(t)
 	repo := resellergormstore.New(db)

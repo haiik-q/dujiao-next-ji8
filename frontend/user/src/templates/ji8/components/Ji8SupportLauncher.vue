@@ -35,7 +35,23 @@
             <span>{{ t('ji8.contact.qqGroup') }}</span>
             <code>{{ channels.qqGroup }}</code>
           </div>
-          <button type="button" @click="copyQq">{{ copied ? t('ji8.contact.copied') : t('ji8.contact.copy') }}</button>
+          <button type="button" @click="copyValue('qqGroup')">{{ copiedKey === 'qqGroup' ? t('ji8.contact.copied') : t('ji8.contact.copy') }}</button>
+        </li>
+        <li v-if="channels.wechat">
+          <span class="j8-contact-icon is-wechat"><MessageCircle /></span>
+          <div class="j8-contact-text">
+            <span>{{ t('ji8.contact.wechat') }}</span>
+            <code>{{ channels.wechat }}</code>
+          </div>
+          <button type="button" @click="copyValue('wechat')">{{ copiedKey === 'wechat' ? t('ji8.contact.copied') : t('ji8.contact.copy') }}</button>
+        </li>
+        <li v-if="channels.qq">
+          <span class="j8-contact-icon is-qq"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="QQ_ICON_PATH" /></svg></span>
+          <div class="j8-contact-text">
+            <span>{{ t('ji8.contact.qq') }}</span>
+            <code>{{ channels.qq }}</code>
+          </div>
+          <button type="button" @click="copyValue('qq')">{{ copiedKey === 'qq' ? t('ji8.contact.copied') : t('ji8.contact.copy') }}</button>
         </li>
       </ul>
       <p>{{ t('ji8.contact.tip') }}</p>
@@ -72,7 +88,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { Headset, X } from 'lucide-vue-next'
+import { Headset, MessageCircle, X } from 'lucide-vue-next'
 import { useAppStore } from '../../../stores/app'
 import { useJi8Nav } from '../composables/useJi8Nav'
 import { JI8_SUPPORT, QQ_ICON_PATH, TELEGRAM_ICON_PATH } from '../utils/contact'
@@ -81,36 +97,49 @@ import { toast } from '../../../composables/useToast'
 
 /**
  * 右下角客服浮标：主站 → 「联系客服」按钮，点开卡片（Telegram 客服 / Telegram 群 / QQ 群，另有 telegram/whatsapp 时附链接）；
- * 分销站或渠道全空 → 回落为 contact 外链浮标（分销站为分销商自己的客服），皆空则不渲染（D6）。
+ * 分销站填了微信号 / QQ → 同样的卡片（只复制），其余渠道走卡片底部链接；
+ * 渠道全空 → 回落为 contact 外链浮标（分销站为分销商自己的客服），皆空则不渲染（D6）。
  */
 const { t } = useI18n()
 const route = useRoute()
 const appStore = useAppStore()
 const { supportLink } = useJi8Nav()
 
-// 这些渠道是主站的：分销站不显示，避免分销商的客人找到主站客服
+// Telegram 客服 / 群 / QQ 群是主站的：分销站不显示，避免分销商的客人找到主站客服；
+// 分销站只显示分销商在站点设置里填的微信号 / QQ
 const channels = computed(() => {
-  if (appStore.isResellerTenant) return { telegramUser: '', telegramGroup: '', qqGroup: '' }
+  if (appStore.isResellerTenant) {
+    const contact = (appStore.config?.contact || {}) as Record<string, unknown>
+    return {
+      telegramUser: '',
+      telegramGroup: '',
+      qqGroup: '',
+      wechat: String(contact.wechat || '').trim(),
+      qq: String(contact.qq || '').trim(),
+    }
+  }
   return {
     telegramUser: JI8_SUPPORT.telegramUser.trim().replace(/^@/, ''),
     telegramGroup: JI8_SUPPORT.telegramGroup.trim(),
     qqGroup: JI8_SUPPORT.qqGroup.trim(),
+    wechat: '',
+    qq: '',
   }
 })
 const hasChannels = computed(() => Object.values(channels.value).some(Boolean))
 const panelId = 'j8-contact-panel'
 const open = ref(false)
-const copied = ref(false)
+const copiedKey = ref('')
 const rootRef = ref<HTMLElement | null>(null)
 let copiedTimer: number | undefined
 
-const copyQq = async () => {
+const copyValue = async (key: 'qqGroup' | 'wechat' | 'qq') => {
   try {
-    await copyText(channels.value.qqGroup)
-    copied.value = true
+    await copyText(channels.value[key])
+    copiedKey.value = key
     toast.success(t('ji8.contact.copied'))
     window.clearTimeout(copiedTimer)
-    copiedTimer = window.setTimeout(() => (copied.value = false), 2000)
+    copiedTimer = window.setTimeout(() => (copiedKey.value = ''), 2000)
   } catch {
     toast.error(t('ji8.contact.copyFailed'))
   }
