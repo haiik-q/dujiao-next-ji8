@@ -4,10 +4,14 @@
     <div class="flex items-start gap-2">
       <AlertTriangle class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
       <div class="min-w-0 space-y-1.5 text-xs leading-relaxed sm:text-sm">
-        <p class="font-bold">
-          {{ amount ? t('payment.exactAmount.title', { amount: amountLabel }) : t('payment.exactAmount.titleGeneric') }}
-        </p>
-        <p>{{ exampleFill ? t('payment.exactAmount.exchange', { fill: exampleFill }) : t('payment.exactAmount.exchangeGeneric') }}</p>
+        <i18n-t :keypath="amount ? 'payment.exactAmount.title' : 'payment.exactAmount.titleGeneric'" tag="p" class="font-bold">
+          <template #received><span :class="HIGHLIGHT">{{ t('payment.exactAmount.receivedWord') }}</span></template>
+          <template #amount><span :class="HIGHLIGHT">{{ amountLabel }}</span></template>
+        </i18n-t>
+        <i18n-t :keypath="exampleFill ? 'payment.exactAmount.exchange' : 'payment.exactAmount.exchangeGeneric'" tag="p">
+          <template #fill><span class="font-bold">{{ exampleFill }}</span></template>
+          <template #receivedTag><span :class="HIGHLIGHT">{{ t('payment.exactAmount.receivedTag') }}</span></template>
+        </i18n-t>
         <p>{{ t('payment.exactAmount.wallet') }}</p>
         <p class="font-semibold text-red-600 dark:text-red-400">{{ t('payment.exactAmount.mismatch') }}</p>
         <button
@@ -32,13 +36,16 @@ import { useI18n } from 'vue-i18n'
 import { AlertTriangle, Image as ImageIcon } from 'lucide-vue-next'
 
 const GUIDE_IMAGE = '/images/usdt-fee-guide.jpg'
+// 「实际到账数量」、应付金额标红加粗，提醒客人核对到账数量
+const HIGHLIGHT = 'font-extrabold text-red-600 dark:text-red-400'
 
 const props = defineProps<{
   details: Array<{ key: string; value: string }>
 }>()
 
 const { t } = useI18n()
-const showGuide = ref(false)
+// 示例图默认展开，客人可以收起
+const showGuide = ref(true)
 
 const amount = computed(() => props.details.find((d) => d.key === 'amount')?.value?.trim() || '')
 const token = computed(() => props.details.find((d) => d.key === 'token')?.value?.trim() || '')
