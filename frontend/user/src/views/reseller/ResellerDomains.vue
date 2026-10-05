@@ -23,6 +23,74 @@
     <ResellerPageState v-if="loading" loading :title="t('resellerConsole.common.loading')" />
 
     <template v-else>
+      <!-- ji8：域名开通说明（分销商普遍不熟悉 DNS，引导联系客服） -->
+      <section class="overflow-hidden rounded-lg border border-primary/30 bg-card shadow-sm">
+        <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div class="flex min-w-0 items-start gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <BookOpen class="h-5 w-5" />
+            </span>
+            <div class="min-w-0">
+              <h2 class="text-base font-bold text-foreground">{{ t('resellerConsole.domains.guide.title') }}</h2>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">{{ t('resellerConsole.domains.guide.intro') }}</p>
+            </div>
+          </div>
+          <div class="flex shrink-0 flex-wrap items-center gap-2">
+            <Button as-child size="sm">
+              <a :href="SUPPORT_TELEGRAM_URL" target="_blank" rel="noopener noreferrer">
+                <Send class="h-4 w-4" />
+                {{ t('resellerConsole.domains.guide.contact', { handle: SUPPORT_TELEGRAM_HANDLE }) }}
+              </a>
+            </Button>
+            <Button type="button" variant="ghost" size="sm" @click="guideOpen = !showGuide">
+              {{ showGuide ? t('resellerConsole.domains.guide.hide') : t('resellerConsole.domains.guide.show') }}
+              <ChevronDown class="h-4 w-4 transition-transform" :class="showGuide ? 'rotate-180' : ''" />
+            </Button>
+          </div>
+        </div>
+
+        <div v-if="showGuide" class="grid gap-px border-t border-border bg-border lg:grid-cols-2">
+          <div class="bg-card px-5 py-5 sm:px-6">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-sm font-bold text-foreground">{{ t('resellerConsole.domains.guide.subTitle') }}</h3>
+              <ResellerStatusBadge :label="t('resellerConsole.domains.guide.recommended')" tone="success" />
+            </div>
+            <ul class="mt-3 space-y-2.5">
+              <li v-for="key in ['sub1', 'sub2', 'sub3', 'sub4']" :key="key" class="flex items-start gap-2 text-sm leading-relaxed text-foreground">
+                <CheckCircle2 class="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                <span>{{ t(`resellerConsole.domains.guide.${key}`, { handle: SUPPORT_TELEGRAM_HANDLE }) }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-card px-5 py-5 sm:px-6">
+            <h3 class="text-sm font-bold text-foreground">{{ t('resellerConsole.domains.guide.customTitle') }}</h3>
+            <div class="mt-3 space-y-3 text-sm leading-relaxed text-foreground">
+              <div>
+                <p class="font-semibold">{{ t('resellerConsole.domains.guide.step1') }}</p>
+                <p class="mt-1.5 text-muted-foreground">{{ t('resellerConsole.domains.guide.step1Sub') }}</p>
+                <p class="mt-1.5 text-muted-foreground">{{ t('resellerConsole.domains.guide.step1Root') }}</p>
+                <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
+                  <div class="min-w-0">
+                    <div class="text-xs text-muted-foreground">{{ t('resellerConsole.domains.guide.cnameTarget') }}</div>
+                    <div class="break-all font-mono text-sm font-bold text-foreground">{{ CNAME_TARGET }}</div>
+                  </div>
+                  <ResellerCopyButton :value="CNAME_TARGET" :label="t('resellerConsole.common.copy')" />
+                </div>
+                <p v-for="key in ['rootWarn1', 'rootWarn2']" :key="key" class="mt-2 flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-400">
+                  <AlertTriangle class="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  <span>{{ t(`resellerConsole.domains.guide.${key}`) }}</span>
+                </p>
+              </div>
+              <div v-for="step in ['step2', 'step3']" :key="step">
+                <p class="font-semibold">{{ t(`resellerConsole.domains.guide.${step}Title`) }}</p>
+                <p class="mt-1.5 text-muted-foreground">{{ t(`resellerConsole.domains.guide.${step}`, { handle: SUPPORT_TELEGRAM_HANDLE }) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         <div class="border-b border-border px-5 py-4 sm:px-6">
           <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -217,7 +285,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CircleAlert, ExternalLink, Globe2, Link2, Plus, RotateCw } from 'lucide-vue-next'
+import { AlertTriangle, BookOpen, CheckCircle2, ChevronDown, CircleAlert, ExternalLink, Globe2, Link2, Plus, RotateCw, Send } from 'lucide-vue-next'
 import { resellerAPI, type ResellerDomainData, type ResellerManagementSnapshotData } from '../../api'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -241,8 +309,15 @@ import { type PageAlert } from '../../utils/alerts'
 import { formatResellerConsoleDate } from '../../utils/resellerConsole'
 import { getResellerDomainStatusKey } from '../../utils/resellerManagement'
 
+// ji8：开通说明里的客服账号和自定义域名 CNAME 目标（CF for SaaS 回退源）。
+const SUPPORT_TELEGRAM_HANDLE = '@haiik1'
+const SUPPORT_TELEGRAM_URL = 'https://t.me/haiik1'
+const CNAME_TARGET = 'fallback.ji8.ai'
+
 const { t } = useI18n()
 const loading = ref(false)
+// null 表示用户没手动展开/收起：还没有可访问域名时默认展开，已有则默认收起。
+const guideOpen = ref<boolean | null>(null)
 const submitting = ref(false)
 const snapshot = ref<ResellerManagementSnapshotData | null>(null)
 const alert = ref<PageAlert | null>(null)
@@ -258,6 +333,7 @@ const customDomains = computed(() => domains.value.filter((d) => d.type !== RESE
 const activeDomains = computed(() => domains.value.filter(isActiveVerifiedDomain))
 const primaryDomain = computed(() => activeDomains.value.find((d) => d.is_primary) || null)
 const pendingDomains = computed(() => domains.value.filter((d) => d.status === RESELLER_DOMAIN_STATUS_PENDING_REVIEW || d.verification_status === RESELLER_DOMAIN_VERIFICATION_PENDING))
+const showGuide = computed(() => guideOpen.value ?? activeDomains.value.length === 0)
 
 const load = async () => {
   loading.value = true
