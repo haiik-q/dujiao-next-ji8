@@ -16,10 +16,10 @@
       >
         <div class="j8-fcard-head">
           <div>
-            <h3>{{ nameOf(g) }}</h3>
+            <h3>{{ t(`ji8.featured.name.${g.art}`) }}<em v-if="highlightOf(g)">{{ highlightOf(g) }}</em></h3>
             <p>{{ t(`ji8.featured.sub.${g.art}`) }}</p>
           </div>
-          <span class="j8-fcard-tag">{{ tagOf(g) }}</span>
+          <span v-if="!highlightOf(g)" class="j8-fcard-tag">{{ t('ji8.featured.count', { count: g.products.length }) }}</span>
         </div>
 
         <div class="j8-fart" :class="`is-${g.art}`" aria-hidden="true">
@@ -47,7 +47,7 @@
               <path :d="STAR" fill="url(#j8-gem-grad)" />
             </svg>
             <svg v-for="n in 3" :key="n" class="fa-twinkle" :class="`t${n}`" viewBox="0 0 100 100"><path :d="STAR" /></svg>
-            <div v-if="g.months.length" class="fa-num"><b>{{ g.months[g.months.length - 1] }}</b><span>{{ t('ji8.featured.caption.gemini') }}</span></div>
+            <div v-if="bigOf(g)" class="fa-num"><b>{{ bigOf(g)!.n }}<small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.gemini') }}</span></div>
           </div>
 
           <!-- X：黑色会员卡 + 扫光 -->
@@ -70,7 +70,7 @@
             <span class="fa-glow"></span>
             <span class="fa-icon"><Ji8BrandIcon :slug="g.category?.slug" :name="nameOf(g)" :image="iconOf(g)" /></span>
             <span v-for="(word, k) in WORDS" :key="word" class="fa-word" :class="`w${k + 1}`">{{ word }}</span>
-            <div v-if="g.months.length" class="fa-num"><b>{{ g.months[g.months.length - 1] }}</b><span>{{ t('ji8.featured.caption.duolingo') }}</span></div>
+            <div v-if="bigOf(g)" class="fa-num"><b>{{ bigOf(g)!.n }}<small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.duolingo') }}</span></div>
           </div>
 
           <!-- Muse：吉祥物 + 不断冒出的词元气泡 -->
@@ -127,10 +127,24 @@ const money = (amount: number) => formatMoney(amount, siteCurrency.value).replac
 const nameOf = (g: FeaturedGroup) => getLocalizedText(g.category?.name) || g.art
 const iconOf = (g: FeaturedGroup) => getImageUrl(g.category?.icon)
 
-const tagOf = (g: FeaturedGroup) => {
+// 标题里高亮的部分：时长（12 的倍数写成「N 年」）或 ChatGPT 套餐档位；没有就不高亮，改在右上角显示款数
+const highlightOf = (g: FeaturedGroup) => {
   if (g.art === 'chatgpt' && g.plans.length) return [...new Set(g.plans.map((p) => p.name.split(' ')[0]))].join(' / ')
-  if (g.months.length) return t('ji8.featured.months', { n: g.months.join(' / ') })
-  return t('ji8.featured.count', { count: g.products.length })
+  if (!g.months.length) return ''
+  if (g.months.every((m) => m % 12 === 0)) {
+    const years = g.months.map((m) => m / 12)
+    return t('ji8.featured.years', { n: years.join(' / ') }, years[years.length - 1] ?? 1)
+  }
+  return t('ji8.featured.months', { n: g.months.join(' / ') })
+}
+
+// 插画里的大数字：12 个月写成 365 天，其他 12 的倍数写成年
+const bigOf = (g: FeaturedGroup) => {
+  const m = g.months[g.months.length - 1]
+  if (!m) return null
+  if (m === 12) return { n: 365, unit: t('ji8.featured.unit.day') }
+  if (m % 12 === 0) return { n: m / 12, unit: t('ji8.featured.unit.year') }
+  return { n: m, unit: t('ji8.featured.unit.month') }
 }
 
 const linkOf = (g: FeaturedGroup) =>

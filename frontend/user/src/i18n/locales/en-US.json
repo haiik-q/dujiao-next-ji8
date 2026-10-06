@@ -314,9 +314,22 @@
         "muse": "Ready accounts · Invite boosts"
       },
       "caption": {
-        "gemini": "months of Pro",
-        "duolingo": "months of Super",
+        "gemini": "of Gemini Pro",
+        "duolingo": "of Duolingo Super",
         "muse": "+1B tokens"
+      },
+      "name": {
+        "chatgpt": "ChatGPT",
+        "gemini": "Gemini Pro",
+        "x": "X Premium",
+        "duolingo": "Duolingo Super",
+        "muse": "Muse"
+      },
+      "years": "{n} year | {n} years",
+      "unit": {
+        "month": "months",
+        "year": "years",
+        "day": "days"
       }
     }
   },

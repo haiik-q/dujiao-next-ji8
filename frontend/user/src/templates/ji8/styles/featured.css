@@ -20,7 +20,18 @@
 .ji8-scope .j8-fcard.is-sold-out { opacity: .78; }
 .ji8-scope .j8-fcard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .ji8-scope .j8-fcard-head > div { min-width: 0; }
-.ji8-scope .j8-fcard h3 { margin: 0; font-size: 25px; font-weight: 750; line-height: 1.2; letter-spacing: -.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ji8-scope .j8-fcard h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .32em; margin: 0; font-size: 26px; font-weight: 750; line-height: 1.2; letter-spacing: -.03em; }
+/* 标题里的时长 / 档位：和插画同色系的渐变字 */
+.ji8-scope .j8-fcard h3 em {
+  font-style: normal; font-weight: 800; white-space: nowrap;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.ji8-scope .j8-fcard.is-gemini h3 em { background-image: linear-gradient(120deg, #4f8bff, #8d6bff 55%, #d65fb4); }
+.ji8-scope .j8-fcard.is-duolingo h3 em { background-image: linear-gradient(120deg, #4c9a00, #79c900); }
+.ji8-scope .j8-fcard.is-x h3 em { background-image: linear-gradient(120deg, #a8650c, #e0a12c); }
+.dark .ji8-scope .j8-fcard.is-gemini h3 em { background-image: linear-gradient(120deg, #8fb3ff, #b4a4ff 55%, #f09ad6); }
+.dark .ji8-scope .j8-fcard.is-duolingo h3 em { background-image: linear-gradient(120deg, #8ee04a, #b6f07a); }
+.dark .ji8-scope .j8-fcard.is-x h3 em { background-image: linear-gradient(120deg, #e3b45c, #ffd58a); }
 .ji8-scope .j8-fcard-head p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .ji8-scope .j8-fcard-tag { flex: 0 0 auto; margin-top: 6px; padding: 4px 9px; border-radius: var(--r-pill); background: var(--surface-2); color: var(--muted); font-size: 11px; font-weight: 650; white-space: nowrap; }
 .ji8-scope .j8-fcard-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
@@ -52,6 +63,7 @@
 .ji8-scope .fa-glow { position: absolute; left: 50%; top: 50%; width: 230px; height: 230px; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
 .ji8-scope .fa-num { position: absolute; right: 16px; bottom: 12px; text-align: right; z-index: 3; }
 .ji8-scope .fa-num b { display: block; font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.ji8-scope .fa-num b small { margin-left: 3px; font-size: .36em; font-weight: 750; letter-spacing: 0; }
 .ji8-scope .fa-num span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
 .ji8-scope .fa-icon { position: absolute; left: 50%; top: 50%; z-index: 1; width: 104px; height: 104px; transform: translate(-50%, -50%); animation: fa-bob 5.2s ease-in-out infinite; }
 .ji8-scope .fa-icon .j8-brand-icon, .ji8-scope .fa-icon img { width: 100%; height: 100%; object-fit: contain; }

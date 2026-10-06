@@ -314,9 +314,22 @@
         "muse": "成品號 · 邀請碼助力"
       },
       "caption": {
-        "gemini": "個月 Pro，盡情探索",
-        "duolingo": "個月，每天進步一點",
+        "gemini": "Pro 會員，盡情探索",
+        "duolingo": "Super 會員，每天進步一點",
         "muse": "+10 億詞元"
+      },
+      "name": {
+        "chatgpt": "ChatGPT",
+        "gemini": "Gemini Pro",
+        "x": "X Premium",
+        "duolingo": "多鄰國 Super",
+        "muse": "Muse"
+      },
+      "years": "{n} 年",
+      "unit": {
+        "month": "個月",
+        "year": "年",
+        "day": "天"
       }
     }
   },
