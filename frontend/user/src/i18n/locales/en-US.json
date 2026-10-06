@@ -1573,18 +1573,18 @@
       "expired": "Expired"
     },
     "exactAmount": {
-      "title": "Make sure the {received} is exactly {amount}, not a cent more or less",
-      "titleGeneric": "Make sure the {received} exactly matches the amount due, not a cent more or less",
-      "exchange": "{label}the exchange deducts its fee from the USDT, so withdraw \"amount due + fee\". For example, with a 0.01 fee, withdraw {fill}. Check the {receivedTag} shown by the exchange.",
-      "exchangeGeneric": "{label}the exchange deducts its fee from the USDT, so withdraw \"amount due + fee\". Check the {receivedTag} shown by the exchange.",
-      "wallet": "{label}send exactly {amount}, do not add anything. The wallet fee is paid in BNB / POL, not USDT.",
+      "title": "Make sure the {received} is exactly {amount}, every decimal place must match",
+      "titleGeneric": "Make sure the {received} exactly matches the amount due, every decimal place must match",
+      "exchange": "{label}go by the {receivedTag} shown on the withdrawal page; it must be exactly {amount}. Binance deducts a {fee} fee from the withdrawal amount on {network}, so withdraw {fill}. If the page already shows the amount due as the amount received (fee charged separately), do not add anything.",
+      "exchangeGeneric": "{label}go by the {receivedTag} shown on the withdrawal page; it must exactly match the amount due. Exchanges such as Binance deduct the fee from the withdrawal amount, so add the fee on top. If the page already shows the amount due as the amount received, do not add anything.",
+      "wallet": "{label}send exactly {amount}, copy every decimal, do not round or add anything. The wallet fee is paid in BNB / POL, not USDT.",
       "mismatch": "If the received amount does not match, the payment cannot be confirmed automatically and the order will expire. Contact support to recover it; a 1 USDT handling fee will be deducted.",
       "showExample": "Show example",
       "hideExample": "Hide example",
       "receivedWord": "amount that arrives",
       "receivedTag": "\"amount received\"",
       "walletLabel": "Sending from a wallet (TP, imToken, MetaMask, OKX Wallet, etc.): ",
-      "walletGeneric": "{label}send exactly the amount due, do not add anything. The wallet fee is paid in BNB / POL, not USDT.",
+      "walletGeneric": "{label}send exactly the amount due, copy every decimal, do not round or add anything. The wallet fee is paid in BNB / POL, not USDT.",
       "exchangeLabel": "Withdrawing from an exchange (Binance, OKX exchange, etc.): "
     }
   },

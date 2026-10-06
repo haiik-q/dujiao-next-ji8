@@ -1526,18 +1526,18 @@
       "expired": "已过期"
     },
     "exactAmount": {
-      "title": "请确保{received}正好是 {amount}，多一分少一分都不行",
-      "titleGeneric": "请确保{received}和应付金额完全一致，多一分少一分都不行",
-      "exchange": "{label}交易所会从 USDT 里扣手续费，提币数量要填「应付金额 + 手续费」，例如手续费 0.01 就填 {fill}，以交易所页面显示的{receivedTag}为准。",
-      "exchangeGeneric": "{label}交易所会从 USDT 里扣手续费，提币数量要填「应付金额 + 手续费」，以交易所页面显示的{receivedTag}为准。",
-      "wallet": "{label}直接转 {amount}，不要多加。钱包的手续费另外扣 BNB / POL，不扣 USDT。",
+      "title": "请确保{received}正好是 {amount}，小数点后每一位都要一样，差一点都不行",
+      "titleGeneric": "请确保{received}和应付金额完全一致，小数点后每一位都要一样，差一点都不行",
+      "exchange": "{label}以提币页面显示的{receivedTag}为准，要正好是 {amount}。币安走 {network} 提币会从提币数量里扣 {fee} 手续费，提币数量就填 {fill}；页面上到账数量已经等于应付金额的（手续费另外扣），就不要再加。",
+      "exchangeGeneric": "{label}以提币页面显示的{receivedTag}为准，要正好等于应付金额。币安等交易所会从提币数量里扣手续费，这时提币数量要多填一个手续费；页面上到账数量已经等于应付金额的，就不要再加。",
+      "wallet": "{label}直接转 {amount}，小数照抄，不要四舍五入，也不要多加。钱包的手续费另外扣 BNB / POL，不扣 USDT。",
       "mismatch": "到账数量对不上，系统无法自动确认，订单会超时取消；需要联系客服人工找回，并扣除 1 USDT 处理费。",
       "showExample": "查看示例图",
       "hideExample": "收起示例图",
       "receivedWord": "实际到账数量",
       "receivedTag": "「到账数量」",
       "walletLabel": "用钱包转账（TP、imToken、MetaMask、OKX 钱包等）：",
-      "walletGeneric": "{label}直接转应付金额，不要多加。钱包的手续费另外扣 BNB / POL，不扣 USDT。",
+      "walletGeneric": "{label}直接转应付金额，小数照抄，不要四舍五入，也不要多加。钱包的手续费另外扣 BNB / POL，不扣 USDT。",
       "exchangeLabel": "从交易所提币（币安、OKX 交易所等）："
     }
   },

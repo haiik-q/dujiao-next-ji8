@@ -13,8 +13,12 @@
           <template #label><span class="font-bold">• {{ t('payment.exactAmount.walletLabel') }}</span></template>
           <template #amount><span :class="HIGHLIGHT">{{ amountLabel }}</span></template>
         </i18n-t>
+        <!-- 交易所以「到账数量」为准：币安有「按提现数量扣手续费 / 按到账数量」两种填法，OKX 新版另扣手续费，「应付 + 手续费」只对前一种成立 -->
         <i18n-t :keypath="exampleFill ? 'payment.exactAmount.exchange' : 'payment.exactAmount.exchangeGeneric'" tag="p">
           <template #label><span class="font-bold">• {{ t('payment.exactAmount.exchangeLabel') }}</span></template>
+          <template #amount><span :class="HIGHLIGHT">{{ amountLabel }}</span></template>
+          <template #network>{{ exampleFee?.network }}</template>
+          <template #fee>{{ exampleFee?.fee }}</template>
           <template #fill><span class="font-bold">{{ exampleFill }}</span></template>
           <template #receivedTag><span :class="HIGHLIGHT">{{ t('payment.exactAmount.receivedTag') }}</span></template>
         </i18n-t>
@@ -40,7 +44,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle, Image as ImageIcon } from 'lucide-vue-next'
 
-const GUIDE_IMAGE = '/images/usdt-fee-guide.jpg?v=2'
+const GUIDE_IMAGE = '/images/usdt-fee-guide.jpg?v=3'
 // 「实际到账数量」、应付金额标红加粗，提醒客人核对到账数量
 const HIGHLIGHT = 'font-extrabold text-red-600 dark:text-red-400'
 
@@ -56,12 +60,21 @@ const amount = computed(() => props.details.find((d) => d.key === 'amount')?.val
 const token = computed(() => props.details.find((d) => d.key === 'token')?.value?.trim() || '')
 const amountLabel = computed(() => (token.value && !amount.value.includes(token.value) ? `${amount.value} ${token.value}` : amount.value))
 
-// 示例：手续费按 0.01 算，提币数量 = 应付 + 0.01（保留应付金额的小数位数，至少 2 位）
+const chain = computed(() => props.details.find((d) => d.key === 'chain')?.value?.trim().toLowerCase() || '')
+
+// 示例按币安手续费算（2026-10 公开接口：BSC 0.01、Polygon 0.07）；其他链不给示例数字
+const exampleFee = computed(() => {
+  if (chain.value.includes('polygon')) return { network: 'Polygon', fee: '0.07' }
+  if (chain.value.includes('bnb') || chain.value.includes('bsc')) return { network: 'BSC', fee: '0.01' }
+  return null
+})
+
+// 提币数量 = 应付 + 手续费（保留应付金额的小数位数，至少 2 位）
 const exampleFill = computed(() => {
   const m = amount.value.match(/\d+(?:\.(\d+))?/)
-  if (!m) return ''
+  if (!m || !exampleFee.value) return ''
   const decimals = Math.max(2, (m[1] || '').length)
-  const value = Number(m[0]) + 0.01
+  const value = Number(m[0]) + Number(exampleFee.value.fee)
   return Number.isFinite(value) ? value.toFixed(decimals) : ''
 })
 </script>
