@@ -1575,14 +1575,17 @@
     "exactAmount": {
       "title": "請確保{received}正好是 {amount}，多一分少一分都不行",
       "titleGeneric": "請確保{received}和應付金額完全一致，多一分少一分都不行",
-      "exchange": "從交易所（幣安、OKX 等）提幣會扣網路手續費：提幣數量要填「應付金額 + 手續費」。例如手續費 0.01，本單提幣數量就填 {fill}。以交易所頁面顯示的{receivedTag}為準。",
-      "exchangeGeneric": "從交易所（幣安、OKX 等）提幣會扣網路手續費：提幣數量要填「應付金額 + 手續費」，以交易所頁面顯示的{receivedTag}為準。",
-      "wallet": "用個人錢包（TP、imToken、MetaMask 等）直接轉帳，轉帳數量填應付金額即可，手續費另外用 BNB / POL 支付。",
+      "exchange": "{label}交易所會從 USDT 裡扣手續費，提幣數量要填「應付金額 + 手續費」，例如手續費 0.01 就填 {fill}，以交易所頁面顯示的{receivedTag}為準。",
+      "exchangeGeneric": "{label}交易所會從 USDT 裡扣手續費，提幣數量要填「應付金額 + 手續費」，以交易所頁面顯示的{receivedTag}為準。",
+      "wallet": "{label}直接轉 {amount}，不要多加。錢包的手續費另外扣 BNB / POL，不扣 USDT。",
       "mismatch": "到帳數量對不上，系統無法自動確認，訂單會逾時取消；需要聯絡客服人工找回，並扣除 1 USDT 處理費。",
       "showExample": "查看示例圖",
       "hideExample": "收起示例圖",
       "receivedWord": "實際到帳數量",
-      "receivedTag": "「到帳數量」"
+      "receivedTag": "「到帳數量」",
+      "walletLabel": "用錢包轉帳（TP、imToken、MetaMask、OKX 錢包等）：",
+      "walletGeneric": "{label}直接轉應付金額，不要多加。錢包的手續費另外扣 BNB / POL，不扣 USDT。",
+      "exchangeLabel": "從交易所提幣（幣安、OKX 交易所等）："
     }
   },
   "resellerConsole": {

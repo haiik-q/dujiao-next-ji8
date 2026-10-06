@@ -1575,14 +1575,17 @@
     "exactAmount": {
       "title": "Make sure the {received} is exactly {amount}, not a cent more or less",
       "titleGeneric": "Make sure the {received} exactly matches the amount due, not a cent more or less",
-      "exchange": "Exchanges (Binance, OKX, etc.) deduct a network fee on withdrawal, so withdraw \"amount due + fee\". For example, with a 0.01 fee, withdraw {fill} for this order. Check the {receivedTag} shown by the exchange.",
-      "exchangeGeneric": "Exchanges (Binance, OKX, etc.) deduct a network fee on withdrawal, so withdraw \"amount due + fee\". Check the {receivedTag} shown by the exchange.",
-      "wallet": "Sending from a personal wallet (TP, imToken, MetaMask, etc.)? Send exactly the amount due; the gas fee is paid separately in BNB / POL.",
+      "exchange": "{label}the exchange deducts its fee from the USDT, so withdraw \"amount due + fee\". For example, with a 0.01 fee, withdraw {fill}. Check the {receivedTag} shown by the exchange.",
+      "exchangeGeneric": "{label}the exchange deducts its fee from the USDT, so withdraw \"amount due + fee\". Check the {receivedTag} shown by the exchange.",
+      "wallet": "{label}send exactly {amount}, do not add anything. The wallet fee is paid in BNB / POL, not USDT.",
       "mismatch": "If the received amount does not match, the payment cannot be confirmed automatically and the order will expire. Contact support to recover it; a 1 USDT handling fee will be deducted.",
       "showExample": "Show example",
       "hideExample": "Hide example",
       "receivedWord": "amount that arrives",
-      "receivedTag": "\"amount received\""
+      "receivedTag": "\"amount received\"",
+      "walletLabel": "Sending from a wallet (TP, imToken, MetaMask, OKX Wallet, etc.): ",
+      "walletGeneric": "{label}send exactly the amount due, do not add anything. The wallet fee is paid in BNB / POL, not USDT.",
+      "exchangeLabel": "Withdrawing from an exchange (Binance, OKX exchange, etc.): "
     }
   },
   "resellerConsole": {

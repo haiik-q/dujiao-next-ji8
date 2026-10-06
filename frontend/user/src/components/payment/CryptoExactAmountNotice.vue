@@ -8,11 +8,16 @@
           <template #received><span :class="HIGHLIGHT">{{ t('payment.exactAmount.receivedWord') }}</span></template>
           <template #amount><span :class="HIGHLIGHT">{{ amountLabel }}</span></template>
         </i18n-t>
+        <!-- 钱包转账和交易所提币分开写：钱包不扣 USDT 手续费，照抄交易所的「+ 手续费」会多付（10-06 有客人钱包多转了 0.01） -->
+        <i18n-t :keypath="amount ? 'payment.exactAmount.wallet' : 'payment.exactAmount.walletGeneric'" tag="p">
+          <template #label><span class="font-bold">• {{ t('payment.exactAmount.walletLabel') }}</span></template>
+          <template #amount><span :class="HIGHLIGHT">{{ amountLabel }}</span></template>
+        </i18n-t>
         <i18n-t :keypath="exampleFill ? 'payment.exactAmount.exchange' : 'payment.exactAmount.exchangeGeneric'" tag="p">
+          <template #label><span class="font-bold">• {{ t('payment.exactAmount.exchangeLabel') }}</span></template>
           <template #fill><span class="font-bold">{{ exampleFill }}</span></template>
           <template #receivedTag><span :class="HIGHLIGHT">{{ t('payment.exactAmount.receivedTag') }}</span></template>
         </i18n-t>
-        <p>{{ t('payment.exactAmount.wallet') }}</p>
         <p class="font-semibold text-red-600 dark:text-red-400">{{ t('payment.exactAmount.mismatch') }}</p>
         <button
           type="button"
@@ -35,7 +40,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle, Image as ImageIcon } from 'lucide-vue-next'
 
-const GUIDE_IMAGE = '/images/usdt-fee-guide.jpg'
+const GUIDE_IMAGE = '/images/usdt-fee-guide.jpg?v=2'
 // 「实际到账数量」、应付金额标红加粗，提醒客人核对到账数量
 const HIGHLIGHT = 'font-extrabold text-red-600 dark:text-red-400'
 
