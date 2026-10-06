@@ -158,6 +158,7 @@ func BuiltinRoleSeeds() []RoleSeed {
 				{Object: "/admin/api-credentials/:id/status", Action: "PUT"},
 				{Object: "/admin/upstream-products", Action: "GET"},
 				{Object: "/admin/upstream-categories", Action: "GET"},
+				{Object: "/admin/upstream-category-counts", Action: "GET"},
 				{Object: "/admin/resellers/operations/overview", Action: "GET"},
 				{Object: "/admin/resellers/profiles", Action: "GET"},
 				{Object: "/admin/resellers/profiles/:id", Action: "GET"},

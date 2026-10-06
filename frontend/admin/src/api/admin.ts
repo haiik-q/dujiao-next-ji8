@@ -583,6 +583,7 @@ export const adminAPI = {
   batchDeleteProductMappings: (ids: number[]) => api.post('/admin/product-mappings/batch-delete', { ids }),
   getUpstreamProducts: (params?: Record<string, unknown>) => api.get('/admin/upstream-products', { params }),
   getUpstreamCategories: (params: { connection_id: string }) => api.get('/admin/upstream-categories', { params }),
+  getUpstreamCategoryCounts: (params: { connection_id: string }) => api.get('/admin/upstream-category-counts', { params }),
   batchImportByCategory: (data: Record<string, unknown>) => api.post('/admin/product-mappings/batch-import-by-category', data),
   // Procurement Orders
   getProcurementOrders: (params?: Record<string, unknown>) => api.get('/admin/procurement-orders', { params }),

@@ -3,6 +3,7 @@ package gormstore
 import (
 	"context"
 	"errors"
+	"strconv"
 	"strings"
 	"time"
 
@@ -71,8 +72,12 @@ func (s *BannerStore) ListValidByPosition(ctx context.Context, position string, 
 }
 
 func (s *BannerStore) GetByID(ctx context.Context, id string) (*domain.Banner, error) {
+	pk, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return nil, nil
+	}
 	var banner domain.Banner
-	if err := withContext(s.db, ctx).Where("deleted_at IS NULL").First(&banner, id).Error; err != nil {
+	if err := withContext(s.db, ctx).Where("deleted_at IS NULL").First(&banner, pk).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}

@@ -1,6 +1,7 @@
 package mappinghttp
 
 import (
+	"context"
 	"errors"
 
 	mappingapp "github.com/dujiao-next/internal/modules/catalog/mapping/application"
@@ -28,6 +29,7 @@ type ProductMappingService interface {
 	ListUpstreamProducts(connectionID uint, page, pageSize int) (*upstream.ProductListResult, error)
 	GetMappedUpstreamIDs(connectionID uint) ([]uint, error)
 	ListUpstreamCategories(connectionID uint) ([]upstream.UpstreamCategory, bool, error)
+	ListUpstreamCategoryCounts(ctx context.Context, connectionID uint) (map[uint]int, int, error)
 	BatchImportByCategory(connectionID, upstreamCategoryID uint, autoCreateCategory bool, localCategoryID uint) (*mappingapp.BatchImportByCategoryResult, error)
 }
 
@@ -416,6 +418,30 @@ func (h *AdminHandler) ListUpstreamCategories(c *gin.Context) {
 	response.Success(c, gin.H{
 		"supported":  supported,
 		"categories": categories,
+	})
+}
+
+// ListUpstreamCategoryCounts 统计上游各分类下的商品数量（遍历全部分页，不受管理端已加载页数影响）
+func (h *AdminHandler) ListUpstreamCategoryCounts(c *gin.Context) {
+	connectionID, err := ginutil.ParseQueryUint(c.Query("connection_id"), true)
+	if err != nil || connectionID == 0 {
+		ginutil.RespondError(c, response.CodeBadRequest, "error.bad_request", err)
+		return
+	}
+
+	counts, total, err := h.service.ListUpstreamCategoryCounts(c.Request.Context(), connectionID)
+	if err != nil {
+		if errors.Is(err, siteconnectioncontract.ErrNotFound) {
+			ginutil.RespondError(c, response.CodeNotFound, "error.connection_not_found", nil)
+			return
+		}
+		ginutil.RespondError(c, response.CodeInternal, "error.upstream_products_fetch_failed", err)
+		return
+	}
+
+	response.Success(c, gin.H{
+		"counts": counts,
+		"total":  total,
 	})
 }
 

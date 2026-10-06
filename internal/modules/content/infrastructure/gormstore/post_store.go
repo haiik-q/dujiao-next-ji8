@@ -3,6 +3,7 @@ package gormstore
 import (
 	"context"
 	"errors"
+	"strconv"
 	"strings"
 
 	productdomain "github.com/dujiao-next/internal/modules/catalog/product/domain"
@@ -88,8 +89,12 @@ func (s *PostStore) GetBySlug(ctx context.Context, slug string, onlyPublished bo
 }
 
 func (s *PostStore) GetByID(ctx context.Context, id string) (*domain.Post, error) {
+	pk, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return nil, nil
+	}
 	var post domain.Post
-	if err := withContext(s.db, ctx).Where("deleted_at IS NULL").First(&post, id).Error; err != nil {
+	if err := withContext(s.db, ctx).Where("deleted_at IS NULL").First(&post, pk).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}

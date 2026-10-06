@@ -13,7 +13,22 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func (s *WriteService) syncSingleProductSKU(skuRepo SKURepository, productID uint, priceAmount decimal.Decimal, costPriceAmount decimal.Decimal, manualStockTotal int, createWhenMissing bool) error {
+// syncSingleProductSKU 把商品收敛为单规格模式：恰好保留一行 DEFAULT SKU，删除其余规格行。
+//
+// DEFAULT 行是单规格约定的内部表示（见 productdomain.DefaultSKUCode），后台不把它当作
+// 一条"规格"展示，因此用户在界面上删除全部规格后保存，得到的就是这个状态。
+//
+// 删除会连带让被删 SKU 的卡密库存失去归属，因此复用多规格路径的库存守卫：
+// 待删 SKU 只要还有可用或未核销的卡密库存，就拒绝而不是静默删除。
+func (s *WriteService) syncSingleProductSKU(
+	skuRepo SKURepository,
+	cardSecretRepo CardSecretStockRepository,
+	productID uint,
+	fulfillmentType string,
+	priceAmount decimal.Decimal,
+	costPriceAmount decimal.Decimal,
+	manualStockTotal int,
+) error {
 	if skuRepo == nil || productID == 0 {
 		return nil
 	}
@@ -22,9 +37,6 @@ func (s *WriteService) syncSingleProductSKU(skuRepo SKURepository, productID uin
 		return err
 	}
 	if len(skus) == 0 {
-		if !createWhenMissing {
-			return nil
-		}
 		return skuRepo.Create(&productdomain.ProductSKU{
 			ProductID:         productID,
 			SKUCode:           productdomain.DefaultSKUCode,
@@ -43,12 +55,27 @@ func (s *WriteService) syncSingleProductSKU(skuRepo SKURepository, productID uin
 		return productcontract.ErrProductSKUInvalid
 	}
 
+	// 先确认待删除的行可以安全删除，避免删到一半才发现有卡密库存。
+	for i := range skus {
+		if i == targetIndex {
+			continue
+		}
+		if err := ensureSKURemovable(cardSecretRepo, productID, fulfillmentType, skus[i]); err != nil {
+			return err
+		}
+	}
+
 	target := skus[targetIndex]
 	target.PriceAmount = money.FromDecimal(priceAmount)
 	target.CostPriceAmount = money.FromDecimal(costPriceAmount)
 	target.ManualStockTotal = manualStockTotal
 	target.IsActive = true
-	if strings.TrimSpace(target.SKUCode) == "" {
+	target.SpecValuesJSON = jsonmap.JSON{}
+	if strings.ToUpper(strings.TrimSpace(target.SKUCode)) != strings.ToUpper(productdomain.DefaultSKUCode) {
+		// 改名为 DEFAULT 前先清理同编码的软删除残留，否则会撞唯一索引。
+		if err := skuRepo.PurgeSoftDeletedByProductAndCode(productID, productdomain.DefaultSKUCode); err != nil {
+			return err
+		}
 		target.SKUCode = productdomain.DefaultSKUCode
 	}
 	if err := skuRepo.Update(&target); err != nil {
@@ -66,6 +93,25 @@ func (s *WriteService) syncSingleProductSKU(skuRepo SKURepository, productID uin
 	return nil
 }
 
+// ensureSKURemovable 在自动发货场景下校验该 SKU 是否可以安全删除（无卡密库存占用）。
+// 非自动发货或未注入卡密仓储时直接放行。
+func ensureSKURemovable(cardSecretRepo CardSecretStockRepository, productID uint, fulfillmentType string, sku productdomain.ProductSKU) error {
+	if cardSecretRepo == nil || productID == 0 || strings.TrimSpace(fulfillmentType) != constants.FulfillmentTypeAuto {
+		return nil
+	}
+	total, available, used, err := cardSecretRepo.CountByProduct(productID, sku.ID)
+	if err != nil {
+		return err
+	}
+	if available > 0 || total-used > 0 {
+		return productcontract.ErrProductSKUHasCardSecretStock
+	}
+	return nil
+}
+
+// pickSingleModeTargetSKUIndex 选择单规格模式下存续的那一行。
+// 单规格模式的唯一存续行必须是 DEFAULT，因此优先复用已存在的 DEFAULT 行（无论当前是否启用），
+// 避免每次保存都新建一行；只有确实没有 DEFAULT 行时才退化为挑一个现有行改名。
 func pickSingleModeTargetSKUIndex(skus []productdomain.ProductSKU) int {
 	if len(skus) == 0 {
 		return -1
@@ -73,20 +119,12 @@ func pickSingleModeTargetSKUIndex(skus []productdomain.ProductSKU) int {
 	defaultCode := strings.ToUpper(strings.TrimSpace(productdomain.DefaultSKUCode))
 
 	for i := range skus {
-		if !skus[i].IsActive {
-			continue
-		}
 		if strings.ToUpper(strings.TrimSpace(skus[i].SKUCode)) == defaultCode {
 			return i
 		}
 	}
 	for i := range skus {
 		if skus[i].IsActive {
-			return i
-		}
-	}
-	for i := range skus {
-		if strings.ToUpper(strings.TrimSpace(skus[i].SKUCode)) == defaultCode {
 			return i
 		}
 	}
@@ -319,8 +357,8 @@ func (s *WriteService) ensureAutoSKUCardSecretStockSafe(
 		return nil
 	}
 
+	// nextActive 只收录本次保留的行；不在其中的行将被删除。
 	nextActive := make(map[uint]bool, len(existingRows))
-	kept := make(map[uint]struct{}, len(rows))
 	for _, row := range rows {
 		if row.ID > 0 {
 			existing, ok := existingByID[row.ID]
@@ -328,34 +366,22 @@ func (s *WriteService) ensureAutoSKUCardSecretStockSafe(
 				return productcontract.ErrProductSKUInvalid
 			}
 			nextActive[existing.ID] = row.IsActive
-			kept[existing.ID] = struct{}{}
 			continue
 		}
 
 		codeKey := strings.ToLower(strings.TrimSpace(row.SKUCode))
 		if existing, ok := existingByCode[codeKey]; ok {
 			nextActive[existing.ID] = row.IsActive
-			kept[existing.ID] = struct{}{}
 		}
 	}
 
 	for _, existing := range existingRows {
-		if _, ok := nextActive[existing.ID]; !ok {
-			nextActive[existing.ID] = false
-		}
-		if _, ok := kept[existing.ID]; !ok {
-			nextActive[existing.ID] = false
-		}
-		if !existing.IsActive || nextActive[existing.ID] {
+		// 删除的行一律校验（与单规格收敛路径一致）；保留的行仅在由启用变为停用时校验。
+		if active, kept := nextActive[existing.ID]; kept && (!existing.IsActive || active) {
 			continue
 		}
-		total, available, used, err := cardSecretRepo.CountByProduct(productID, existing.ID)
-		if err != nil {
+		if err := ensureSKURemovable(cardSecretRepo, productID, fulfillmentType, existing); err != nil {
 			return err
-		}
-		outstanding := total - used
-		if available > 0 || outstanding > 0 {
-			return productcontract.ErrProductSKUHasCardSecretStock
 		}
 	}
 	return nil

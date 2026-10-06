@@ -118,6 +118,19 @@ const createEmptyLocaleText = () => ({
   'en-US': '',
 })
 
+// resolveEditableSKURows 把接口返回的 SKU 列表转换为表单可编辑的规格行。
+//
+// 单规格商品在后端固定表示为「恰好一行 DEFAULT」，它承载价格与库存，并不是一条用户可见的
+// 规格。若把它填进规格列表，用户删掉它再保存时会被后端重新生成，表现为「关不掉规格配置」，
+// 所以这里只隐藏「有且仅有一行且编码为 DEFAULT」的情况；多规格中恰好叫 DEFAULT 的自定义
+// 编码属于真实规格，照常展示。
+const resolveEditableSKURows = (product: AdminProduct): SKUFormItem[] => {
+  const rows = Array.isArray(product.skus) ? product.skus : []
+  const isSingleSpecMode = rows.length === 1 && String(rows[0]?.sku_code || '').trim().toUpperCase() === 'DEFAULT'
+  if (isSingleSpecMode) return []
+  return rows.map((item: AdminProductSKU) => createSKUFormItem(item))
+}
+
 const createSKUFormItem = (raw?: Partial<AdminProductSKU>): SKUFormItem => ({
   id: Number(raw?.id || 0),
   sku_code: String(raw?.sku_code || '').trim(),
@@ -546,7 +559,7 @@ const populateForm = (product: AdminProduct) => {
     stock_display_mode: product.stock_display_mode || 'exact',
     fulfillment_type: product.fulfillment_type || 'manual',
     manual_stock_total: resolveManualStockMetrics(product).total,
-    skus: Array.isArray(product.skus) ? product.skus.map((item: AdminProductSKU) => createSKUFormItem(item)) : [],
+    skus: resolveEditableSKURows(product),
     category_id: Number(product.category_id || 0) || null,
     payment_channel_ids: parsePaymentChannelIDs(product.payment_channel_ids),
     is_affiliate_enabled: Boolean(product.is_affiliate_enabled),

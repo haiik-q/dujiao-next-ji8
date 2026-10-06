@@ -104,28 +104,15 @@ func (s *Service) BatchImportByCategory(
 	}
 
 	// 分页拉取上游所有商品，筛选属于目标分类的
+	allProducts, err := listAllUpstreamProducts(context.Background(), adapter)
+	if err != nil {
+		return nil, err
+	}
 	var targetProducts []upstream.UpstreamProduct
-	page := 1
-	pageSize := 50
-	for {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		result, fetchErr := adapter.ListProducts(ctx, upstream.ListProductsOpts{
-			Page:     page,
-			PageSize: pageSize,
-		})
-		cancel()
-		if fetchErr != nil {
-			return nil, fmt.Errorf("fetch upstream products page %d: %w", page, fetchErr)
+	for _, p := range allProducts {
+		if p.CategoryID == upstreamCategoryID {
+			targetProducts = append(targetProducts, p)
 		}
-		for _, p := range result.Items {
-			if p.CategoryID == upstreamCategoryID {
-				targetProducts = append(targetProducts, p)
-			}
-		}
-		if len(result.Items) < pageSize || page*pageSize >= result.Total {
-			break
-		}
-		page++
 	}
 
 	if len(targetProducts) == 0 {

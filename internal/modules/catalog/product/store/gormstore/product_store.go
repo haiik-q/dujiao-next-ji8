@@ -13,6 +13,7 @@ import (
 	"github.com/dujiao-next/internal/persistence/gormutil"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // ProductStore 是 Catalog Product 端口的 GORM 实现。
@@ -208,13 +209,17 @@ func (r *ProductStore) GetBySlug(slug string, onlyActive bool) (*productdomain.P
 
 // GetByID 根据 ID 获取商品
 func (r *ProductStore) GetByID(id string) (*productdomain.Product, error) {
+	pk, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return nil, nil
+	}
 	var product productdomain.Product
 	if err := r.db.Preload("Category", "deleted_at IS NULL").
 		Preload("SKUs", func(db *gorm.DB) *gorm.DB {
 			return db.Where("deleted_at IS NULL AND is_active = ?", true).Order("sort_order DESC, id ASC")
 		}).
 		Where("products.deleted_at IS NULL").
-		First(&product, id).Error; err != nil {
+		First(&product, pk).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -225,13 +230,17 @@ func (r *ProductStore) GetByID(id string) (*productdomain.Product, error) {
 
 // GetAdminByID 根据 ID 获取后台商品详情，包含全部 SKU
 func (r *ProductStore) GetAdminByID(id string) (*productdomain.Product, error) {
+	pk, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return nil, nil
+	}
 	var product productdomain.Product
 	if err := r.db.Preload("Category", "deleted_at IS NULL").
 		Preload("SKUs", func(db *gorm.DB) *gorm.DB {
 			return db.Where("deleted_at IS NULL").Order("sort_order DESC, id ASC")
 		}).
 		Where("products.deleted_at IS NULL").
-		First(&product, id).Error; err != nil {
+		First(&product, pk).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -257,9 +266,13 @@ func (r *ProductStore) Create(product *productdomain.Product) error {
 	return r.db.Create(product).Error
 }
 
-// Update 更新商品
+// Update 更新商品自身字段。
+//
+// 不级联保存关联：调用方拿到的 product 往往带着读取时预加载的 Category/SKUs 快照，
+// 而 SKU 删除是硬删除，级联 upsert 会把已删除的规格按原 ID 重新插回（issue #344）。
+// SKU 一律由 SKURepository 独占管理。
 func (r *ProductStore) Update(product *productdomain.Product) error {
-	return r.db.Save(product).Error
+	return r.db.Omit(clause.Associations).Save(product).Error
 }
 
 // QuickUpdate 快速更新商品指定字段
