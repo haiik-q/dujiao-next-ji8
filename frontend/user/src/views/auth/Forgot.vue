@@ -87,6 +87,7 @@
                 {{ countdown > 0 ? t('auth.common.countdown', { seconds: countdown }) : t('auth.common.sendCode') }}
               </Button>
             </div>
+            <p class="mt-1.5 text-xs text-amber-700 dark:text-amber-400">{{ t('auth.register.codeSpamHint') }}</p>
           </div>
 
           <div>
