@@ -1,9 +1,13 @@
 <template>
-  <div class="j8-container">
+  <div ref="root" class="j8-container">
     <section class="j8-hero" :class="{ 'is-home': variant === 'home' }">
       <div class="j8-hero-copy">
         <span class="j8-eyebrow">{{ heroEyebrow }}</span>
-        <h1>{{ heroTitle }}</h1>
+        <h1 v-if="variant === 'home'" class="j8-hero-title">
+          <span>{{ t('ji8.hero.titleLead', { site: siteName || siteHost }) }}</span>
+          <span class="is-dim">{{ t('ji8.hero.titleTail') }}</span>
+        </h1>
+        <h1 v-else>{{ heroTitle }}</h1>
         <p>{{ heroLede }}</p>
       </div>
       <i18n-t v-if="variant === 'home'" keypath="ji8.hero.mobileLead" tag="p" class="j8-shortlink">
@@ -26,6 +30,8 @@
         <button type="button" class="j8-share" @click="shareSite"><Share2 />{{ t('ji8.hero.share') }}</button>
       </div>
     </section>
+
+    <Ji8Featured v-if="showFeatured" :products="products" />
 
     <button type="button" class="j8-cat-btn" @click="openDrawer">
       <ShoppingBag />
@@ -54,7 +60,7 @@
           <div v-for="i in 6" :key="i" class="j8-skeleton-card"></div>
         </div>
         <div v-else-if="products.length" class="j8-grid">
-          <Ji8ProductCard v-for="p in products" :key="p.id" :product="p" />
+          <Ji8ProductCard v-for="p in products" :key="p.id" :product="p" class="j8-reveal" />
         </div>
         <div v-else class="j8-empty">
           <component :is="hasFilter ? SearchX : PackageOpen" />
@@ -92,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ChevronDown, PackageOpen, Search, SearchX, Share2, ShoppingBag, X } from 'lucide-vue-next'
@@ -109,6 +115,8 @@ import { useCategoryCounts } from '../composables/useCategoryCounts'
 import Ji8CategoryPanel from './Ji8CategoryPanel.vue'
 import Ji8CategoryDrawer from './Ji8CategoryDrawer.vue'
 import Ji8ProductCard from './Ji8ProductCard.vue'
+import Ji8Featured from './Ji8Featured.vue'
+import { useReveal } from '../composables/useReveal'
 
 const props = defineProps<{
   variant: 'home' | 'store'
@@ -166,6 +174,10 @@ const selectedCategoryName = computed(() => {
 })
 const currentCategoryName = computed(() => selectedCategoryName.value || t('products.allCategories'))
 const hasFilter = computed(() => selectedCategory.value !== null || searchQuery.value.trim() !== '')
+// 「为你精选」只在首页、未筛选、第一页时出现；数据直接复用已加载的全部商品
+const showFeatured = computed(
+  () => props.variant === 'home' && !loading.value && !hasFilter.value && currentPage.value === 1 && products.value.length > 0,
+)
 
 // ==================== SEO ====================
 usePageSeo({
@@ -226,4 +238,9 @@ onMounted(async () => {
 })
 
 onUnmounted(cleanup)
+
+// 商品卡片滚动进入视口时依次浮现
+const root = ref<HTMLElement | null>(null)
+const { scan } = useReveal(root, '.j8-grid > .j8-reveal')
+watch(products, () => void scan(), { flush: 'post' })
 </script>

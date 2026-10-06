@@ -275,6 +275,18 @@ body.ji8-tokens {
 .ji8-scope .j8-hero-copy p { max-width: 650px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }   /* G17：压过 @layer base p 的 1.62 */
 .ji8-scope .j8-shortlink { display: none; margin: 0; color: var(--text); font-size: 20px; font-weight: 800; line-height: 1.25; letter-spacing: -.025em; white-space: nowrap; }
 .ji8-scope .j8-shortlink em { color: var(--accent-strong); font-style: italic; font-weight: 900; }
+/* 首页大标题：前半句正文色、后半句灰色，进场依次上浮（参考苹果商店页的两段式标题） */
+.ji8-scope .j8-hero.is-home h1 { font-size: clamp(30px, 3.4vw, 46px); letter-spacing: -.04em; }
+.ji8-scope .j8-hero-title > span { display: inline-block; animation: j8-text-in .8s cubic-bezier(.2, .8, .2, 1) backwards; }
+.ji8-scope .j8-hero-title > .is-dim { color: var(--muted); animation-delay: .12s; }
+.ji8-scope .j8-hero.is-home .j8-eyebrow, .ji8-scope .j8-hero.is-home .j8-shortlink { animation: j8-text-in .7s cubic-bezier(.2, .8, .2, 1) backwards; }
+.ji8-scope .j8-hero.is-home .j8-hero-copy p { animation: j8-text-in .8s cubic-bezier(.2, .8, .2, 1) .22s backwards; }
+.ji8-scope .j8-hero.is-home .j8-hero-actions { animation: j8-text-in .8s cubic-bezier(.2, .8, .2, 1) .3s backwards; }
+@keyframes j8-text-in { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+/* 滚动进入视口时依次浮现（composables/useReveal.ts 负责加 is-pending / is-in） */
+.ji8-scope .j8-reveal.is-pending { opacity: 0; }
+.ji8-scope .j8-reveal.is-in { animation: j8-rise .75s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: var(--d, 0ms); }
+@keyframes j8-rise { from { opacity: 0; transform: translateY(22px) scale(.97); } to { opacity: 1; transform: none; } }
 .ji8-scope .j8-hero-actions { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
 .ji8-scope .j8-hero-actions .j8-search { flex: 1; }   /* G17 */
 .ji8-scope .j8-search { width: min(380px, 35vw); height: 46px; display: flex; align-items: center; gap: 9px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--r-search); background: var(--surface); box-shadow: var(--shadow-soft); transition: border-color .15s; }

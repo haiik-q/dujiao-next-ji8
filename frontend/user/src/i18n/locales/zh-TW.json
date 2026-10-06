@@ -58,7 +58,9 @@
       "subtitle": "數位商品自動出貨，付款後憑證即時送達。",
       "mobileLead": "本站短鏈 {host} 可收藏",
       "share": "分享本站",
-      "shareCopied": "站點連結已複製"
+      "shareCopied": "站點連結已複製",
+      "titleLead": "{site}。",
+      "titleTail": "AI 服務，一站直達。"
     },
     "store": {
       "eyebrow": "STORE CATALOG",
@@ -294,6 +296,28 @@
       "useBalance": "使用餘額付款",
       "balance": "目前餘額",
       "balanceNotEnough": "餘額不足，還需線上支付 {amount}"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "title": "為你精選",
+      "from": "起",
+      "viewProduct": "查看商品",
+      "choosePlan": "選擇方案",
+      "soldOut": "補貨中",
+      "months": "{n} 個月",
+      "count": "{count} 款可選",
+      "sub": {
+        "chatgpt": "官方儲值 · 自助卡密兌換",
+        "gemini": "官方活動 · 直充自己帳號",
+        "x": "官方禮物贈送 · 自動到帳",
+        "duolingo": "Super 個人年卡 · 原號開通",
+        "muse": "成品號 · 邀請碼助力"
+      },
+      "caption": {
+        "gemini": "個月 Pro，盡情探索",
+        "duolingo": "個月，每天進步一點",
+        "muse": "+10 億詞元"
+      }
     }
   },
   "vault": {

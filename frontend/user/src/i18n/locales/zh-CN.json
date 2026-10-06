@@ -58,7 +58,9 @@
       "subtitle": "数字商品自动发货，付款后凭证即时送达。",
       "mobileLead": "本站短链 {host} 可收藏",
       "share": "分享本站",
-      "shareCopied": "站点链接已复制"
+      "shareCopied": "站点链接已复制",
+      "titleLead": "{site}。",
+      "titleTail": "AI 服务，一站直达。"
     },
     "store": {
       "eyebrow": "STORE CATALOG",
@@ -294,6 +296,28 @@
       "useBalance": "使用余额付款",
       "balance": "当前余额",
       "balanceNotEnough": "余额不足，还需在线支付 {amount}"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "title": "为你精选",
+      "from": "起",
+      "viewProduct": "查看商品",
+      "choosePlan": "选择套餐",
+      "soldOut": "补货中",
+      "months": "{n} 个月",
+      "count": "{count} 款可选",
+      "sub": {
+        "chatgpt": "官方充值 · 自助卡密兑换",
+        "gemini": "官方活动 · 直充自己账号",
+        "x": "官方礼物赠送 · 自动到账",
+        "duolingo": "Super 个人年卡 · 原号开通",
+        "muse": "成品号 · 邀请码助力"
+      },
+      "caption": {
+        "gemini": "个月 Pro，尽情探索",
+        "duolingo": "个月，每天进步一点",
+        "muse": "+10 亿词元"
+      }
     }
   },
   "vault": {

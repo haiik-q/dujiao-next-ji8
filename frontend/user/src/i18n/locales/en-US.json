@@ -58,7 +58,9 @@
       "subtitle": "Digital goods delivered automatically the moment you pay.",
       "mobileLead": "Bookmark us at {host}",
       "share": "Share site",
-      "shareCopied": "Site link copied"
+      "shareCopied": "Site link copied",
+      "titleLead": "{site}.",
+      "titleTail": "AI services, all in one place."
     },
     "store": {
       "eyebrow": "STORE CATALOG",
@@ -294,6 +296,28 @@
       "useBalance": "Pay with balance",
       "balance": "Balance",
       "balanceNotEnough": "Not enough balance, {amount} to pay online"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "title": "Picked for you",
+      "from": "from",
+      "viewProduct": "View",
+      "choosePlan": "Choose plan",
+      "soldOut": "Restocking",
+      "months": "{n} months",
+      "count": "{count} options",
+      "sub": {
+        "chatgpt": "Official top-up · Self-service code",
+        "gemini": "Official promo · Your own account",
+        "x": "Official gift · Delivered automatically",
+        "duolingo": "Super individual · Your own account",
+        "muse": "Ready accounts · Invite boosts"
+      },
+      "caption": {
+        "gemini": "months of Pro",
+        "duolingo": "months of Super",
+        "muse": "+1B tokens"
+      }
     }
   },
   "vault": {
