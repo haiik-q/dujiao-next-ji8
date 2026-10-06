@@ -316,7 +316,8 @@
       "caption": {
         "gemini": "of Gemini Pro",
         "duolingo": "of Duolingo Super",
-        "muse": "+1B tokens"
+        "muse": "Muse tokens",
+        "museChip": "+1B"
       },
       "name": {
         "chatgpt": "ChatGPT",
@@ -329,8 +330,10 @@
       "unit": {
         "month": "months",
         "year": "years",
-        "day": "days"
-      }
+        "day": "days",
+        "token": "B"
+      },
+      "tokens": "up to {n}B tokens"
     }
   },
   "vault": {

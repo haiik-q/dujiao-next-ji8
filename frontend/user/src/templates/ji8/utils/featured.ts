@@ -32,6 +32,8 @@ export interface FeaturedGroup {
   months: number[]
   /** ChatGPT 卡片叠放的套餐（按价格升序，最多 3 个） */
   plans: FeaturedPlan[]
+  /** 标题里「N 亿」的最大值（Muse 词元），优先取在售商品；没有为 0 */
+  tokens: number
   allSoldOut: boolean
 }
 
@@ -42,6 +44,10 @@ const toNumber = (value: unknown) => {
 
 const PLAN_RE = /\b(Plus|Go|Team|Business|Pro\s*\d+\s*x?|Pro)\b/i
 const MONTHS_RE = /(\d{1,2})\s*(?:个月|個月|months?)/i
+const TOKENS_RE = /(\d+)\s*[亿億]/g
+
+const maxTokens = (items: any[], getTitle: (product: any) => string) =>
+  Math.max(0, ...items.flatMap((p) => [...getTitle(p).matchAll(TOKENS_RE)].map((m) => Number(m[1]))))
 
 export function buildFeaturedGroups(
   products: any[],
@@ -76,6 +82,7 @@ export function buildFeaturedGroups(
       priceVaries: new Set(prices).size > 1,
       months,
       plans,
+      tokens: maxTokens(pricedPool, getTitle) || maxTokens(items, getTitle),
       allSoldOut: !onSale.length,
     })
   }

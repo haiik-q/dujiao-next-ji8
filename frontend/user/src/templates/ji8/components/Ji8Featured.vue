@@ -47,7 +47,7 @@
               <path :d="STAR" fill="url(#j8-gem-grad)" />
             </svg>
             <svg v-for="n in 3" :key="n" class="fa-twinkle" :class="`t${n}`" viewBox="0 0 100 100"><path :d="STAR" /></svg>
-            <div v-if="bigOf(g)" class="fa-num"><b>{{ bigOf(g)!.n }}<small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.gemini') }}</span></div>
+            <div v-if="bigOf(g)" class="fa-num"><b><span class="fa-count" :style="{ '--to': bigOf(g)!.n }"></span><small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.gemini') }}</span></div>
           </div>
 
           <!-- X：黑色会员卡 + 扫光 -->
@@ -70,15 +70,17 @@
             <span class="fa-glow"></span>
             <span class="fa-icon"><Ji8BrandIcon :slug="g.category?.slug" :name="nameOf(g)" :image="iconOf(g)" /></span>
             <span v-for="(word, k) in WORDS" :key="word" class="fa-word" :class="`w${k + 1}`">{{ word }}</span>
-            <div v-if="bigOf(g)" class="fa-num"><b>{{ bigOf(g)!.n }}<small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.duolingo') }}</span></div>
+            <div v-if="bigOf(g)" class="fa-num"><b><span class="fa-count" :style="{ '--to': bigOf(g)!.n }"></span><small>{{ bigOf(g)!.unit }}</small></b><span>{{ t('ji8.featured.caption.duolingo') }}</span></div>
           </div>
 
-          <!-- Muse：吉祥物 + 不断冒出的词元气泡 -->
+          <!-- Muse：吉祥物 + 绕圈的助力头像 + 冒出的词元气泡 + 词元计数 -->
           <div v-else class="fa-muse">
             <span class="fa-glow"></span>
-            <span class="fa-muse-ring"></span>
+            <span class="fa-muse-ring"><i v-for="n in 4" :key="n" :class="`a${n}`"><UserRound /></i></span>
+            <svg v-for="n in 2" :key="`s${n}`" class="fa-twinkle" :class="`t${n}`" viewBox="0 0 100 100"><path :d="STAR" /></svg>
             <span class="fa-icon"><Ji8BrandIcon :slug="g.category?.slug" :name="nameOf(g)" :image="iconOf(g)" /></span>
-            <span v-for="n in 3" :key="n" class="fa-chip" :class="`c${n}`">{{ t('ji8.featured.caption.muse') }}</span>
+            <span v-for="n in 3" :key="n" class="fa-chip" :class="`c${n}`">{{ t('ji8.featured.caption.museChip') }}</span>
+            <div v-if="g.tokens" class="fa-num"><b><span class="fa-count" :style="{ '--to': tokenNum(g) }"></span><small>{{ t('ji8.featured.unit.token') }}</small></b><span>{{ t('ji8.featured.caption.muse') }}</span></div>
           </div>
         </div>
 
@@ -98,7 +100,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronRight } from 'lucide-vue-next'
+import { ChevronRight, UserRound } from 'lucide-vue-next'
 import { useLocalized, useProductLabels } from '../../../composables/useProduct'
 import { getImageUrl } from '../../../utils/image'
 import { formatMoney } from '../utils/price'
@@ -110,7 +112,7 @@ import '../styles/featured.css'
 
 const props = defineProps<{ products: any[] }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { getLocalizedText, siteCurrency } = useLocalized()
 const { isSoldOut } = useProductLabels()
 
@@ -127,9 +129,13 @@ const money = (amount: number) => formatMoney(amount, siteCurrency.value).replac
 const nameOf = (g: FeaturedGroup) => getLocalizedText(g.category?.name) || g.art
 const iconOf = (g: FeaturedGroup) => getImageUrl(g.category?.icon)
 
-// 标题里高亮的部分：时长（12 的倍数写成「N 年」）或 ChatGPT 套餐档位；没有就不高亮，改在右上角显示款数
+// 词元数：中文按「亿」显示，英文换算成 B（10 亿 = 1B）
+const tokenNum = (g: FeaturedGroup) => (String(locale.value).startsWith('en') ? Math.round(g.tokens / 10) : g.tokens)
+
+// 标题里高亮的部分：时长（12 的倍数写成「N 年」）、ChatGPT 套餐档位或 Muse 最高词元；没有就不高亮，改在右上角显示款数
 const highlightOf = (g: FeaturedGroup) => {
   if (g.art === 'chatgpt' && g.plans.length) return [...new Set(g.plans.map((p) => p.name.split(' ')[0]))].join(' / ')
+  if (g.art === 'muse' && g.tokens) return t('ji8.featured.tokens', { n: tokenNum(g) })
   if (!g.months.length) return ''
   if (g.months.every((m) => m % 12 === 0)) {
     const years = g.months.map((m) => m / 12)

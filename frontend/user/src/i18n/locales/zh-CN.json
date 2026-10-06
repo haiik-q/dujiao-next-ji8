@@ -316,7 +316,8 @@
       "caption": {
         "gemini": "Pro 会员，尽情探索",
         "duolingo": "Super 会员，每天进步一点",
-        "muse": "+10 亿词元"
+        "muse": "词元，额度拉满",
+        "museChip": "+10 亿"
       },
       "name": {
         "chatgpt": "ChatGPT",
@@ -329,8 +330,10 @@
       "unit": {
         "month": "个月",
         "year": "年",
-        "day": "天"
-      }
+        "day": "天",
+        "token": "亿"
+      },
+      "tokens": "最高 {n} 亿词元"
     }
   },
   "vault": {
